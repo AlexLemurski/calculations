@@ -25,23 +25,23 @@ create table if not exists data.t_calculations
     c_resource_folder      varchar(300),
     c_customer_id          bigint
         constraint t_calculations_t_customers_c_id_fk
-            references data.t_customers
+            references t_customers
 );
 
 create table if not exists data.t_doc_resource
 (
-    c_id        bigserial
+    c_id           bigserial
         constraint t_doc_resource_pk
             primary key,
-    c_doc_name  varchar(500),
-    c_doc_type  varchar(500),
-    c_doc_size  varchar(500),
-    c_key       varchar(500),
-    c_doc_index varchar(50),
-    c_calc_id   bigint,
-    c_content_type character varying[]
+    c_doc_name     varchar(500),
+    c_doc_type     varchar(500),
+    c_doc_size     varchar(500),
+    c_key          varchar(500),
+    c_doc_index    varchar(50),
+    c_content_type character varying[],
+    c_calc_id      bigint
         constraint t_doc_resource_t_calculations_c_id_fk
-            references data.t_calculations
+            references t_calculations
 );
 
 create table if not exists data.t_doc_result
@@ -55,5 +55,40 @@ create table if not exists data.t_doc_result
     c_key      varchar(500),
     c_calc_id  bigint
         constraint t_doc_result_t_calculations_c_id_fk
-            references data.t_calculations
+            references t_calculations
+);
+
+create table if not exists data.t_partition
+(
+    c_id           bigserial
+        constraint t_partition_pk
+            primary key,
+    c_position     varchar(10),
+    c_partition    varchar(300),
+    c_sum          numeric(12, 2),
+    c_calculated   integer,
+    c_total        integer,
+    c_percent      double precision,
+    c_calc_id      bigint
+        constraint t_partition_t_calculations_c_id_fk
+            references t_calculations,
+    c_content_type varchar
+);
+
+create table if not exists data.t_uncalculated
+(
+    c_id           bigserial
+        constraint t_uncalculated_pk
+            primary key,
+    c_partition    varchar(300),
+    c_name         varchar(300),
+    c_standart     varchar(300),
+    c_quantity     varchar(10),
+    c_quality      varchar(10),
+    c_comment      varchar(1000),
+    c_calc_id      bigint
+        constraint t_uncalculated_t_calculations_c_id_fk
+            references t_calculations,
+    c_nomenclature varchar,
+    c_position     varchar
 );
