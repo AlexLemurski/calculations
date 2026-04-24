@@ -1,0 +1,472 @@
+body {
+    font-family: Tahoma, Geneva, sans-serif;
+    font-size: 12px;
+    text-align: left;
+    vertical-align: top;
+}
+
+.header {
+    align-items: center;
+    height: 3vh;
+    background-color: lightslategray;
+}
+
+.header-buttons {
+    display: flex;
+}
+
+.main-content {
+    display: flex;
+    height: 94vh;
+    padding: 5px;
+    border: darkgreen;
+}
+
+.left-content {
+    width: 50%;
+    overflow-y: scroll;
+    overflow-x: scroll;
+}
+
+.right-content {
+    width: 50%;
+    overflow-y: scroll;
+    overflow-x: scroll;
+}
+
+.footer {
+    height: 3vh;
+    background-color: lightslategray;
+}
+
+.table-left {
+    width: 100%;
+    text-align: left;
+    border-collapse: collapse;
+}
+
+.table-right {
+    width: 100%;
+    text-align: left;
+    border-collapse: collapse;
+}
+
+.numView {
+    width: 5%;
+}
+
+.attributeView {
+    width: 20%;
+}
+
+.parameterView {
+    width: 75%;
+}
+
+.parameterForm {
+    width: 50%;
+}
+
+.commentForm {
+    width: 20%;
+}
+
+
+.form-buttons {
+    display: flex;
+}
+
+.form-update-buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+td, th {
+    border: none;
+}
+
+tr {
+    border-top: 1px solid dimgray;
+    transition: background-color 0.1s;
+}
+
+tr:hover {
+    background-color: lightblue;
+}
+
+tr.selected-row th,
+tr.selected-row td {
+    background-color: #81C0BB;
+    color: white;
+}
+
+.clickable-row {
+    cursor: pointer;
+}
+
+tr:first-child {
+    border-top: none;
+}
+
+th, td, p {
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+}
+
+.idMenu {
+    width: 5%;
+}
+
+.lotMenu {
+    width: 10%;
+}
+
+.projectNameMenu {
+    width: 35%;
+}
+
+.customerNameMenu {
+    width: 15%;
+}
+
+.locationMenu {
+    width: 20%;
+}
+
+.dateOfCreateMenu {
+    width: 10%;
+}
+
+.actionMenu {
+    width: 5%;
+}
+
+.customer-select {
+    width: 100%;
+}
+
+.file-name {
+    width: 70%;
+}
+
+.file-name-partition {
+    width: 65%;
+}
+
+.file-name-partition-update {
+    width: 55%;
+}
+
+.file-content-partition {
+    width: 15%;
+}
+
+.file-size {
+    width: 10%;
+}
+
+.file-size-partition {
+    width: 10%;
+}
+
+.file-action {
+    width: 10%;
+}
+
+.file-action-partition {
+    width: 10%;
+}
+
+.table-right-result {
+    width: 70%;
+}
+
+.attribute-result {
+    width: 50%;
+}
+
+.parameter-result {
+    width: 50%;
+}
+
+.errors {
+    color: darkred;
+}
+
+.left-table-head {
+    position: sticky;
+    top: 0;
+    background: lightgray;
+    z-index: 10;
+}
+
+.right-table-head {
+    background: lightgray;
+}
+
+.searching-tr {
+    height: 30px;
+}
+
+.main-tr {
+    height: 30px;
+}
+
+.main-tr-buttons {
+    width: 100%;
+    text-align: left;
+}
+
+.main-tr-buttons:hover .file-name {
+    color: white !important;
+}
+
+.search-input {
+    width: 100%;
+    height: 25px;
+}
+
+button {
+    background-color: white;
+    color: black;
+    cursor: pointer;
+    border: 1px solid black;
+    border-radius: 4px;
+}
+
+.gray-btn:hover {
+    color: white;
+    background-color: dimgray;
+}
+
+.blue-btn:hover {
+    color: white;
+    background-color: dodgerblue;
+}
+
+.yellow-btn:hover {
+    color: black;
+    background-color: orange;
+}
+
+.red-btn:hover {
+    color: white;
+    background-color: red;
+}
+
+textarea {
+    resize: vertical;
+    width: 100%;
+}
+
+li {
+    font-size: 13px;
+}
+
+#customerDropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-content-customers {
+    display: none;
+    position: absolute;
+    right: 0;
+    background-color: lightgray;
+    width: 300px;
+    max-height: 400px;
+    overflow-y: scroll;
+    border: 1px black;
+    z-index: 10;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    padding: 5px;
+}
+
+.dropdown-custom-customers.open .dropdown-content-customers {
+    display: block;
+}
+
+.dropdown-content-customers label {
+    display: block;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+.dropdown-content-customers label:hover {
+    background-color: #81C0BB;
+}
+
+#dateOfCreateDropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-content-dateOfCreate {
+    display: none;
+    position: absolute;
+    right: 0;
+    background-color: lightgray;
+    width: 150px;
+    max-height: 200px;
+    border: 1px black;
+    z-index: 10;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    padding: 5px;
+}
+
+.dropdown-custom-dateOfCreate.open .dropdown-content-dateOfCreate {
+    display: block;
+}
+
+.dropdown-content-dateOfCreate label {
+    display: block;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+.accordion {
+    border: 1px solid lightgray;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+.accordion-header, .accordion-header-result-materials, .accordion-header-result-works {
+    padding: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    background-color: lightgray; /* по умолчанию серый */
+}
+
+.accordion-header.open {
+    background-color: #81C0BB; /* зелёный */
+}
+
+.accordion-content {
+    display: none;
+    padding: 10px;
+}
+
+#expandAll, #collapseAll {
+    height: 25px;
+    width: 50px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 10px;
+    background-color: lightgray; /* дефолт серый */
+}
+
+#expandAll.active {
+    background-color: #81C0BB; /* зелёный */
+    color: white;
+}
+
+#collapseAll.active {
+    background-color: #81C0BB; /* зелёный */
+    color: white;
+}
+
+.accordion-buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.right-block-head {
+    display: flex;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    background: lightgray;
+    z-index: 10;
+    height: 30px;
+}
+
+.text-color-reverse {
+    color: #E15501;
+}
+
+.un-position {
+    width: 5%;
+}
+
+.un-partition {
+    width: 20%;
+}
+
+.un-name {
+    width: 20%;
+}
+
+.un-standart {
+    width: 20%;
+}
+
+.un-quality {
+    width: 5%;
+}
+
+.un-quantity {
+    width: 5%;
+}
+
+.un-comment {
+    width: 20%;
+}
+
+.part-position {
+    width: 5%;
+}
+
+.part-doctype {
+    width: 8%
+}
+
+.part-partition {
+    width: 37%;
+}
+
+.part-sum {
+    width: 20%;
+}
+
+.part-calculated {
+    width: 10%;
+}
+
+.part-total {
+    width: 10%;
+}
+
+.part-percent {
+    width: 10%;
+}
+
+.green {
+    color: green;
+    font-weight: bold;
+}
+
+.orange {
+    color: darkorange;
+    font-weight: bold;
+}
+
+.red {
+    color: red;
+    font-weight: bold;
+}
+
+.important-info {
+    font-weight: bold;
+    font-size: 13px;
+}
+
+.legend-head {
+    font-weight: bold;
+    font-size: 13px;
+    color: orangered;
+}

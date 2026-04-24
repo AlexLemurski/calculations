@@ -1,0 +1,613 @@
+<!doctype html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Calculations</title>
+    <link rel="stylesheet" th:href="@{/css/normalize.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="header">
+    <div class="header-buttons">
+        <a th:href="@{/calculations/create}">
+            <button type="button" class="yellow-btn">Создать новую расценку</button>
+        </a>
+    </div>
+</div>
+<div class="main-content">
+    <div class="left-content" id="leftContent">
+        <table class="table-left" id="table-menu-sort">
+            <thead class="left-table-head">
+            <tr class="searching-tr">
+                <td class="idMenu">
+                    <button class="main-tr-buttons yellow-btn" id="resetFilters"
+                            title="Очистить фильтры и сортировку" style="text-align: center">🧹
+                    </button>
+                </td>
+                <td class="lotName">
+                    <label><input type="text" class="search-input" id="lotName" placeholder="🔎поиск..."></label>
+                </td>
+                <td class="projectNameMenu">
+                    <label><input type="text" class="search-input" id="projectName" placeholder="🔎поиск..."></label>
+                </td>
+                <td class="customerNameMenu"></td>
+                <td class="locationMenu">
+                    <label><input type="text" class="search-input" id="location" placeholder="🔎поиск..."></label>
+                </td>
+                <td class="dateOfCreateMenu"></td>
+            </tr>
+            <tr class="main-tr">
+                <th data-column="idMenu" class="idMenu" style="text-align: center">#ID</th>
+                <th data-column="lotName" class="lotName">
+                    <button data-column="lotName" type="button" class="main-tr-buttons blue-btn">Лот</button>
+                </th>
+                <th data-column="projectNameMenu" class="projectNameMenu">
+                    <button data-column="projectNameMenu" type="button" class="main-tr-buttons blue-btn">Наименование
+                    </button>
+                </th>
+                <th data-column="customerNameMenu">
+                    <div class="header-buttons">
+                        <button data-column="customerNameMenu" type="button" class="main-tr-buttons blue-btn">Заказчик
+                        </button>
+                        <div class="dropdown-custom-customers" id="customerDropdown">
+                            <button type="button" class="main-tr-buttons blue-btn"
+                                    onclick="toggleDropdown()">▼
+                            </button>
+                            <div class="dropdown-content-customers">
+                                <span th:each="cust : ${customers}">
+                                    <label>
+                                        <input type="checkbox" class="customer-filter"
+                                               th:value="${cust.customerName()}"
+                                               th:text="${cust.customerName()}">
+                                    </label>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </th>
+                <th data-column="locationMenu" class="locationMenu">
+                    <button data-column="locationMenu" type="button" class="main-tr-buttons blue-btn">Локация пр-ва
+                        работ
+                    </button>
+                </th>
+                <th data-column="dateOfCreateMenu" class="dateOfCreateMenu">
+                    <div class="header-buttons">
+                        <button data-column="dateOfCreateMenu" type="button" class="main-tr-buttons blue-btn">Дата
+                        </button>
+                        <div class="dropdown-custom-dateOfCreate" id="dateOfCreateDropdown">
+                            <button type="button" class="main-tr-buttons blue-btn"
+                                    onclick="toggleDropdownDateOfCreate()">▼
+                            </button>
+                            <div class="dropdown-content-dateOfCreate">
+                                <label>
+                                    <input type="date" id="startDate" placeholder="От">
+                                </label>
+                                <label>
+                                    <input type="date" id="endDate" placeholder="До">
+                                </label>
+                                <button id="applyDateFilter" class="blue-btn">Применить</button>
+                            </div>
+                        </div>
+                    </div>
+                </th>
+            </tr>
+            </thead>
+            <tbody class="left-table-body">
+            <tr th:each="calc : ${calculations}"
+                th:classappend="${calc.id == calculation?.id()} ? 'selected-row'"
+                th:attr="data-url=@{/calculations/{id}(id=${calc.id()})}" class="clickable-row">
+                <td th:text="${calc.id()}"></td>
+                <td th:text="${calc.lotName()}"></td>
+                <td th:text="${calc.projectName()}"></td>
+                <td th:text="${calc.customerName()}"></td>
+                <td th:text="${calc.projectLocation()}"></td>
+                <td th:text="${#temporals.format(calc.dateOfCreate(), 'dd-MM-yyyy г.')}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="right-content" id="rightContent">
+        <div class="right-block-head">
+            <a th:href="@{/calculations}">
+                <button type="button" class="blue-btn">Скрыть детали</button>
+            </a>
+            <a th:href="@{/calculations/delete/{id}(id=${calculation.id()})}"
+               onclick="return confirm('Вы уверены, что хотите удалить этот элемент?');">
+                <button type="button" class="red-btn">Удалить</button>
+            </a>
+        </div>
+        <hr>
+        <fieldset>
+            <legend class="legend-head">Основные параметры лота</legend>
+            <div>
+                <a th:href="@{/calculations/update/{id}(id=${calculation.id()})}">
+                    <button type="button" class="yellow-btn">Редактировать</button>
+                </a>
+                <hr>
+            </div>
+            <table class="table-right">
+                <thead class="right-table-head">
+                <tr>
+                    <th class="numView">#</th>
+                    <th class="attributeView">Атрибут</th>
+                    <th class="parameterView">Параметр</th>
+                </tr>
+                </thead>
+                <tbody class="right-table-body">
+                <tr>
+                    <td>001</td>
+                    <td>#ID</td>
+                    <td th:text="${calculation.id()}"></td>
+                </tr>
+                <tr>
+                    <td>002</td>
+                    <td>Лот</td>
+                    <td th:text="${calculation.lotName()}"></td>
+                </tr>
+                <tr>
+                    <td>003</td>
+                    <td>Наименование</td>
+                    <td th:text="${calculation.projectName()}"></td>
+                </tr>
+                <tr>
+                    <td>004</td>
+                    <td>Локация пр-ва работ</td>
+                    <td th:text="${calculation.projectLocation()}"></td>
+                </tr>
+                <tr>
+                    <td>005</td>
+                    <td>Заказчик</td>
+                    <td th:text="${calculation.customerName()}"></td>
+                </tr>
+                <tr>
+                    <td>006</td>
+                    <td>Дата создания</td>
+                    <td th:text="${#temporals.format(calculation.dateOfCreate(), 'dd-MM-yyyy г.')}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </fieldset>
+        <hr>
+<!--        <fieldset>-->
+<!--            <legend class="legend-head">Результат расценки лота объемов работ</legend>-->
+<!--            <fieldset>-->
+<!--                <legend>Итоговые показатели</legend>-->
+<!--                <table class="table-right-result important-info">-->
+<!--                    <thead class="right-table-head">-->
+<!--                    <tr>-->
+<!--                        <th class="attribute-result">Атрибут</th>-->
+<!--                        <th class="parameter-result">Параметр</th>-->
+<!--                    </tr>-->
+<!--                    </thead>-->
+<!--                    <tbody>-->
+<!--                    <tr>-->
+<!--                        <td>Сумма итого:</td>-->
+<!--                        <td th:text="${calculation.totalSum()}"></td>-->
+<!--                    </tr>-->
+<!--                    </tbody>-->
+<!--                </table>-->
+<!--            </fieldset>-->
+<!--            <div class="accordion-result-works" data-id="section101">-->
+<!--                <div class="accordion-header-result-works">Детализация расценки</div>-->
+<!--                <div class="accordion-content-result-works">-->
+<!--                    <fieldset>-->
+<!--                        <legend>Детализация по разделам проекта</legend>-->
+<!--                    </fieldset>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </fieldset>-->
+<!--        <hr>-->
+        <fieldset>
+            <legend class="legend-head">Результат расценки лота оборудования и материалов</legend>
+            <fieldset>
+                <legend>Итоговые показатели</legend>
+                <table class="table-right-result important-info">
+                    <thead class="right-table-head">
+                    <tr>
+                        <th class="attribute-result">Атрибут</th>
+                        <th class="parameter-result">Параметр</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>Сумма итого:</td>
+                        <td th:text="${calculation.totalSum()}"></td>
+                    </tr>
+                    <tr>
+                        <td>Общее кол-во позиций:</td>
+                        <td th:text="${calculation.totalPositionCount()}"></td>
+                    </tr>
+                    <tr>
+                        <td>Расцененное кол-во позиций:</td>
+                        <td th:text="${calculation.calculatedPositionCount()
+                        + calculation.totalPercent() + calculation.remainder()}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </fieldset>
+            <fieldset>
+                <legend>Файл с расценкой</legend>
+                <div>
+                    <a th:href="@{/calculations/doc_result_update/{id}(id=${calculation.id()})}">
+                        <button type="button" class="yellow-btn">Редактировать</button>
+                    </a>
+                    <hr>
+                </div>
+                <table class="table-right">
+                    <thead class="right-table-head">
+                    <tr>
+                        <th class="file-name">Наименование документа</th>
+                        <th class="file-size">Размер файла</th>
+                    </tr>
+                    </thead>
+                    <tbody class="right-table-body">
+                    <tr th:if="${resultDocument.docId() != null}">
+                        <td>
+                            <span>
+                                <a th:href="@{/document_result/download/{id}(id=${resultDocument.docId()})}">
+                                    <button type="button" class="main-tr-buttons gray-btn">
+                                        <span class="file-name" th:text="${resultDocument.docName()}"></span>
+                                    </button>
+                                </a>
+                            </span>
+                        </td>
+                        <td th:text="${resultDocument.size()}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </fieldset>
+            <div class="accordion-result-materials" data-id="section102">
+                <div class="accordion-header-result-materials">Детализация расценки</div>
+                <div class="accordion-content-result-materials">
+                    <fieldset>
+                        <legend>Детализация по разделам проекта (при условии наличия Разделов рабочей документации
+                            и/или Спецификации оборудования и материалов)
+                        </legend>
+                        <table class="table-right">
+                            <thead class="right-table-head">
+                            <tr>
+                                <th class="part-position">№ п/п</th>
+                                <th class="part-doctype">Тип докум.</th>
+                                <th class="part-partition">Раздел</th>
+                                <th class="part-sum">Сумма ₽, б/НДС</th>
+                                <th class="part-calculated">Расценено поз.</th>
+                                <th class="part-total">Всего поз.</th>
+                                <th class="part-percent"></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="part : ${partition}">
+                                <td th:text="${part.position()}"></td>
+                                <td th:text="${part.contentType()}" class="clickable-row"
+                                    th:title="${part.contentType().title}"></td>
+                                <td th:text="${part.partition()}"></td>
+                                <td th:text="${part.sum()}"></td>
+                                <td th:text="${part.calculated()}"></td>
+                                <td th:text="${part.total()}"></td>
+                                <td th:text="${part.percent()}"
+                                    th:class="${#strings.trim(part.percent()) == '100,00 %' } ? 'green' :
+                            (${#strings.trim(part.percent()) == '0,00 %' } ? 'red' : 'orange')">
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </fieldset>
+                    <fieldset>
+                        <legend>Не расцененные позиции, по причине отсутствия необходимой информации и/или документации</legend>
+                        <span th:text="${'Количество позиций: ' + uncalculated.size()}"></span>
+                        <hr>
+                        <table class="table-right">
+                            <thead class="right-table-head">
+                            <tr>
+                                <th class="un-position">№ п/п</th>
+                                <th class="un-partition">Раздел</th>
+                                <th class="un-name">Наименование, техн. хар-ка, тип, марка</th>
+                                <th class="un-standart">Обозначение норм. докум. ОТТ, ГОСТ, ТУ, ОЛ</th>
+                                <th class="un-quality">Ед. изм.</th>
+                                <th class="un-quantity">Кол-во</th>
+                                <th class="un-comment">Примечание</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="uCalc : ${uncalculated}">
+                                <td th:text="${uCalc.position()}"></td>
+                                <td th:text="${uCalc.partition()}"></td>
+                                <td th:text="${uCalc.name()}"></td>
+                                <td th:text="${uCalc.standart()}"></td>
+                                <td th:text="${uCalc.quality()}"></td>
+                                <td th:text="${uCalc.quantity()}"></td>
+                                <td th:text="${uCalc.comment()}" class="errors"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </fieldset>
+                </div>
+            </div>
+        </fieldset>
+        <hr>
+        <fieldset>
+            <legend class="legend-head">Документация для расценки лота</legend>
+            <div class="accordion-buttons">
+                <div>
+                    <a th:href="@{/calculations/doc_resource_update/{id}(id=${calculation.id()})}">
+                        <button type="button" class="yellow-btn">Редактировать</button>
+                    </a>
+                </div>
+                <div class="header-buttons">
+                    <button class="accordion-button" id="expandAll" title="Развернуть все элементы">▼</button>
+                    <button class="accordion-button" id="collapseAll" title="Свернуть все элементы">▲</button>
+                </div>
+            </div>
+            <hr>
+            <fieldset>
+                <legend>Архив с полной предоставленной документацией лота</legend>
+                <div class="accordion" data-id="section1">
+                    <div class="accordion-header" th:text="${mainDocumentsResource}"
+                         th:classappend="${mainDocuments.size() != 0} ? 'text-color-reverse' : ''"></div>
+                    <div class="accordion-content">
+                        <table class="table-right">
+                            <thead class="right-table-head">
+                            <tr>
+                                <th class="file-name">Наименование документа</th>
+                                <th class="file-size">Размер файла</th>
+                            </tr>
+                            </thead>
+                            <tbody class="right-table-body">
+                            <tr th:each="mainDoc : ${mainDocuments}">
+                                <td>
+                                    <a th:href="@{/document_resource/download/{id}(id=${mainDoc.docId()})}">
+                                        <button type="button" class="main-tr-buttons gray-btn">
+                                            <span class="file-name" th:text="${mainDoc.docName()}"></span>
+                                        </button>
+                                    </a>
+                                </td>
+                                <td th:text="${mainDoc.size()}"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </fieldset>
+            <fieldset>
+                <legend>Разделы проектной и/или рабочей документации
+                </legend>
+                <div class="accordion" data-id="section2">
+                    <div class="accordion-header" th:text="${partitionDocumentsResource}"
+                         th:classappend="${partitionDocuments.size() != 0} ? 'text-color-reverse' : ''"></div>
+                    <div class="accordion-content">
+                        <table class="table-right">
+                            <thead class="right-table-head">
+                            <tr>
+                                <th class="file-name-partition">Наименование документа</th>
+                                <th class="file-content-partition">Содержание</th>
+                                <th class="file-size-partition">Размер файла</th>
+                            </tr>
+                            </thead>
+                            <tbody class="right-table-body">
+                            <tr th:each="partDoc : ${partitionDocuments}">
+                                <td>
+                                    <a th:href="@{/document_resource/download/{id}(id=${partDoc.docId()})}">
+                                        <button type="button" class="main-tr-buttons gray-btn">
+                                            <span class="file-name" th:text="${partDoc.docName()}"></span>
+                                        </button>
+                                    </a>
+                                </td>
+                                <th>
+                                    <span th:if="${partDoc.contentTypes().size() == 0}">
+                                        <span th:each="cType : ${partDoc.contentTypes()}">
+                                            <span>---</span>
+                                        </span>
+                                    </span>
+                                    <span th:unless="${partDoc.contentTypes().size() == 0}">
+                                        <span th:each="cType : ${partDoc.contentTypes()}">
+                                            <span class="clickable-row" th:text="${cType + ' '}"
+                                                  th:title="${cType.getTitle()}"></span>
+                                        </span>
+                                    </span>
+                                </th>
+                                <td th:text="${partDoc.size()}"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </fieldset>
+            <fieldset>
+                <legend>"СО" - Спецификации оборудования и материалов ГОСТ 21.110-2013
+                </legend>
+                <div class="accordion" data-id="section3">
+                    <div class="accordion-header" th:text="${specificationDocumentsResource}"
+                         th:classappend="${specificationDocuments.size() != 0} ? 'text-color-reverse' : ''"></div>
+                    <div class="accordion-content">
+                        <table class="table-right">
+                            <thead class="right-table-head">
+                            <tr>
+                                <th class="file-name">Наименование документа</th>
+                                <th class="file-size">Размер файла</th>
+                            </tr>
+                            </thead>
+                            <tbody class="right-table-body">
+                            <tr th:each="specDoc : ${specificationDocuments}">
+                                <td>
+                                    <a th:href="@{/document_resource/download/{id}(id=${specDoc.docId()})}">
+                                        <button type="button" class="main-tr-buttons gray-btn">
+                                            <span class="file-name" th:text="${specDoc.docName()}"></span>
+                                        </button>
+                                    </a>
+                                </td>
+                                <td th:text="${specDoc.size()}"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </fieldset>
+            <fieldset>
+                <legend>"ВОМ" - Ведомость оборудования и материалов</legend>
+                <div class="accordion" data-id="section4">
+                    <div class="accordion-header" th:text="${materialDocumentsResource}"
+                         th:classappend="${materialDocuments.size() != 0} ? 'text-color-reverse' : ''"></div>
+                    <div class="accordion-content">
+                        <table class="table-right">
+                            <thead class="right-table-head">
+                            <tr>
+                                <th class="file-name">Наименование документа</th>
+                                <th class="file-size">Размер файла</th>
+                            </tr>
+                            </thead>
+                            <tbody class="right-table-body">
+                            <tr th:each="matDoc : ${materialDocuments}">
+                                <td>
+                                    <a th:href="@{/document_resource/download/{id}(id=${matDoc.docId()})}">
+                                        <button type="button" class="main-tr-buttons gray-btn">
+                                            <span class="file-name" th:text="${matDoc.docName()}"></span>
+                                        </button>
+                                    </a>
+                                </td>
+                                <td th:text="${matDoc.size()}"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </fieldset>
+            <fieldset>
+                <legend>"ВР" - Ведомости объемов работ ГОСТ 21.111-84
+                </legend>
+                <div class="accordion" data-id="section5">
+                    <div class="accordion-header" th:text="${workDocumentsResource}"
+                         th:classappend="${workDocuments.size() != 0} ? 'text-color-reverse' : ''"></div>
+                    <div class="accordion-content">
+                        <table class="table-right">
+                            <thead class="right-table-head">
+                            <tr>
+                                <th class="file-name">Наименование документа</th>
+                                <th class="file-size">Размер файла</th>
+                            </tr>
+                            </thead>
+                            <tbody class="right-table-body">
+                            <tr th:each="workDoc : ${workDocuments}">
+                                <td>
+                                    <a th:href="@{/document_resource/download/{id}(id=${workDoc.docId()})}">
+                                        <button type="button" class="main-tr-buttons gray-btn">
+                                            <span class="file-name" th:text="${workDoc.docName()}"></span>
+                                        </button>
+                                    </a>
+                                </td>
+                                <td th:text="${workDoc.size()}"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </fieldset>
+            <fieldset>
+                <legend>"ОЛ, ТЗ" - Техническая документация для подбора оборудования</legend>
+                <div class="accordion" data-id="section6">
+                    <div class="accordion-header" th:text="${technitialDocumentsResource}"
+                         th:classappend="${technitialDocuments.size() != 0} ? 'text-color-reverse' : ''"></div>
+                    <div class="accordion-content">
+                        <table class="table-right">
+                            <thead class="right-table-head">
+                            <tr>
+                                <th class="file-name">Наименование документа</th>
+                                <th class="file-size">Размер файла</th>
+                            </tr>
+                            </thead>
+                            <tbody class="right-table-body">
+                            <tr th:each="techDoc : ${technitialDocuments}">
+                                <td>
+                                    <a th:href="@{/document_resource/download/{id}(id=${techDoc.docId()})}">
+                                        <button type="button" class="main-tr-buttons gray-btn">
+                                            <span class="file-name" th:text="${techDoc.docName()}"></span>
+                                        </button>
+                                    </a>
+                                </td>
+                                <td th:text="${techDoc.size()}"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </fieldset>
+            <fieldset>
+                <legend>"РВ" - Разделительная ведомость
+                </legend>
+                <div class="accordion" data-id="section7">
+                    <div class="accordion-header" th:text="${separationDocumentsResource}"
+                         th:classappend="${separationDocuments.size() != 0} ? 'text-color-reverse' : ''"></div>
+                    <div class="accordion-content">
+                        <table class="table-right">
+                            <thead class="right-table-head">
+                            <tr>
+                                <th class="file-name">Наименование документа</th>
+                                <th class="file-size">Размер файла</th>
+                            </tr>
+                            </thead>
+                            <tbody class="right-table-body">
+                            <tr th:each="sepDoc : ${separationDocuments}">
+                                <td>
+                                    <a th:href="@{/document_resource/download/{id}(id=${sepDoc.docId()})}">
+                                        <button type="button" class="main-tr-buttons gray-btn">
+                                            <span class="file-name" th:text="${sepDoc.docName()}"></span>
+                                        </button>
+                                    </a>
+                                </td>
+                                <td th:text="${sepDoc.size()}"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </fieldset>
+            <fieldset>
+                <legend>Прочая документация</legend>
+                <div class="accordion" data-id="section9">
+                    <div class="accordion-header" th:text="${otherDocumentsResource}"
+                         th:classappend="${otherDocuments.size() != 0} ? 'text-color-reverse' : ''"></div>
+                    <div class="accordion-content">
+                        <table class="table-right">
+                            <thead class="right-table-head">
+                            <tr>
+                                <th class="file-name">Наименование документа</th>
+                                <th class="file-size">Размер файла</th>
+                            </tr>
+                            </thead>
+                            <tbody class="right-table-body">
+                            <tr th:each="otherDoc : ${otherDocuments}">
+                                <td>
+                                    <a th:href="@{/document_resource/download/{id}(id=${otherDoc.docId()})}">
+                                        <button type="button" class="main-tr-buttons gray-btn">
+                                            <span class="file-name" th:text="${otherDoc.docName()}"></span>
+                                        </button>
+                                    </a>
+                                </td>
+                                <td th:text="${otherDoc.size()}"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </fieldset>
+        </fieldset>
+    </div>
+</div>
+<div class="footer">
+
+</div>
+<script th:src="@{/script/open_window.js}"></script>
+<script th:src="@{/script/member_scrolls_positions.js}"></script>
+<script th:src="@{/script/table-menu-sort.js}"></script>
+<script th:src="@{/script/customers_dpropdown.js}"></script>
+<script th:src="@{/script/date_of_create_dpropdown.js}"></script>
+<script th:src="@{/script/calculation_filter.js}"></script>
+<script th:src="@{/script/date_of_create_filter.js}"></script>
+<script th:src="@{/script/accordion.js}"></script>
+<script th:src="@{/script/accordion-result-materials.js}"></script>
+<script th:src="@{/script/accordion-result-works.js}"></script>
+<script th:src="@{/script/documets_button_color.js}"></script>
+</body>
+</html>

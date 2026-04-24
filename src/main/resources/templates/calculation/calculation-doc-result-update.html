@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Calculations</title>
+    <link rel="stylesheet" th:href="@{/css/normalize.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="header">
+
+</div>
+<div class="main-content">
+    <div class="left-content" id="leftContent">
+        <table class="table-left" id="table-menu-sort">
+            <thead class="left-table-head">
+            <tr class="searching-tr">
+                <td class="idMenu">
+                    <button class="main-tr-buttons yellow-btn" id="resetFilters"
+                            title="Очистить фильтры и сортировку" style="text-align: center">🧹
+                    </button>
+                </td>
+                <td class="lotName">
+                    <label><input type="text" class="search-input" id="lotName" placeholder="🔎поиск..."></label>
+                </td>
+                <td class="projectNameMenu">
+                    <label><input type="text" class="search-input" id="projectName" placeholder="🔎поиск..."></label>
+                </td>
+                <td class="customerNameMenu"></td>
+                <td class="locationMenu">
+                    <label><input type="text" class="search-input" id="location" placeholder="🔎поиск..."></label>
+                </td>
+                <td class="dateOfCreateMenu"></td>
+            </tr>
+            <tr class="main-tr">
+                <th data-column="idMenu" class="idMenu" style="text-align: center">#ID</th>
+                <th data-column="lotName" class="lotName">
+                    <button data-column="lotName" type="button" class="main-tr-buttons blue-btn">Лот</button>
+                </th>
+                <th data-column="projectNameMenu" class="projectNameMenu">
+                    <button data-column="projectNameMenu" type="button" class="main-tr-buttons blue-btn">Наименование
+                    </button>
+                </th>
+                <th data-column="customerNameMenu">
+                    <div class="header-buttons">
+                        <button data-column="customerNameMenu" type="button" class="main-tr-buttons blue-btn">Заказчик
+                        </button>
+                        <div class="dropdown-custom-customers" id="customerDropdown">
+                            <button type="button" class="main-tr-buttons blue-btn"
+                                    onclick="toggleDropdown()">▼
+                            </button>
+                            <div class="dropdown-content-customers">
+                                <span th:each="cust : ${customers}">
+                                    <label>
+                                        <input type="checkbox" class="customer-filter"
+                                               th:value="${cust.customerName()}"
+                                               th:text="${cust.customerName()}">
+                                    </label>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </th>
+                <th data-column="locationMenu" class="locationMenu">
+                    <button data-column="locationMenu" type="button" class="main-tr-buttons blue-btn">Локация пр-ва
+                        работ
+                    </button>
+                </th>
+                <th data-column="dateOfCreateMenu" class="dateOfCreateMenu">
+                    <div class="header-buttons">
+                        <button data-column="dateOfCreateMenu" type="button" class="main-tr-buttons blue-btn">Дата
+                        </button>
+                        <div class="dropdown-custom-dateOfCreate" id="dateOfCreateDropdown">
+                            <button type="button" class="main-tr-buttons blue-btn"
+                                    onclick="toggleDropdownDateOfCreate()">▼
+                            </button>
+                            <div class="dropdown-content-dateOfCreate">
+                                <label>
+                                    <input type="date" id="startDate" placeholder="От">
+                                </label>
+                                <label>
+                                    <input type="date" id="endDate" placeholder="До">
+                                </label>
+                                <button id="applyDateFilter" class="blue-btn">Применить</button>
+                            </div>
+                        </div>
+                    </div>
+                </th>
+            </tr>
+            </thead>
+            <tbody class="left-table-body">
+            <tr th:each="calc : ${calculations}"
+                th:classappend="${calc.id == calculation?.id()} ? 'selected-row'"
+                th:attr="data-url=@{/calculations/{id}(id=${calc.id()})}" class="clickable-row">
+                <td th:text="${calc.id()}"></td>
+                <td th:text="${calc.lotName()}"></td>
+                <td th:text="${calc.projectName()}"></td>
+                <td th:text="${calc.customerName()}"></td>
+                <td th:text="${calc.projectLocation()}"></td>
+                <td th:text="${#temporals.format(calc.dateOfCreate(), 'dd-MM-yyyy г.')}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="right-content" id="rightContent">
+        <fieldset>
+            <legend>Основные параметры лота</legend>
+            <table class="table-right">
+                <thead class="right-table-head">
+                <tr>
+                    <th class="numView">#</th>
+                    <th class="attributeView">Атрибут</th>
+                    <th class="parameterView">Параметр</th>
+                </tr>
+                </thead>
+                <tbody class="right-table-body">
+                <tr>
+                    <td>001</td>
+                    <td>#ID</td>
+                    <td th:text="${calculation.id()}"></td>
+                </tr>
+                <tr>
+                    <td>002</td>
+                    <td>Лот</td>
+                    <td th:text="${calculation.lotName()}"></td>
+                </tr>
+                <tr>
+                    <td>003</td>
+                    <td>Наименование</td>
+                    <td th:text="${calculation.projectName()}"></td>
+                </tr>
+                <tr>
+                    <td>004</td>
+                    <td>Локация производства работ</td>
+                    <td th:text="${calculation.projectLocation()}"></td>
+                </tr>
+                <tr>
+                    <td>005</td>
+                    <td>Заказчик</td>
+                    <td th:text="${calculation.customerName()}"></td>
+                </tr>
+                <tr>
+                    <td>006</td>
+                    <td>Дата создания</td>
+                    <td th:text="${calculation.dateOfCreate()}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </fieldset>
+        <hr>
+        <fieldset>
+            <legend>Результат расценки лота</legend>
+            <div>
+                <a th:href="@{/calculations/{id}(id=${calculation.id()})}">
+                    <button type="button" class="red-btn">Выйти</button>
+                </a>
+                <hr>
+            </div>
+            <fieldset>
+                <legend>Файл с расценкой</legend>
+                <div th:if="${resultDocument.key() == null}">
+                    <form th:action="@{/document_result/upload_result_document/{id}(id=*{id})}"
+                          method="post" enctype="multipart/form-data">
+                        <input type="file" name="resultDocument" accept=".xls,.xlsx" required/>
+                        <button type="submit" class="yellow-btn">Загрузить</button>
+                    </form>
+                </div>
+                <div th:if="${resultDocument.key() != null}">
+                    <span class="errors">Для загрузки файла требуется удалить текущий!</span>
+                    <form th:action="@{/document_result/upload_result_document/{id}(id=*{id})}"
+                          method="post" enctype="multipart/form-data">
+                        <input type="file" name="resultDocument" accept=".xls,.xlsx" required disabled/>
+                        <button type="submit" disabled>Загрузить</button>
+                    </form>
+                </div>
+                <div>
+                    <span class="errors" th:text="${doc_validation_exception_message}"></span>
+                </div>
+                <table class="table-right">
+                    <thead class="right-table-head">
+                    <tr>
+                        <th class="file-name">Наименование документа</th>
+                        <th class="file-size">Размер файла</th>
+                        <th class="file-action">Действие</th>
+                    </tr>
+                    </thead>
+                    <tbody class="right-table-body">
+                    <tr th:if="${resultDocument.docId() != null}">
+                        <td>
+                            <a th:href="@{/document_result/download/{id}(id=${resultDocument.docId()})}">
+                                <button type="button" class="main-tr-buttons gray-btn">
+                                    <span class="file-name" th:text="${resultDocument.docName()}"></span>
+                                </button>
+                            </a>
+                        </td>
+                        <td th:text="${resultDocument.size()}"></td>
+                        <td>
+                            <a th:href="@{/document_result/delete/{id}(id=${resultDocument.docId()})}">
+                                <button type="button" class="red-btn">Удалить</button>
+                            </a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </fieldset>
+            <fieldset>
+                <legend>Итоговые показатели расценки</legend>
+                <table class="table-right-result important-info">
+                    <thead class="right-table-head">
+                    <tr>
+                        <th class="attribute-result">Атрибут</th>
+                        <th class="parameter-result">Параметр</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>Сумма итого:</td>
+                        <td th:text="${calculation.totalSum()}"></td>
+                    </tr>
+                    <tr>
+                        <td>Общее кол-во позиций:</td>
+                        <td th:text="${calculation.totalPositionCount()}"></td>
+                    </tr>
+                    <tr>
+                        <td>Расцененное кол-во позиций:</td>
+                        <td th:text="${calculation.calculatedPositionCount()
+                        + calculation.totalPercent() + calculation.remainder()}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </fieldset>
+            <fieldset>
+                <legend>Детализация расценки (при условии наличия Разделов рабочей документации
+                    и/или Спецификации оборудования и материалов)</legend>
+                <table class="table-right">
+                    <thead class="right-table-head">
+                    <tr>
+                        <th class="part-position">№ п/п</th>
+                        <th class="part-doctype">Тип докум.</th>
+                        <th class="part-partition">Раздел</th>
+                        <th class="part-sum">Сумма ₽, б/НДС</th>
+                        <th class="part-calculated">Расценено поз.</th>
+                        <th class="part-total">Всего поз.</th>
+                        <th class="part-percent"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="part : ${partition}">
+                        <td th:text="${part.position()}"></td>
+                        <td th:text="${part.contentType()}" class="clickable-row"
+                            th:title="${part.contentType().title}"></td>
+                        <td th:text="${part.partition()}"></td>
+                        <td th:text="${part.sum()}"></td>
+                        <td th:text="${part.calculated()}"></td>
+                        <td th:text="${part.total()}"></td>
+                        <td th:text="${part.percent()}"
+                            th:class="${#strings.trim(part.percent()) == '100,00 %' } ? 'green' :
+                            (${#strings.trim(part.percent()) == '0,00 %' } ? 'red' : 'orange')">
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </fieldset>
+            <fieldset>
+                <legend>Не расцененные позиции, по причине отсутствия необходимой информации и/или документации</legend>
+                <span th:text="${'Количество позиций: ' + uncalculated.size()}"></span>
+                <hr>
+                <table class="table-right">
+                    <thead class="right-table-head">
+                    <tr>
+                        <th class="un-position">№ п/п</th>
+                        <th class="un-partition">Раздел</th>
+                        <th class="un-name">Наименование, техн. хар-ка, тип, марка</th>
+                        <th class="un-standart">Обозначение норм. докум. ОТТ, ГОСТ, ТУ, ОЛ</th>
+                        <th class="un-quality">Ед. изм.</th>
+                        <th class="un-quantity">Кол-во</th>
+                        <th class="un-comment">Примечание</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="uCalc : ${uncalculated}">
+                        <td th:text="${uCalc.position()}"></td>
+                        <td th:text="${uCalc.partition()}"></td>
+                        <td th:text="${uCalc.name()}"></td>
+                        <td th:text="${uCalc.standart()}"></td>
+                        <td th:text="${uCalc.quality()}"></td>
+                        <td th:text="${uCalc.quantity()}"></td>
+                        <td th:text="${uCalc.comment()}" class="errors"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </fieldset>
+        </fieldset>
+    </div>
+</div>
+<div class="footer">
+
+</div>
+<script th:src="@{/script/open_window.js}"></script>
+<script th:src="@{/script/member_scrolls_positions.js}"></script>
+<script th:src="@{/script/table-menu-sort.js}"></script>
+<script th:src="@{/script/customers_dpropdown.js}"></script>
+<script th:src="@{/script/date_of_create_dpropdown.js}"></script>
+<script th:src="@{/script/calculation_filter.js}"></script>
+<script th:src="@{/script/date_of_create_filter.js}"></script>
+<script th:src="@{/script/documets_button_color.js}"></script>
+</body>
+</html>

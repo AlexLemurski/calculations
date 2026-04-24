@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  backend:
+    image: calc-app:latest
+    container_name: backend
+    ports:
+      - "8050:8090"
+    volumes:
+      - "C:/Users/user/Desktop/files:/app/resource"
+    depends_on:
+      - postgres
+    environment:
+      - SERVER_PORT=8090
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/calculations
+    networks:
+      - calculations_network
+
+  postgres:
+    image: postgres:16.3-alpine3.20
+    container_name: postgres
+    environment:
+      POSTGRES_DB: calculations
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - calculations_network
+
+  pgadmin:
+    image: dpage/pgadmin4:8.8
+    container_name: pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "8080:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    networks:
+      - calculations_network
+
+volumes:
+  postgres_data:
+  pgadmin_data:
+
+networks:
+  calculations_network:

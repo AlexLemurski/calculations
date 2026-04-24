@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Calculations</title>
+    <link rel="stylesheet" th:href="@{/css/normalize.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="header">
+    <div class="header-buttons">
+        <a th:href="@{/calculations/create}">
+            <button type="button" class="yellow-btn">Создать новую расценку</button>
+        </a>
+    </div>
+</div>
+<div class="main-content">
+    <div class="left-content" id="leftContent">
+        <table class="table-left" id="table-menu-sort">
+            <thead class="left-table-head">
+            <tr class="searching-tr">
+                <td class="idMenu">
+                    <button class="main-tr-buttons yellow-btn" id="resetFilters"
+                            title="Очистить фильтры и сортировку" style="text-align: center">🧹
+                    </button>
+                </td>
+                <td class="lotName">
+                    <label><input type="text" class="search-input" id="lotName" placeholder="🔎поиск..."></label>
+                </td>
+                <td class="projectNameMenu">
+                    <label><input type="text" class="search-input" id="projectName" placeholder="🔎поиск..."></label>
+                </td>
+                <td class="customerNameMenu"></td>
+                <td class="locationMenu">
+                    <label><input type="text" class="search-input" id="location" placeholder="🔎поиск..."></label>
+                </td>
+                <td class="dateOfCreateMenu"></td>
+            </tr>
+            <tr class="main-tr">
+                <th data-column="idMenu" class="idMenu" style="text-align: center">#ID</th>
+                <th data-column="lotName" class="lotName">
+                    <button data-column="lotName" type="button" class="main-tr-buttons blue-btn">Лот</button>
+                </th>
+                <th data-column="projectNameMenu" class="projectNameMenu">
+                    <button data-column="projectNameMenu" type="button" class="main-tr-buttons blue-btn">Наименование</button>
+                </th>
+                <th data-column="customerNameMenu">
+                    <div class="header-buttons">
+                        <button data-column="customerNameMenu" type="button" class="main-tr-buttons blue-btn">Заказчик</button>
+                        <div class="dropdown-custom-customers" id="customerDropdown">
+                            <button type="button" class="main-tr-buttons blue-btn"
+                                    onclick="toggleDropdown()">▼</button>
+                            <div class="dropdown-content-customers">
+                                <span th:each="cust : ${customers}">
+                                    <label>
+                                        <input type="checkbox" class="customer-filter"
+                                               th:value="${cust.customerName()}"
+                                               th:text="${cust.customerName()}">
+                                    </label>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </th>
+                <th data-column="locationMenu" class="locationMenu">
+                    <button data-column="locationMenu" type="button" class="main-tr-buttons blue-btn">Локация пр-ва работ
+                    </button>
+                </th>
+                <th data-column="dateOfCreateMenu" class="dateOfCreateMenu">
+                    <div class="header-buttons">
+                        <button data-column="dateOfCreateMenu" type="button" class="main-tr-buttons blue-btn">Дата</button>
+                        <div class="dropdown-custom-dateOfCreate" id="dateOfCreateDropdown">
+                            <button type="button" class="main-tr-buttons blue-btn"
+                                    onclick="toggleDropdownDateOfCreate()">▼</button>
+                            <div class="dropdown-content-dateOfCreate">
+                                <label>
+                                    <input type="date" id="startDate" placeholder="От">
+                                </label>
+                                <label>
+                                    <input type="date" id="endDate" placeholder="До">
+                                </label>
+                                <button id="applyDateFilter" class="blue-btn">Применить</button>
+                            </div>
+                        </div>
+                    </div>
+                </th>
+            </tr>
+            </thead>
+            <tbody class="left-table-body">
+            <tr th:each="calc : ${calculations}"
+                th:attr="data-url=@{/calculations/{id}(id=${calc.id()})}" class="clickable-row">
+                <td th:text="${calc.id()}"></td>
+                <td th:text="${calc.lotName()}"></td>
+                <td th:text="${calc.projectName()}"></td>
+                <td th:text="${calc.customerName()}"></td>
+                <td th:text="${calc.projectLocation()}"></td>
+                <td th:text="${#temporals.format(calc.dateOfCreate(), 'dd-MM-yyyy г.')}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="right-content" id="rightContent">
+        Для отображения деталей выберите нужный элемент слева
+    </div>
+</div>
+<div class="footer">
+
+</div>
+<script th:src="@{/script/open_window.js}"></script>
+<script th:src="@{/script/member_scrolls_positions.js}"></script>
+<script th:src="@{/script/table-menu-sort.js}"></script>
+<script th:src="@{/script/customers_dpropdown.js}"></script>
+<script th:src="@{/script/date_of_create_dpropdown.js}"></script>
+<script th:src="@{/script/calculation_filter.js}"></script>
+<script th:src="@{/script/date_of_create_filter.js}"></script>
+</body>
+</html>

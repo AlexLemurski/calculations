@@ -1,0 +1,35 @@
+spring:
+  application:
+    name: calculations
+
+  servlet:
+    multipart:
+      max-file-size: 5000MB
+      max-request-size: 5000MB
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/calculations
+    username: admin
+    password: admin
+    driver-class-name: org.postgresql.Driver
+
+  sql:
+    init:
+      mode: never
+
+  liquibase:
+    enabled: true
+    change-log: classpath:/db/changelog/db.changelog-master.xml
+
+logging:
+  level:
+    org.springframework.jdbc.core.JdbcTemplate: DEBUG
+
+server:
+  port: 8090
+  tomcat:
+    max-http-form-post-size: 5242880000
+
+myapp:
+  file-storage:
+    directory: C:\Users\user\Desktop\files

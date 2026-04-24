@@ -1,0 +1,584 @@
+<!doctype html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Calculations</title>
+    <link rel="stylesheet" th:href="@{/css/normalize.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="header">
+
+</div>
+<div class="main-content">
+    <div class="left-content" id="leftContent">
+        <table class="table-left" id="table-menu-sort">
+            <thead class="left-table-head">
+            <tr class="searching-tr">
+                <td class="idMenu">
+                    <button class="main-tr-buttons yellow-btn" id="resetFilters"
+                            title="Очистить фильтры и сортировку" style="text-align: center">🧹
+                    </button>
+                </td>
+                <td class="lotName">
+                    <label><input type="text" class="search-input" id="lotName" placeholder="🔎поиск..."></label>
+                </td>
+                <td class="projectNameMenu">
+                    <label><input type="text" class="search-input" id="projectName" placeholder="🔎поиск..."></label>
+                </td>
+                <td class="customerNameMenu"></td>
+                <td class="locationMenu">
+                    <label><input type="text" class="search-input" id="location" placeholder="🔎поиск..."></label>
+                </td>
+                <td class="dateOfCreateMenu"></td>
+            </tr>
+            <tr class="main-tr">
+                <th data-column="idMenu" class="idMenu" style="text-align: center">#ID</th>
+                <th data-column="lotName" class="lotName">
+                    <button data-column="lotName" type="button" class="main-tr-buttons blue-btn">Лот</button>
+                </th>
+                <th data-column="projectNameMenu" class="projectNameMenu">
+                    <button data-column="projectNameMenu" type="button" class="main-tr-buttons blue-btn">Наименование
+                    </button>
+                </th>
+                <th data-column="customerNameMenu">
+                    <div class="header-buttons">
+                        <button data-column="customerNameMenu" type="button" class="main-tr-buttons blue-btn">Заказчик
+                        </button>
+                        <div class="dropdown-custom-customers" id="customerDropdown">
+                            <button type="button" class="main-tr-buttons blue-btn"
+                                    onclick="toggleDropdown()">▼
+                            </button>
+                            <div class="dropdown-content-customers">
+                                <span th:each="cust : ${customers}">
+                                    <label>
+                                        <input type="checkbox" class="customer-filter"
+                                               th:value="${cust.customerName()}"
+                                               th:text="${cust.customerName()}">
+                                    </label>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </th>
+                <th data-column="locationMenu" class="locationMenu">
+                    <button data-column="locationMenu" type="button" class="main-tr-buttons blue-btn">Локация пр-ва
+                        работ
+                    </button>
+                </th>
+                <th data-column="dateOfCreateMenu" class="dateOfCreateMenu">
+                    <div class="header-buttons">
+                        <button data-column="dateOfCreateMenu" type="button" class="main-tr-buttons blue-btn">Дата
+                        </button>
+                        <div class="dropdown-custom-dateOfCreate" id="dateOfCreateDropdown">
+                            <button type="button" class="main-tr-buttons blue-btn"
+                                    onclick="toggleDropdownDateOfCreate()">▼
+                            </button>
+                            <div class="dropdown-content-dateOfCreate">
+                                <label>
+                                    <input type="date" id="startDate" placeholder="От">
+                                </label>
+                                <label>
+                                    <input type="date" id="endDate" placeholder="До">
+                                </label>
+                                <button id="applyDateFilter" class="blue-btn">Применить</button>
+                            </div>
+                        </div>
+                    </div>
+                </th>
+            </tr>
+            </thead>
+            <tbody class="left-table-body">
+            <tr th:each="calc : ${calculations}"
+                th:classappend="${calc.id == calculation?.id()} ? 'selected-row'"
+                th:attr="data-url=@{/calculations/{id}(id=${calc.id()})}" class="clickable-row">
+                <td th:text="${calc.id()}"></td>
+                <td th:text="${calc.lotName()}"></td>
+                <td th:text="${calc.projectName()}"></td>
+                <td th:text="${calc.customerName()}"></td>
+                <td th:text="${calc.projectLocation()}"></td>
+                <td th:text="${#temporals.format(calc.dateOfCreate(), 'dd-MM-yyyy г.')}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="right-content" id="rightContent">
+        <fieldset>
+            <legend>Основные параметры лота</legend>
+            <table class="table-right">
+                <thead class="right-table-head">
+                <tr>
+                    <th class="numView">#</th>
+                    <th class="attributeView">Атрибут</th>
+                    <th class="parameterView">Параметр</th>
+                </tr>
+                </thead>
+                <tbody class="right-table-body">
+                <tr>
+                    <td>001</td>
+                    <td>#ID</td>
+                    <td th:text="${calculation.id()}"></td>
+                </tr>
+                <tr>
+                    <td>002</td>
+                    <td>Лот</td>
+                    <td th:text="${calculation.lotName()}"></td>
+                </tr>
+                <tr>
+                    <td>003</td>
+                    <td>Наименование</td>
+                    <td th:text="${calculation.projectName()}"></td>
+                </tr>
+                <tr>
+                    <td>004</td>
+                    <td>Локация производства работ</td>
+                    <td th:text="${calculation.projectLocation()}"></td>
+                </tr>
+                <tr>
+                    <td>005</td>
+                    <td>Заказчик</td>
+                    <td th:text="${calculation.customerName()}"></td>
+                </tr>
+                <tr>
+                    <td>006</td>
+                    <td>Дата создания</td>
+                    <td th:text="${calculation.dateOfCreate()}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </fieldset>
+        <hr>
+        <fieldset>
+            <legend>Документация для расценки лота</legend>
+            <div class="accordion-buttons">
+                <a th:href="@{/calculations/{id}(id=${calculation.id()})}">
+                    <button type="button" class="red-btn">Выйти</button>
+                </a>
+                <div class="header-buttons">
+                    <button class="accordion-button" id="expandAll" title="Развернуть все элементы">▼</button>
+                    <button class="accordion-button" id="collapseAll" title="Свернуть все элементы">▲</button>
+                </div>
+            </div>
+            <hr>
+            <fieldset>
+                <legend>Архив с полной предоставленной документацией лота</legend>
+                <div class="accordion" data-id="section9">
+                    <div class="accordion-header" th:text="${mainDocumentsResource}"
+                         th:classappend="${mainDocuments.size() != 0} ? 'text-color-reverse' : ''"></div>
+                    <div class="accordion-content">
+                        <div class="form-update-buttons">
+                            <form th:action="@{/document_resource/upload_main_documents/{id}(id=*{id})}"
+                                  method="post" enctype="multipart/form-data">
+                                <input type="file" name="mainDocuments"
+                                       accept=".rar,.zip,.7z,.tgz,.tar.gz,.cab,.iso" multiple required/>
+                                <button type="submit" class="yellow-btn">Загрузить</button>
+                            </form>
+                            <div th:if="${mainDocuments.size() != 0}">
+                                <a th:href="@{/document_resource/delete_all_main_doc/{id}(id=${calculation.id()})}">
+                                    <button type="button" class="red-btn">Удалить все документы раздела</button>
+                                </a>
+                            </div>
+                        </div>
+                        <table class="table-right">
+                            <thead class="right-table-head">
+                            <tr>
+                                <th class="file-name">Наименование документа</th>
+                                <th class="file-size">Размер файла</th>
+                                <th class="file-action">Действие</th>
+                            </tr>
+                            </thead>
+                            <tbody class="right-table-body">
+                            <tr th:each="mainDoc : ${mainDocuments}">
+                                <td>
+                                    <a th:href="@{/document_resource/download/{id}(id=${mainDoc.docId()})}">
+                                        <button type="button" class="main-tr-buttons gray-btn">
+                                            <span class="file-name" th:text="${mainDoc.docName()}"></span>
+                                        </button>
+                                    </a>
+                                </td>
+                                <td th:text="${mainDoc.size()}"></td>
+                                <td>
+                                    <a th:href="@{/document_resource/delete/{id}(id=${mainDoc.docId()})}">
+                                        <button type="button" class="red-btn">Удалить</button>
+                                    </a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </fieldset>
+            <fieldset>
+                <legend>Разделы проектной и/или рабочей документации
+                </legend>
+                <div class="accordion" data-id="section10">
+                    <div class="accordion-header" th:text="${partitionDocumentsResource}"
+                         th:classappend="${partitionDocuments.size() != 0} ? 'text-color-reverse' : ''"></div>
+                    <div class="accordion-content">
+                        <div class="form-update-buttons">
+                            <form th:action="@{/document_resource/upload_partition_documents/{id}(id=*{id})}"
+                                  method="post" enctype="multipart/form-data">
+                                <input type="file" name="partitionDocuments" multiple required/>
+                                <button type="submit" class="yellow-btn">Загрузить</button>
+                            </form>
+                            <div th:if="${partitionDocuments.size() != 0}">
+                                <a th:href="@{/document_resource/delete_all_part_doc/{id}(id=${calculation.id()})}">
+                                    <button type="button" class="red-btn">Удалить все документы раздела</button>
+                                </a>
+                            </div>
+                        </div>
+                        <table class="table-right">
+                            <thead class="right-table-head">
+                            <tr>
+                                <th class="file-name-partition-update">Наименование документа</th>
+                                <th class="file-content-partition">Содержание</th>
+                                <th class="file-size-partition">Размер файла</th>
+                                <th class="file-action-partition">Действие</th>
+                            </tr>
+                            </thead>
+                            <tbody class="right-table-body">
+                            <form th:action="@{/document_resource/update/{id}(id=${calculation.id()})}" method="post">
+                                <tr th:each="partDoc: ${partitionDocuments}">
+                                    <td>
+                                        <a th:href="@{/document_resource/download/{id}(id=${partDoc.docId()})}">
+                                            <button type="button" class="main-tr-buttons gray-btn">
+                                                <span class="file-name" th:text="${partDoc.docName()}"></span>
+                                            </button>
+                                        </a>
+                                    </td>
+                                    <th>
+                                    <span th:each="cType : ${contentTypeList}"><span>
+                                        <label>
+                                            <input th:type="checkbox"
+                                                   th:name="'content_' + ${partDoc.docId() + '[]'}"
+                                                   th:value="${cType}"
+                                                   th:checked="${#lists.contains(partDoc.contentTypes(), cType)}"
+                                                   th:text="${cType}">
+                                        </label>
+                                        </span>
+                                    </span>
+                                    </th>
+                                    <td th:text="${partDoc.size()}"></td>
+                                    <td>
+                                        <a th:href="@{/document_resource/delete/{id}(id=${partDoc.docId()})}">
+                                            <button type="button" class="red-btn">Удалить</button>
+                                        </a>
+                                    </td>
+                                </tr>
+                                <div th:if="${partitionDocuments.size() != 0}">
+                                    <hr>
+                                    <button type="submit" class="yellow-btn" style="float: right">Сохранить содержание</button>
+                                </div>
+                            </form>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </fieldset>
+            <fieldset>
+                <legend>"СО" - Спецификации оборудования и материалов ГОСТ 21.110-2013
+                </legend>
+                <div class="accordion" data-id="section11">
+                    <div class="accordion-header" th:text="${specificationDocumentsResource}"
+                         th:classappend="${specificationDocuments.size() != 0} ? 'text-color-reverse' : ''"></div>
+                    <div class="accordion-content">
+                        <div class="form-update-buttons">
+                            <form th:action="@{/document_resource/upload_specification_documents/{id}(id=*{id})}"
+                                  method="post" enctype="multipart/form-data">
+                                <input type="file" name="specificationDocuments" multiple required/>
+                                <button type="submit" class="yellow-btn">Загрузить</button>
+                            </form>
+                            <div th:if="${specificationDocuments.size() != 0}">
+                                <a th:href="@{/document_resource/delete_all_spec_doc/{id}(id=${calculation.id()})}">
+                                    <button type="button" class="red-btn">Удалить все документы раздела</button>
+                                </a>
+                            </div>
+                        </div>
+                        <table class="table-right">
+                            <thead class="right-table-head">
+                            <tr>
+                                <th class="file-name">Наименование документа</th>
+                                <th class="file-size">Размер файла</th>
+                                <th class="file-action">Действие</th>
+                            </tr>
+                            </thead>
+                            <tbody class="right-table-body">
+                            <tr th:each="specDoc : ${specificationDocuments}">
+                                <td>
+                                    <a th:href="@{/document_resource/download/{id}(id=${specDoc.docId()})}">
+                                        <button type="button" class="main-tr-buttons gray-btn">
+                                            <span class="file-name" th:text="${specDoc.docName()}"></span>
+                                        </button>
+                                    </a>
+                                </td>
+                                <td th:text="${specDoc.size()}"></td>
+                                <td>
+                                    <a th:href="@{/document_resource/delete/{id}(id=${specDoc.docId()})}">
+                                        <button type="button" class="red-btn">Удалить</button>
+                                    </a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </fieldset>
+            <fieldset>
+                <legend>"ВОМ" - Ведомость оборудования и материалов</legend>
+                <div class="accordion" data-id="section12">
+                    <div class="accordion-header" th:text="${materialDocumentsResource}"
+                         th:classappend="${materialDocuments.size() != 0} ? 'text-color-reverse' : ''"></div>
+                    <div class="accordion-content">
+                        <div class="form-update-buttons">
+                            <form th:action="@{/document_resource/upload_material_documents/{id}(id=*{id})}"
+                                  method="post" enctype="multipart/form-data">
+                                <input type="file" name="materialDocuments" multiple required/>
+                                <button type="submit" class="yellow-btn">Загрузить</button>
+                            </form>
+                            <div th:if="${materialDocuments.size() != 0}">
+                                <a th:href="@{/document_resource/delete_all_material_doc/{id}(id=${calculation.id()})}">
+                                    <button type="button" class="red-btn">Удалить все документы раздела</button>
+                                </a>
+                            </div>
+                        </div>
+                        <table class="table-right">
+                            <thead class="right-table-head">
+                            <tr>
+                                <th class="file-name">Наименование документа</th>
+                                <th class="file-size">Размер файла</th>
+                                <th class="file-action">Действие</th>
+                            </tr>
+                            </thead>
+                            <tbody class="right-table-body">
+                            <tr th:each="matDoc : ${materialDocuments}">
+                                <td>
+                                    <a th:href="@{/document_resource/download/{id}(id=${matDoc.docId()})}">
+                                        <button type="button" class="main-tr-buttons gray-btn">
+                                            <span class="file-name" th:text="${matDoc.docName()}"></span>
+                                        </button>
+                                    </a>
+                                </td>
+                                <td th:text="${matDoc.size()}"></td>
+                                <td>
+                                    <a th:href="@{/document_resource/delete/{id}(id=${matDoc.docId()})}">
+                                        <button type="button" class="red-btn">Удалить</button>
+                                    </a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </fieldset>
+            <fieldset>
+                <legend>"ВР" - Ведомости объемов работ ГОСТ 21.111-84
+                </legend>
+                <div class="accordion" data-id="section13">
+                    <div class="accordion-header" th:text="${workDocumentsResource}"
+                         th:classappend="${workDocuments.size() != 0} ? 'text-color-reverse' : ''"></div>
+                    <div class="accordion-content">
+                        <div class="form-update-buttons">
+                            <form th:action="@{/document_resource/upload_work_documents/{id}(id=*{id})}"
+                                  method="post" enctype="multipart/form-data">
+                                <input type="file" name="workDocuments" multiple required/>
+                                <button type="submit" class="yellow-btn">Загрузить</button>
+                            </form>
+                            <div th:if="${workDocuments.size() != 0}">
+                                <a th:href="@{/document_resource/delete_all_work_doc/{id}(id=${calculation.id()})}">
+                                    <button type="button" class="red-btn">Удалить все документы раздела</button>
+                                </a>
+                            </div>
+                        </div>
+                        <table class="table-right">
+                            <thead class="right-table-head">
+                            <tr>
+                                <th class="file-name">Наименование документа</th>
+                                <th class="file-size">Размер файла</th>
+                                <th class="file-action">Действие</th>
+                            </tr>
+                            </thead>
+                            <tbody class="right-table-body">
+                            <tr th:each="workDoc : ${workDocuments}">
+                                <td>
+                                    <a th:href="@{/document_resource/download/{id}(id=${workDoc.docId()})}">
+                                        <button type="button" class="main-tr-buttons gray-btn">
+                                            <span class="file-name" th:text="${workDoc.docName()}"></span>
+                                        </button>
+                                    </a>
+                                </td>
+                                <td th:text="${workDoc.size()}"></td>
+                                <td>
+                                    <a th:href="@{/document_resource/delete/{id}(id=${workDoc.docId()})}">
+                                        <button type="button" class="red-btn">Удалить</button>
+                                    </a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </fieldset>
+            <fieldset>
+                <legend>"ОЛ, ТЗ" - Техническая документация для подбора оборудования</legend>
+                <div class="accordion" data-id="section14">
+                    <div class="accordion-header" th:text="${technitialDocumentsResource}"
+                         th:classappend="${technitialDocuments.size() != 0} ? 'text-color-reverse' : ''"></div>
+                    <div class="accordion-content">
+                        <div class="form-update-buttons">
+                            <form th:action="@{/document_resource/upload_technitial_documents/{id}(id=*{id})}"
+                                  method="post" enctype="multipart/form-data">
+                                <input type="file" name="technitialDocuments" multiple required/>
+                                <button type="submit" class="yellow-btn">Загрузить</button>
+                            </form>
+                            <div th:if="${technitialDocuments.size() != 0}">
+                                <a th:href="@{/document_resource/delete_all_technitial_doc/{id}(id=${calculation.id()})}">
+                                    <button type="button" class="red-btn">Удалить все документы раздела</button>
+                                </a>
+                            </div>
+                        </div>
+                        <table class="table-right">
+                            <thead class="right-table-head">
+                            <tr>
+                                <th class="file-name">Наименование документа</th>
+                                <th class="file-size">Размер файла</th>
+                                <th class="file-action">Действие</th>
+                            </tr>
+                            </thead>
+                            <tbody class="right-table-body">
+                            <tr th:each="techDoc : ${technitialDocuments}">
+                                <td>
+                                    <a th:href="@{/document_resource/download/{id}(id=${techDoc.docId()})}">
+                                        <button type="button" class="main-tr-buttons gray-btn">
+                                            <span class="file-name" th:text="${techDoc.docName()}"></span>
+                                        </button>
+                                    </a>
+                                </td>
+                                <td th:text="${techDoc.size()}"></td>
+                                <td>
+                                    <a th:href="@{/document_resource/delete/{id}(id=${techDoc.docId()})}">
+                                        <button type="button" class="red-btn">Удалить</button>
+                                    </a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </fieldset>
+            <fieldset>
+                <legend>"РВ" - Разделительная ведомость
+                </legend>
+                <div class="accordion" data-id="section15">
+                    <div class="accordion-header" th:text="${separationDocumentsResource}"
+                         th:classappend="${separationDocuments.size() != 0} ? 'text-color-reverse' : ''"></div>
+                    <div class="accordion-content">
+                        <div class="form-update-buttons">
+                            <form th:action="@{/document_resource/upload_separation_documents/{id}(id=*{id})}"
+                                  method="post" enctype="multipart/form-data">
+                                <input type="file" name="separationDocuments" multiple required/>
+                                <button type="submit" class="yellow-btn">Загрузить</button>
+                            </form>
+                            <div th:if="${separationDocuments.size() != 0}">
+                                <a th:href="@{/document_resource/delete_all_separation_doc/{id}(id=${calculation.id()})}">
+                                    <button type="button" class="red-btn">Удалить все документы раздела</button>
+                                </a>
+                            </div>
+                        </div>
+                        <table class="table-right">
+                            <thead class="right-table-head">
+                            <tr>
+                                <th class="file-name">Наименование документа</th>
+                                <th class="file-size">Размер файла</th>
+                                <th class="file-action">Действие</th>
+                            </tr>
+                            </thead>
+                            <tbody class="right-table-body">
+                            <tr th:each="sepDoc : ${separationDocuments}">
+                                <td>
+                                    <a th:href="@{/document_resource/download/{id}(id=${sepDoc.docId()})}">
+                                        <button type="button" class="main-tr-buttons gray-btn">
+                                            <span class="file-name" th:text="${sepDoc.docName()}"></span>
+                                        </button>
+                                    </a>
+                                </td>
+                                <td th:text="${sepDoc.size()}"></td>
+                                <td>
+                                    <a th:href="@{/document_resource/delete/{id}(id=${sepDoc.docId()})}">
+                                        <button type="button" class="red-btn">Удалить</button>
+                                    </a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </fieldset>
+            <fieldset>
+                <legend>Прочая документация</legend>
+                <div class="accordion" data-id="section16">
+                    <div class="accordion-header" th:text="${otherDocumentsResource}"
+                         th:classappend="${otherDocuments.size() != 0} ? 'text-color-reverse' : ''"></div>
+                    <div class="accordion-content">
+                        <div class="form-update-buttons">
+                            <form th:action="@{/document_resource/upload_other_documents/{id}(id=*{id})}"
+                                  method="post" enctype="multipart/form-data">
+                                <input type="file" name="otherDocuments" multiple required/>
+                                <button type="submit" class="yellow-btn">Загрузить</button>
+                            </form>
+                            <div th:if="${otherDocuments.size() != 0}">
+                                <a th:href="@{/document_resource/delete_all_other_doc/{id}(id=${calculation.id()})}">
+                                    <button type="button" class="red-btn">Удалить все документы раздела</button>
+                                </a>
+                            </div>
+                        </div>
+                        <table class="table-right">
+                            <thead class="right-table-head">
+                            <tr>
+                                <th class="file-name">Наименование документа</th>
+                                <th class="file-size">Размер файла</th>
+                                <th class="file-action">Действие</th>
+                            </tr>
+                            </thead>
+                            <tbody class="right-table-body">
+                            <tr th:each="otherDoc : ${otherDocuments}">
+                                <td>
+                                    <a th:href="@{/document_resource/download/{id}(id=${otherDoc.docId()})}">
+                                        <button type="button" class="main-tr-buttons gray-btn">
+                                            <span class="file-name" th:text="${otherDoc.docName()}"></span>
+                                        </button>
+                                    </a>
+                                </td>
+                                <td th:text="${otherDoc.size()}"></td>
+                                <td>
+                                    <a th:href="@{/document_resource/delete/{id}(id=${otherDoc.docId()})}">
+                                        <button type="button" class="red-btn">Удалить</button>
+                                    </a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </fieldset>
+        </fieldset>
+        <hr>
+    </div>
+</div>
+<div class="footer">
+
+</div>
+<script th:src="@{/script/open_window.js}"></script>
+<script th:src="@{/script/member_scrolls_positions.js}"></script>
+<script th:src="@{/script/table-menu-sort.js}"></script>
+<script th:src="@{/script/customers_dpropdown.js}"></script>
+<script th:src="@{/script/date_of_create_dpropdown.js}"></script>
+<script th:src="@{/script/calculation_filter.js}"></script>
+<script th:src="@{/script/date_of_create_filter.js}"></script>
+<script th:src="@{/script/accordion.js}"></script>
+<script th:src="@{/script/documets_button_color.js}"></script>
+</body>
+</html>
