@@ -1,0 +1,31 @@
+spring:
+  application:
+    name: calculations
+
+  servlet:
+    multipart:
+      max-file-size: 5000MB
+      max-request-size: 5000MB
+
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+
+  sql:
+    init:
+      mode: never
+
+  liquibase:
+    enabled: true
+    change-log: classpath:/db/changelog/db.changelog-master.xml
+
+server:
+  port: 8196
+  tomcat:
+    max-http-form-post-size: 5242880000
+
+myapp:
+  file-storage:
+    directory: /app/resource
