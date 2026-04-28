@@ -7,11 +7,7 @@
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
     <changeSet id="1" author="developer">
-        <sqlFile path="db/changelog/V1__create_schemas.sql"/>
-    </changeSet>
-
-    <changeSet id="2" author="developer">
-        <sqlFile path="db/changelog/V2__create_tables.sql"/>
+        <sqlFile path="db/changelog/V1__create_schemas_and_tables.sql"/>
     </changeSet>
 
 </databaseChangeLog>

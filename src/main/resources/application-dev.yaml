@@ -1,4 +1,14 @@
 spring:
+  boot:
+    admin:
+      client:
+        enabled: true
+        instance:
+          name: calculations-app
+          service-host-type: ip
+        url: http://localhost:8095
+
+
   application:
     name: calculations
 
@@ -8,7 +18,7 @@ spring:
       max-request-size: 5000MB
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/calculations
+    url: jdbc:postgresql://localhost:5433/dev-database
     username: admin
     password: admin
     driver-class-name: org.postgresql.Driver
@@ -33,3 +43,14 @@ server:
 myapp:
   file-storage:
     directory: C:\Users\user\Desktop\files
+
+management:
+  health:
+    livenessstate:
+      enabled: true
+    readinessstate:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: '*'
