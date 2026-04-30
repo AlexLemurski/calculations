@@ -65,7 +65,7 @@
                                     <label>
                                         <input type="checkbox" class="customer-filter"
                                                th:value="${cust.customerName()}"
-                                               th:text="${cust.customerName()}">
+                                               th:text="${cust.customerName() + ' ' + cust.customerINNCode()}">
                                     </label>
                                 </span>
                             </div>
