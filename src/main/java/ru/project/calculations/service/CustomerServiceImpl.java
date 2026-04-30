@@ -1,6 +1,7 @@
 package ru.project.calculations.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.project.calculations.dto.customer.CustomerDto;
@@ -8,12 +9,15 @@ import ru.project.calculations.dto.customer.CustomerPayloadNew;
 import ru.project.calculations.dto.customer.CustomerPayloadUpdate;
 import ru.project.calculations.entity.Customer;
 import ru.project.calculations.exception.DeleteEntityDataBaseException;
+import ru.project.calculations.exception.UniqueParameterCreateException;
+import ru.project.calculations.exception.UniqueParameterUpdateException;
 import ru.project.calculations.repository.CustomerRepository;
 
 import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CustomerServiceImpl implements CustomerService {
@@ -56,30 +60,38 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     @Transactional
     public Customer createCustomer(CustomerPayloadNew payload) {
-        return customerRepository.createCustomer(
-                payload.customerName(),
-                payload.customerINNCode(),
-                payload.customerKPPCode(),
-                payload.customerOGRNCode(),
-                payload.mainActivity(),
-                payload.legalAddress(),
-                payload.mail(),
-                payload.phone());
+        try {
+            return customerRepository.createCustomer(
+                    payload.customerName(),
+                    payload.customerINNCode(),
+                    payload.customerKPPCode(),
+                    payload.customerOGRNCode(),
+                    payload.mainActivity(),
+                    payload.legalAddress(),
+                    payload.mail(),
+                    payload.phone());
+        } catch (RuntimeException e) {
+            throw new UniqueParameterCreateException("unique.parameter.exception", payload);
+        }
     }
 
     @Override
     @Transactional
     public Customer updateCustomer(CustomerPayloadUpdate payload) {
-        return customerRepository.updateCustomer(
-                payload.id(),
-                payload.customerName(),
-                payload.customerINNCode(),
-                payload.customerKPPCode(),
-                payload.customerOGRNCode(),
-                payload.mainActivity(),
-                payload.legalAddress(),
-                payload.mail(),
-                payload.phone());
+        try {
+            return customerRepository.updateCustomer(
+                    payload.id(),
+                    payload.customerName(),
+                    payload.customerINNCode(),
+                    payload.customerKPPCode(),
+                    payload.customerOGRNCode(),
+                    payload.mainActivity(),
+                    payload.legalAddress(),
+                    payload.mail(),
+                    payload.phone());
+        } catch (RuntimeException e) {
+            throw new UniqueParameterUpdateException("unique.parameter.exception", payload);
+        }
     }
 
     @Override

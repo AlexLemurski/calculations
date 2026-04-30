@@ -35,12 +35,12 @@ public class DocumentsUtil {
     private DocumentsUtil() {
     }
 
-    public static void getCalculationResultParameters(Calculation calculation,
+    private static void getCalculationResultParameters(Calculation calculation,
                                                       String filePath,
                                                       PartitionRepository partitionRepository,
                                                       UncalculatedRepository uncalculatedRepository) throws IOException {
         try (FileInputStream fis = new FileInputStream(filePath);
-             Workbook workbook = WorkbookFactory.create(fis)) {
+             var workbook = WorkbookFactory.create(fis)) {
             DataFormatter formatter = new DataFormatter();
             Sheet sheet = workbook.getSheetAt(0);
             updateCalculationResultData(calculation, workbook, sheet);

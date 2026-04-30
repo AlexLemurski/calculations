@@ -1,12 +1,14 @@
 package ru.project.calculations.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import ru.project.calculations.dto.document_result.DocumentResultDto;
+import ru.project.calculations.exception.CollaborationExcelException;
 import ru.project.calculations.exception.DocumentsIOException;
 import ru.project.calculations.repository.CalculationRepository;
 import ru.project.calculations.repository.DocumentResultRepository;
@@ -28,9 +30,10 @@ public class DocumentResultServiceImpl implements DocumentResultService {
 
     private final DocumentResultRepository documentResultRepository;
     private final CalculationRepository calculationRepository;
-    private final  PartitionRepository partitionRepository;
+    private final PartitionRepository partitionRepository;
     private final UncalculatedRepository uncalculatedRepository;
 
+    @SneakyThrows
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void saveDocumentResult(long id, MultipartFile file) {
@@ -44,6 +47,8 @@ public class DocumentResultServiceImpl implements DocumentResultService {
                     file);
         } catch (IOException | NumberFormatException e) {
             throw new DocumentsIOException("io.exception.message");
+        } catch (Exception e) {
+            throw new CollaborationExcelException(id, "collaborating.exception.warning");
         }
     }
 
@@ -62,6 +67,7 @@ public class DocumentResultServiceImpl implements DocumentResultService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public DocumentResultDto findDocResultByCalcId(long id) {
         var documentResult = documentResultRepository.findDocResultByCalcId(id).orElse(null);
         if (documentResult != null) {
@@ -81,7 +87,7 @@ public class DocumentResultServiceImpl implements DocumentResultService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public Resource downloadDocumentResult(long id, String key) throws IOException {
         var documentResult = documentResultRepository.findDocumentResultById(id).orElseThrow(
                 () -> new NoSuchElementException("element.not.found"));

@@ -64,6 +64,7 @@
     </div>
     <div class="right-content" id="rightContent">
         <hr>
+        <span class="errors" th:text="${unique_parameter_exception}"></span>
         <fieldset>
             <legend class="legend-head">Форма создания нового Заказчика</legend>
             <form th:action="@{/customers/create}" th:method="post" th:object="${customer}">

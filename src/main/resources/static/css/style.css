@@ -274,10 +274,6 @@ textarea {
     width: 100%;
 }
 
-li {
-    font-size: 13px;
-}
-
 #customerDropdown {
     position: relative;
     display: inline-block;
@@ -288,8 +284,8 @@ li {
     position: absolute;
     right: 0;
     background-color: lightgray;
-    width: 300px;
-    max-height: 400px;
+    width: 400px;
+    max-height: 300px;
     overflow-y: scroll;
     border: 1px black;
     z-index: 10;
@@ -304,7 +300,6 @@ li {
 .dropdown-content-customers label {
     display: block;
     cursor: pointer;
-    font-size: 13px;
 }
 
 .dropdown-content-customers label:hover {
@@ -336,7 +331,6 @@ li {
 .dropdown-content-dateOfCreate label {
     display: block;
     cursor: pointer;
-    font-size: 13px;
 }
 
 .accordion {

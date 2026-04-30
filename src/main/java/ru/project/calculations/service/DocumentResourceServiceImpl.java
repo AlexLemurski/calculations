@@ -98,7 +98,7 @@ public class DocumentResourceServiceImpl implements DocumentResourceService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public Resource downloadDocumentResource(long id, String key) throws IOException {
         var documentResource = documentResourceRepository.findDocumentResourceById(id).orElseThrow(
                 () -> new NoSuchElementException("element.not.found"));

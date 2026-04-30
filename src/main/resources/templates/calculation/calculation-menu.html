@@ -60,11 +60,11 @@
                                     onclick="toggleDropdown()">▼
                             </button>
                             <div class="dropdown-content-customers">
-                                <span th:each="cust : ${customers}">
+                                <span th:each="cast : ${customers}" id="customer-drop-menu">
                                     <label>
                                         <input type="checkbox" class="customer-filter"
-                                               th:value="${cust.customerName()}"
-                                               th:text="${cust.customerName()}">
+                                               th:value="${cast.customerName()}"
+                                               th:text="${cast.customerName() + ' ' + cast.customerINNCode()}">
                                     </label>
                                 </span>
                             </div>

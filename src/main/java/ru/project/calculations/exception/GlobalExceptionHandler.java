@@ -6,13 +6,18 @@ import org.apache.poi.ss.formula.CollaboratingWorkbooksEnvironment;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import ru.project.calculations.dto.customer.CustomerPayloadNew;
+import ru.project.calculations.entity.Uncalculated;
 import ru.project.calculations.service.CalculationService;
 import ru.project.calculations.service.CustomerService;
 import ru.project.calculations.service.DocumentResultService;
 import ru.project.calculations.service.UncalculatedService;
 
+import java.util.ArrayList;
 import java.util.Locale;
 import java.util.NoSuchElementException;
 
@@ -48,8 +53,8 @@ public class GlobalExceptionHandler {
                                   HttpServletResponse response,
                                   Locale locale) {
         response.setStatus(HttpStatus.BAD_REQUEST.value());
-        model.addAttribute("calculations", calculationService.findAllCalculations());
         model.addAttribute("calculation", calculationService.findCalculationById(exception.getId()));
+        model.addAttribute("calculations", calculationService.findAllCalculations());
         model.addAttribute("resultDocument", documentResultService.findDocResultByCalcId(exception.getId()));
         model.addAttribute("uncalculated", uncalculatedService.findAllUncalculatedByCalcId(exception.getId()));
         model.addAttribute("doc_validation_exception_message", messageSource.getMessage(
@@ -77,18 +82,21 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler
-    public String handleException(CollaboratingWorkbooksEnvironment.WorkbookNotFoundException exception,
+    public String handleException(CollaborationExcelException exception,
                                   Model model,
                                   HttpServletResponse response,
                                   Locale locale) {
         response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        model.addAttribute("calculation", calculationService.findCalculationById(exception.getId()));
         model.addAttribute("calculations", calculationService.findAllCalculations());
+        model.addAttribute("resultDocument", documentResultService.findDocResultByCalcId(exception.getId()));
         model.addAttribute("customers", customerService.findAllCustomers());
+        model.addAttribute("uncalculated", new ArrayList<>());
         model.addAttribute("callaborating_exception_message", messageSource.getMessage(
                 "collaborating.exception.warning",
-                new Object[]{exception.getMessage()},
+                new Object[0],
                 locale));
-        return "errors/io-error";
+        return "calculation/calculation-doc-result-update";
     }
 
     @ExceptionHandler
@@ -106,6 +114,38 @@ public class GlobalExceptionHandler {
                 exception.getMessage(),
                 locale));
         return "customer/customer-view";
+    }
+
+    @ExceptionHandler
+    public String handleException(UniqueParameterCreateException exception,
+                                  Model model,
+                                  HttpServletResponse response,
+                                  Locale locale) {
+        response.setStatus(HttpStatus.BAD_REQUEST.value());
+        model.addAttribute("customer", exception.getPayload());
+        model.addAttribute("customers", customerService.findAllCustomers());
+        model.addAttribute("unique_parameter_exception", messageSource.getMessage(
+                exception.getMessage(),
+                new Object[0],
+                exception.getMessage(),
+                locale));
+        return "customer/customer-create";
+    }
+
+    @ExceptionHandler
+    public String handleException(UniqueParameterUpdateException exception,
+                                  Model model,
+                                  HttpServletResponse response,
+                                  Locale locale) {
+        response.setStatus(HttpStatus.BAD_REQUEST.value());
+        model.addAttribute("customer", exception.getPayload());
+        model.addAttribute("customers", customerService.findAllCustomers());
+        model.addAttribute("unique_parameter_exception", messageSource.getMessage(
+                exception.getMessage(),
+                new Object[0],
+                exception.getMessage(),
+                locale));
+        return "customer/customer-update";
     }
 
 }

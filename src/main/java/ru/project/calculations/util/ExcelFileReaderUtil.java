@@ -41,7 +41,7 @@ public class ExcelFileReaderUtil {
         Pattern pattern = Pattern.compile("^[0-9\\s\\u00A0,.%]+$");
         int[] columns = {4, 5, 6, 7};
         try (InputStream is = file.getInputStream();
-             Workbook workbook = WorkbookFactory.create(is)) {
+             var workbook = WorkbookFactory.create(is)) {
             Sheet sheet = workbook.getSheetAt(0);
             FormulaEvaluator evaluator = workbook.getCreationHelper().createFormulaEvaluator();
             DataFormatter formatter = new DataFormatter();
