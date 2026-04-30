@@ -6,6 +6,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.project.calculations.dto.calculation.CalculationDto;
 import ru.project.calculations.dto.calculation.CalculationPayloadNew;
 import ru.project.calculations.dto.calculation.CalculationPayloadUpdate;
 import ru.project.calculations.enums.ContentType;
@@ -84,7 +85,7 @@ public class CalculationController {
     }
 
     @GetMapping("/create")
-    public String createCalculationForm(@ModelAttribute("calculation") CalculationPayloadNew calculationPayloadNew,
+    public String createCalculationForm(@ModelAttribute("calculation") CalculationPayloadNew payload,
                                         Model model) {
         model.addAttribute("calculations", calculationService.findAllCalculations());
         model.addAttribute("customers", customerService.findAllCustomers());
@@ -92,7 +93,7 @@ public class CalculationController {
     }
 
     @PostMapping("/create")
-    public String createCalculation(@Validated @ModelAttribute("calculation") CalculationPayloadNew calculationPayloadNew,
+    public String createCalculation(@Validated @ModelAttribute("calculation") CalculationPayloadNew payload,
                                     BindingResult bindingResult,
                                     Model model) {
         if (bindingResult.hasErrors()) {
@@ -100,7 +101,7 @@ public class CalculationController {
             model.addAttribute("customers", customerService.findAllCustomers());
             return "calculation/calculation-create";
         } else {
-            var calculation = calculationService.createCalculation(calculationPayloadNew);
+            var calculation = calculationService.createCalculation(payload);
             return "redirect:/calculations/%d".formatted(calculation.getId());
         }
     }
@@ -115,8 +116,7 @@ public class CalculationController {
     }
 
     @PostMapping("/update")
-    public String updateCalculation(@Validated @ModelAttribute("calculation")
-                                    CalculationPayloadUpdate calculationPayloadUpdate,
+    public String updateCalculation(@Validated @ModelAttribute("calculation") CalculationPayloadUpdate payload,
                                     BindingResult bindingResult,
                                     Model model) {
         if (bindingResult.hasErrors()) {
@@ -124,7 +124,7 @@ public class CalculationController {
             model.addAttribute("customers", customerService.findAllCustomers());
             return "calculation/calculation-update";
         } else {
-            var calculation = calculationService.updateCalculation(calculationPayloadUpdate);
+            var calculation = calculationService.updateCalculation(payload);
             return "redirect:/calculations/update/%d".formatted(calculation.getId());
         }
     }

@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>customers</title>
+    <link rel="stylesheet" th:href="@{/css/normalize.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="header">
+    <div class="header-buttons">
+        <a th:href="@{/customers/create}">
+            <button type="button" class="yellow-btn">Создать нового Заказчика</button>
+        </a>
+        <a th:href="@{/calculations}">
+            <button type="button" class="yellow-btn">Расценки</button>
+        </a>
+    </div>
+</div>
+<div class="main-content">
+    <div class="left-content" id="leftContent">
+        <table class="table-left" id="table-menu-sort">
+            <thead class="left-table-head">
+            <tr class="searching-tr">
+                <td class="idMenu">
+                    <button class="main-tr-buttons yellow-btn" id="resetFilters"
+                            title="Очистить фильтры и сортировку" style="text-align: center">🧹
+                    </button>
+                </td>
+                <td class="customerNameHead">
+                    <label><input type="text" class="search-input" id="customerNameHead"
+                                  placeholder="🔎поиск..."></label>
+                </td>
+                <td class="customerInnHead">
+                    <label><input type="text" class="search-input" id="customerInnHead" placeholder="🔎поиск..."></label>
+                </td>
+                <td class="mainActivityHead">
+                    <label><input type="text" class="search-input" id="mainActivityHead"
+                                  placeholder="🔎поиск..."></label>
+                </td>
+            </tr>
+            <tr class="main-tr">
+                <th data-column="idMenu" class="idMenu" style="text-align: center">#ID</th>
+                <th data-column="customerNameHead" class="customerNameHead">
+                    <button data-column="customerNameHead" type="button" class="main-tr-buttons blue-btn">Наименование
+                    </button>
+                </th>
+                <th data-column="customerInnHead" class="customerInnMHead">
+                    <button data-column="customerInnHead" type="button" class="main-tr-buttons blue-btn">ИНН</button>
+                </th>
+                <th data-column="mainActivityHead" class="mainActivityHead">
+                    <button data-column="mainActivityHead" type="button" class="main-tr-buttons blue-btn">Основной вид
+                        деятельности
+                    </button>
+                </th>
+            </tr>
+            </thead>
+            <tbody class="left-table-body">
+            <tr th:each="cust : ${customers}"
+                th:classappend="${cust.id == customer?.id()} ? 'selected-row'"
+                th:attr="data-url=@{/customers/{id}(id=${cust.id()})}" class="clickable-row">
+                <td th:text="${cust.id()}"></td>
+                <td th:text="${cust.customerName()}"></td>
+                <td th:text="${cust.customerINNCode()}"></td>
+                <td th:text="${cust.mainActivity()}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="right-content" id="rightContent">
+        <div class="right-block-head">
+            <a th:href="@{/customers}">
+                <button type="button" class="blue-btn">Скрыть детали</button>
+            </a>
+            <a th:href="@{/customers/delete/{id}(id=${customer.id()})}"
+               onclick="return confirm('Вы уверены, что хотите удалить этот элемент?');">
+                <button type="button" class="red-btn">Удалить</button>
+            </a>
+        </div>
+        <hr>
+        <span class="errors" th:text="${oportunity_exception_message}"></span>
+        <fieldset>
+            <legend class="legend-head">Основная информация о Заказчике</legend>
+            <div>
+                <a th:href="@{/customers/update/{id}(id=${customer.id()})}">
+                    <button type="button" class="yellow-btn">Редактировать</button>
+                </a>
+                <hr>
+            </div>
+            <table class="table-right">
+                <thead class="right-table-head">
+                <tr>
+                    <th class="numView">#</th>
+                    <th class="attributeView">Атрибут</th>
+                    <th class="parameterView">Параметр</th>
+                </tr>
+                </thead>
+                <tbody class="right-table-body">
+                <tr>
+                    <td>001</td>
+                    <td>#ID</td>
+                    <td th:text="${customer.id()}"></td>
+                </tr>
+                <tr>
+                    <td>002</td>
+                    <td>Наименование</td>
+                    <td th:text="${customer.customerName()}"></td>
+                </tr>
+                <tr>
+                    <td>003</td>
+                    <td>ИНН</td>
+                    <td th:text="${customer.customerINNCode()}"></td>
+                </tr>
+                <tr>
+                    <td>004</td>
+                    <td>КПП</td>
+                    <td th:text="${customer.customerKPPCode()}"></td>
+                </tr>
+                <tr>
+                    <td>005</td>
+                    <td>ОГРН</td>
+                    <td th:text="${customer.customerOGRNCode()}"></td>
+                </tr>
+                <tr>
+                    <td>006</td>
+                    <td>Основной вид деятельности</td>
+                    <td th:text="${customer.mainActivity()}"></td>
+                </tr>
+                <tr>
+                    <td>007</td>
+                    <td>Юридический адрес</td>
+                    <td th:text="${customer.legalAddress()}"></td>
+                </tr>
+                <tr>
+                    <td>008</td>
+                    <td>Электронная почта</td>
+                    <td th:text="${customer.mail()}"></td>
+                </tr>
+                <tr>
+                    <td>009</td>
+                    <td>Телефон</td>
+                    <td th:text="${customer.phone()}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </fieldset>
+        <fieldset>
+            <legend class="legend-head">Расценочные лоты</legend>
+            <div>
+                <span th:text="${'Всего : ' + calculationsByCastId.size()}"></span>
+                <hr>
+                <table class="table-right">
+                    <thead class="right-table-head">
+                    <tr>
+                        <th>Лот - Итоговая сумма расценки</th>
+                    </tr>
+                    </thead>
+                    <tbody class="right-table-body">
+                    <tr th:each="calcByCastId : ${calculationsByCastId}">
+                        <td>
+                            <a th:href="@{/calculations/{id}(id=${calcByCastId.id()})}">
+                                <button type="button" class="blue-btn" style="width: 60%; text-align: left">
+                                    <span th:text="${calcByCastId.lotName() + ' - ' + calcByCastId.totalSum()}"
+                                          th:title="${'Проект: ' + calcByCastId.projectName()}"></span>
+                                </button>
+                            </a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </fieldset>
+    </div>
+</div>
+<div class="footer">
+
+</div>
+<script th:src="@{/script/open_window.js}"></script>
+<script th:src="@{/script/member_scrolls_positions.js}"></script>
+<script th:src="@{/script/table-menu-sort.js}"></script>
+<script th:src="@{/script/customer_filter.js}"></script>
+<script th:src="@{/script/documets_button_color.js}"></script>
+</body>
+</html>

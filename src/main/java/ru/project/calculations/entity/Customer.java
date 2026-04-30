@@ -20,13 +20,25 @@ public class Customer {
     @Column("c_customer_name")
     private String customerName;
 
-    @Column("c_kpp_code")
-    private String customerKppCode;
-
     @Column("c_inn_code")
-    private String customerInnCode;
+    private String customerINNCode;
 
-    @Column("c_customer_contact")
-    private String customerContact;
+    @Column("c_kpp_code")
+    private String customerKPPCode;
+
+    @Column("c_ogrn_code")
+    private String customerOGRNCode;
+
+    @Column("c_main_activity")
+    private String mainActivity;
+
+    @Column("c_legal_address")
+    private String legalAddress;
+
+    @Column("c_mail")
+    private String mail;
+
+    @Column("c_phone")
+    private String phone;
 
 }

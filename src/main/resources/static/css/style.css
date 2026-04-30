@@ -144,6 +144,18 @@ th, td, p {
     width: 5%;
 }
 
+.customerNameHead {
+    width: 35%;
+}
+
+.customerInnHead {
+    width: 15%;
+}
+
+.mainActivityHead {
+    width: 40%;
+}
+
 .customer-select {
     width: 100%;
 }
@@ -469,4 +481,12 @@ li {
     font-weight: bold;
     font-size: 13px;
     color: orangered;
+}
+
+.halfInputForm {
+    width: 50%;
+}
+
+.fullInputForm {
+    width: 100%;
 }

@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>customers</title>
+    <link rel="stylesheet" th:href="@{/css/normalize.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="header">
+
+</div>
+<div class="main-content">
+    <div class="left-content" id="leftContent">
+        <table class="table-left" id="table-menu-sort">
+            <thead class="left-table-head">
+            <tr class="searching-tr">
+                <td class="idMenu">
+                    <button class="main-tr-buttons yellow-btn" id="resetFilters"
+                            title="Очистить фильтры и сортировку" style="text-align: center">🧹
+                    </button>
+                </td>
+                <td class="customerNameHead">
+                    <label><input type="text" class="search-input" id="customerNameHead"
+                                  placeholder="🔎поиск..."></label>
+                </td>
+                <td class="customerInnHead">
+                    <label><input type="text" class="search-input" id="customerInnHead" placeholder="🔎поиск..."></label>
+                </td>
+                <td class="mainActivityHead">
+                    <label><input type="text" class="search-input" id="mainActivityHead"
+                                  placeholder="🔎поиск..."></label>
+                </td>
+            </tr>
+            <tr class="main-tr">
+                <th data-column="idMenu" class="idMenu" style="text-align: center">#ID</th>
+                <th data-column="customerNameHead" class="customerNameHead">
+                    <button data-column="customerNameHead" type="button" class="main-tr-buttons blue-btn">Наименование
+                    </button>
+                </th>
+                <th data-column="customerInnHead" class="customerInnMHead">
+                    <button data-column="customerInnHead" type="button" class="main-tr-buttons blue-btn">ИНН</button>
+                </th>
+                <th data-column="mainActivityHead" class="mainActivityHead">
+                    <button data-column="mainActivityHead" type="button" class="main-tr-buttons blue-btn">Основной вид
+                        деятельности
+                    </button>
+                </th>
+            </tr>
+            </thead>
+            <tbody class="left-table-body">
+            <tr th:each="cust : ${customers}"
+                th:attr="data-url=@{/customers/{id}(id=${cust.id()})}" class="clickable-row">
+                <td th:text="${cust.id()}"></td>
+                <td th:text="${cust.customerName()}"></td>
+                <td th:text="${cust.customerINNCode()}"></td>
+                <td th:text="${cust.mainActivity()}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="right-content" id="rightContent">
+        <hr>
+        <fieldset>
+            <legend class="legend-head">Форма создания нового Заказчика</legend>
+            <form th:action="@{/customers/create}" th:method="post" th:object="${customer}">
+                <table class="table-right">
+                    <thead class="right-table-head">
+                    <tr>
+                        <th class="numView">#</th>
+                        <th class="attributeView">Атрибут</th>
+                        <th class="parameterForm">Параметр</th>
+                        <th class="commentForm">Комментарий</th>
+                    </tr>
+                    </thead>
+                    <tbody class="right-table-body">
+                    <tr>
+                        <td>001</td>
+                        <td>#ID</td>
+                        <td>Задается автоматически</td>
+                    </tr>
+                    <tr>
+                        <td>002</td>
+                        <td>Наименование</td>
+                        <td>
+                            <label>
+                                <input class="fullInputForm" type="text" th:field="*{customerName}" required>
+                            </label>
+                        </td>
+                        <td class="errors" th:errors="*{customerName}"></td>
+                    </tr>
+                    <tr>
+                        <td>003</td>
+                        <td>ИНН</td>
+                        <td>
+                            <label>
+                                <input class="halfInputForm" type="text"
+                                       id="customerINNCodeCheck" th:field="*{customerINNCode}" required>
+                            </label>
+                        </td>
+                        <td class="errors" th:errors="*{customerINNCode}"></td>
+                    </tr>
+                    <tr>
+                        <td>004</td>
+                        <td>КПП</td>
+                        <td>
+                            <label>
+                                <input class="halfInputForm" type="text"
+                                       id="customerKPPCodeCheck" th:field="*{customerKPPCode}" required>
+                            </label>
+                        </td>
+                        <td class="errors" th:errors="*{customerKPPCode}"></td>
+                    </tr>
+                    <tr>
+                        <td>005</td>
+                        <td>ОГРН</td>
+                        <td>
+                            <label>
+                                <input class="halfInputForm" type="text"
+                                       id="customerOGRNCodeCheck" th:field="*{customerOGRNCode}" required>
+                            </label>
+                        </td>
+                        <td class="errors" th:errors="*{customerOGRNCode}"></td>
+                    </tr>
+                    <tr>
+                        <td>006</td>
+                        <td>Основной вид деятельности</td>
+                        <td>
+                            <label>
+                                <textarea rows="4" th:field="*{mainActivity}" required></textarea>
+                            </label>
+                        </td>
+                        <td class="errors" th:errors="*{mainActivity}"></td>
+                    </tr>
+                    <tr>
+                        <td>007</td>
+                        <td>Юридический адрес</td>
+                        <td>
+                            <label>
+                                <textarea rows="4" th:field="*{legalAddress}" required></textarea>
+                            </label>
+                        </td>
+                        <td class="errors" th:errors="*{legalAddress}"></td>
+                    </tr>
+                    <tr>
+                        <td>008</td>
+                        <td>Электронная почта</td>
+                        <td>
+                            <label>
+                                <input class="halfInputForm" type="email" id="emailCheck" th:field="*{mail}"
+                                       placeholder="name@example.com" required>
+                            </label>
+                        </td>
+                        <td class="errors" th:errors="*{mail}"></td>
+                    </tr>
+                    <tr>
+                        <td>009</td>
+                        <td>Телефон</td>
+                        <td>
+                            <label>
+                                <input class="halfInputForm" type="text" th:field="*{phone}" id="phoneNumber"
+                                       placeholder="+7(___)___-__-__" required>
+                            </label>
+                        </td>
+                        <td class="errors" th:errors="*{phone}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <hr>
+                <div class="form-buttons">
+                    <button type="submit" class="yellow-btn">Создать</button>
+                    <a th:href="@{/customers}">
+                        <button type="button" class="red-btn">Отмена</button>
+                    </a>
+                </div>
+            </form>
+        </fieldset>
+    </div>
+</div>
+<div class="footer">
+
+</div>
+<script th:src="@{/script/open_window.js}"></script>
+<script th:src="@{/script/member_scrolls_positions.js}"></script>
+<script th:src="@{/script/table-menu-sort.js}"></script>
+<script th:src="@{/script/customer_filter.js}"></script>
+<script th:src="@{/script/phone_number_validating.js}"></script>
+<script th:src="@{/script/customer_tax_validating.js}"></script>
+<script th:src="@{/script/email_validating.js}"></script>
+</body>
+</html>

@@ -66,6 +66,20 @@ public class CalculationServiceImpl implements CalculationService {
     }
 
     @Override
+    public List<CalculationDto> findAllCalculationsByCastId(long castId) {
+        return calculationRepository.findAllCalculationsByCastId(castId).stream()
+                .map(calculation -> CalculationDto.builder()
+                        .id(calculation.getId())
+                        .lotName(calculation.getLotName())
+                        .projectName(calculation.getProjectName())
+                        .totalSum(getZeroIfNullOrEmptySumWithSuffix(calculation.getTotalSum()))
+                        .build())
+                .toList().stream()
+                .sorted(Comparator.comparingLong(CalculationDto::id))
+                .toList();
+    }
+
+    @Override
     @Transactional(rollbackFor = {Exception.class})
     public Calculation createCalculation(CalculationPayloadNew payload) {
         return calculationRepository.cerateCalculation(

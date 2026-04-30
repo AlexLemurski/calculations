@@ -8,11 +8,24 @@ public record CustomerDto(
 
         String customerName,
 
-        String customerAddress
+        String customerINNCode,
+
+        String customerKPPCode,
+
+        String customerOGRNCode,
+
+        String mainActivity,
+
+        String legalAddress,
+
+        String mail,
+
+        String phone
 
 ) {
     @Builder
-    public CustomerDto{
+    public CustomerDto {
 
     }
+
 }

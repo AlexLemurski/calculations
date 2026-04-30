@@ -15,6 +15,9 @@
         <a th:href="@{/calculations/create}">
             <button type="button" class="yellow-btn">Создать новую расценку</button>
         </a>
+        <a th:href="@{/customers}">
+            <button type="button" class="blue-btn">Реестр заказчиков</button>
+        </a>
     </div>
 </div>
 <div class="main-content">
@@ -45,14 +48,17 @@
                     <button data-column="lotName" type="button" class="main-tr-buttons blue-btn">Лот</button>
                 </th>
                 <th data-column="projectNameMenu" class="projectNameMenu">
-                    <button data-column="projectNameMenu" type="button" class="main-tr-buttons blue-btn">Наименование</button>
+                    <button data-column="projectNameMenu" type="button" class="main-tr-buttons blue-btn">Наименование
+                    </button>
                 </th>
                 <th data-column="customerNameMenu">
                     <div class="header-buttons">
-                        <button data-column="customerNameMenu" type="button" class="main-tr-buttons blue-btn">Заказчик</button>
+                        <button data-column="customerNameMenu" type="button" class="main-tr-buttons blue-btn">Заказчик
+                        </button>
                         <div class="dropdown-custom-customers" id="customerDropdown">
                             <button type="button" class="main-tr-buttons blue-btn"
-                                    onclick="toggleDropdown()">▼</button>
+                                    onclick="toggleDropdown()">▼
+                            </button>
                             <div class="dropdown-content-customers">
                                 <span th:each="cust : ${customers}">
                                     <label>
@@ -66,15 +72,18 @@
                     </div>
                 </th>
                 <th data-column="locationMenu" class="locationMenu">
-                    <button data-column="locationMenu" type="button" class="main-tr-buttons blue-btn">Локация пр-ва работ
+                    <button data-column="locationMenu" type="button" class="main-tr-buttons blue-btn">Локация пр-ва
+                        работ
                     </button>
                 </th>
                 <th data-column="dateOfCreateMenu" class="dateOfCreateMenu">
                     <div class="header-buttons">
-                        <button data-column="dateOfCreateMenu" type="button" class="main-tr-buttons blue-btn">Дата</button>
+                        <button data-column="dateOfCreateMenu" type="button" class="main-tr-buttons blue-btn">Дата
+                        </button>
                         <div class="dropdown-custom-dateOfCreate" id="dateOfCreateDropdown">
                             <button type="button" class="main-tr-buttons blue-btn"
-                                    onclick="toggleDropdownDateOfCreate()">▼</button>
+                                    onclick="toggleDropdownDateOfCreate()">▼
+                            </button>
                             <div class="dropdown-content-dateOfCreate">
                                 <label>
                                     <input type="date" id="startDate" placeholder="От">

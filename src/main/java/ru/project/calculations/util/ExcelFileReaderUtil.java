@@ -1,6 +1,7 @@
 package ru.project.calculations.util;
 
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -10,6 +11,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.regex.Pattern;
 
 public class ExcelFileReaderUtil {
@@ -43,15 +45,27 @@ public class ExcelFileReaderUtil {
             Sheet sheet = workbook.getSheetAt(0);
             FormulaEvaluator evaluator = workbook.getCreationHelper().createFormulaEvaluator();
             DataFormatter formatter = new DataFormatter();
+
+            // Получение всех объединённых диапазонов
+            List<CellRangeAddress> mergedRegions = sheet.getMergedRegions();
+
             for (int rowIndex = 6; ; rowIndex++) {
                 Row row = sheet.getRow(rowIndex);
                 if (row == null) break;
-                boolean rowHasValue = false;
+
+                // Проверка наличия объединённой ячейки в строке
                 for (int col : columns) {
                     Cell cell = row.getCell(col);
-                    if (cell == null) {
-                        continue;
+                    if (cell == null) continue;
+
+                    // Проверка, входит ли ячейка в объединённый диапазон
+                    for (CellRangeAddress range : mergedRegions) {
+                        if (range.isInRange(rowIndex, col)) {
+                            // Обнаружена объединённая ячейка — отмена загрузки
+                            return false;
+                        }
                     }
+
                     String cellValue;
                     if (cell.getCellType() == CellType.FORMULA) {
                         cellValue = formatter.formatCellValue(cell, evaluator);
@@ -64,11 +78,7 @@ public class ExcelFileReaderUtil {
                         if (!pattern.matcher(cellValue).matches()) {
                             return false;
                         }
-                        rowHasValue = true;
                     }
-                }
-                if (!rowHasValue) {
-                    break;
                 }
             }
             return true;

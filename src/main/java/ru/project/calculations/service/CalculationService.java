@@ -13,6 +13,8 @@ public interface CalculationService {
 
     List<CalculationDto> findAllCalculations();
 
+    List<CalculationDto> findAllCalculationsByCastId(long castId);
+
     Calculation createCalculation(CalculationPayloadNew calculationPayloadNew);
 
     Calculation updateCalculation(CalculationPayloadUpdate calculationPayloadUpdate);

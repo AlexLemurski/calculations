@@ -1,4 +1,5 @@
 spring:
+
   application:
     name: calculations
 
@@ -22,9 +23,19 @@ spring:
     change-log: classpath:/db/changelog/db.changelog-master.xml
 
 server:
-  port: 8050
+  port: 8090
   tomcat:
     max-http-form-post-size: 5242880000
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info, metrics, env, prometheus
+  prometheus:
+    metrics:
+      export:
+        enabled: true
 
 myapp:
   file-storage:

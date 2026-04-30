@@ -4,6 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.project.calculations.dto.customer.CustomerDto;
+import ru.project.calculations.dto.customer.CustomerPayloadNew;
+import ru.project.calculations.dto.customer.CustomerPayloadUpdate;
+import ru.project.calculations.entity.Customer;
+import ru.project.calculations.exception.DeleteEntityDataBaseException;
 import ru.project.calculations.repository.CustomerRepository;
 
 import java.util.Comparator;
@@ -24,7 +28,13 @@ public class CustomerServiceImpl implements CustomerService {
         return CustomerDto.builder()
                 .id(customer.getId())
                 .customerName(customer.getCustomerName())
-                .customerAddress(customer.getCustomerContact())
+                .customerINNCode(customer.getCustomerINNCode())
+                .customerKPPCode(customer.getCustomerKPPCode())
+                .customerOGRNCode(customer.getCustomerOGRNCode())
+                .mainActivity(customer.getMainActivity())
+                .legalAddress(customer.getLegalAddress())
+                .mail(customer.getMail())
+                .phone(customer.getPhone())
                 .build();
     }
 
@@ -35,12 +45,51 @@ public class CustomerServiceImpl implements CustomerService {
                 .map(customer -> CustomerDto.builder()
                         .id(customer.getId())
                         .customerName(customer.getCustomerName())
-                        .customerAddress(customer.getCustomerContact())
+                        .customerINNCode(customer.getCustomerINNCode())
+                        .mainActivity(customer.getMainActivity())
                         .build())
                 .toList().stream()
                 .sorted(Comparator.comparingLong(CustomerDto::id))
                 .toList();
     }
 
+    @Override
+    @Transactional
+    public Customer createCustomer(CustomerPayloadNew payload) {
+        return customerRepository.createCustomer(
+                payload.customerName(),
+                payload.customerINNCode(),
+                payload.customerKPPCode(),
+                payload.customerOGRNCode(),
+                payload.mainActivity(),
+                payload.legalAddress(),
+                payload.mail(),
+                payload.phone());
+    }
+
+    @Override
+    @Transactional
+    public Customer updateCustomer(CustomerPayloadUpdate payload) {
+        return customerRepository.updateCustomer(
+                payload.id(),
+                payload.customerName(),
+                payload.customerINNCode(),
+                payload.customerKPPCode(),
+                payload.customerOGRNCode(),
+                payload.mainActivity(),
+                payload.legalAddress(),
+                payload.mail(),
+                payload.phone());
+    }
+
+    @Override
+    @Transactional
+    public void deleteCustomerById(long id) {
+        try {
+            customerRepository.deleteById(id);
+        } catch (RuntimeException e) {
+            throw new DeleteEntityDataBaseException(id, e.getMessage());
+        }
+    }
 
 }

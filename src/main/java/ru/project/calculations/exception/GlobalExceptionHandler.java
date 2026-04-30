@@ -76,11 +76,11 @@ public class GlobalExceptionHandler {
         return "errors/io-error";
     }
 
-    @ExceptionHandler(CollaboratingWorkbooksEnvironment.WorkbookNotFoundException.class)
-    public String handleWorkbookNotFound(CollaboratingWorkbooksEnvironment.WorkbookNotFoundException exception,
-                                         Model model,
-                                         HttpServletResponse response,
-                                         Locale locale) {
+    @ExceptionHandler
+    public String handleException(CollaboratingWorkbooksEnvironment.WorkbookNotFoundException exception,
+                                  Model model,
+                                  HttpServletResponse response,
+                                  Locale locale) {
         response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
         model.addAttribute("calculations", calculationService.findAllCalculations());
         model.addAttribute("customers", customerService.findAllCustomers());
@@ -89,6 +89,23 @@ public class GlobalExceptionHandler {
                 new Object[]{exception.getMessage()},
                 locale));
         return "errors/io-error";
+    }
+
+    @ExceptionHandler
+    public String handleException(DeleteEntityDataBaseException exception,
+                                  Model model,
+                                  HttpServletResponse response,
+                                  Locale locale) {
+        response.setStatus(HttpStatus.BAD_REQUEST.value());
+        model.addAttribute("customer", customerService.findCustomerById(exception.getId()));
+        model.addAttribute("customers", customerService.findAllCustomers());
+        model.addAttribute("calculationsByCastId", calculationService.findAllCalculationsByCastId(exception.getId()));
+        model.addAttribute("oportunity_exception_message", messageSource.getMessage(
+                "oportunity.exception.message",
+                new Object[0],
+                exception.getMessage(),
+                locale));
+        return "customer/customer-view";
     }
 
 }

@@ -102,88 +102,93 @@
         </table>
     </div>
     <div class="right-content" id="rightContent">
-        <form th:action="@{/calculations/create}" th:object="${calculation}" th:method="post">
-            <table class="table-right">
-                <thead class="right-table-head">
-                <tr>
-                    <th class="numView">#</th>
-                    <th class="attributeView">Атрибут</th>
-                    <th class="parameterForm">Параметр</th>
-                    <th class="commentForm">Комментарий</th>
-                </tr>
-                </thead>
-                <tbody class="right-table-body">
-                <tr>
-                    <td>001</td>
-                    <td>#ID</td>
-                    <td>Задается автоматически</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>002</td>
-                    <td>Лот</td>
-                    <td>
-                        <label>
-                            <textarea rows="4" th:field="*{lotName}" required></textarea>
-                        </label>
-                    </td>
-                    <td class="errors" th:errors="*{lotName}"></td>
-                </tr>
-                <tr>
-                    <td>003</td>
-                    <td>Наименование</td>
-                    <td>
-                        <label>
-                            <textarea rows="4" th:field="*{projectName}" required></textarea>
-                        </label>
-                    </td>
-                    <td class="errors" th:errors="*{projectName}"></td>
-                </tr>
-                <tr>
-                    <td>004</td>
-                    <td>Локация пр-ва работ</td>
-                    <td>
-                        <label>
-                            <textarea rows="4" th:field="*{projectLocation}" required></textarea>
-                        </label>
-                    </td>
-                    <td class="errors" th:errors="*{projectLocation}"></td>
-                </tr>
-                <tr>
-                    <td>005</td>
-                    <td>Заказчик</td>
-                    <td>
-                        <label>
-                            <select class="customer-select select2" th:field="*{customerId}" required>
-                                <option th:each="customer : ${customers}"
-                                        th:value="${customer.id()}"
-                                        th:text="${customer.customerName()}">
-                                </option>
-                            </select>
-                        </label>
-                    </td>
-                </tr>
-                <tr>
-                    <td>006</td>
-                    <td>Дата создания</td>
-                    <td>
-                        <label>
-                            <input id="dateOfCreate" name="dateOfCreate" type="date" th:value="*{dateOfCreate}"
-                                   required>
-                        </label>
-                    </td>
-                    <td class="errors" th:errors="*{dateOfCreate}"></td>
-                </tr>
-                </tbody>
-            </table>
-            <hr>
-            <div class="form-buttons">
-                <button type="submit" class="yellow-btn">Создать</button>
-                <a th:href="@{/calculations}">
-                    <button type="button" class="red-btn">Отмена</button>
-                </a>
-            </div>
-        </form>
+        <hr>
+        <fieldset>
+            <legend class="legend-head">Форма создания новой Расценки</legend>
+            <form th:action="@{/calculations/create}" th:object="${calculation}" th:method="post">
+                <table class="table-right">
+                    <thead class="right-table-head">
+                    <tr>
+                        <th class="numView">#</th>
+                        <th class="attributeView">Атрибут</th>
+                        <th class="parameterForm">Параметр</th>
+                        <th class="commentForm">Комментарий</th>
+                    </tr>
+                    </thead>
+                    <tbody class="right-table-body">
+                    <tr>
+                        <td>001</td>
+                        <td>#ID</td>
+                        <td>Задается автоматически</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>002</td>
+                        <td>Лот</td>
+                        <td>
+                            <label>
+                                <textarea rows="4" th:field="*{lotName}" required></textarea>
+                            </label>
+                        </td>
+                        <td class="errors" th:errors="*{lotName}"></td>
+                    </tr>
+                    <tr>
+                        <td>003</td>
+                        <td>Наименование</td>
+                        <td>
+                            <label>
+                                <textarea rows="4" th:field="*{projectName}" required></textarea>
+                            </label>
+                        </td>
+                        <td class="errors" th:errors="*{projectName}"></td>
+                    </tr>
+                    <tr>
+                        <td>004</td>
+                        <td>Локация пр-ва работ</td>
+                        <td>
+                            <label>
+                                <textarea rows="4" th:field="*{projectLocation}" required></textarea>
+                            </label>
+                        </td>
+                        <td class="errors" th:errors="*{projectLocation}"></td>
+                    </tr>
+                    <tr>
+                        <td>005</td>
+                        <td>Заказчик</td>
+                        <td>
+                            <label>
+                                <select class="customer-select select2" th:field="*{customerId}" required>
+                                    <option th:each="customer : ${customers}"
+                                            th:value="${customer.id()}"
+                                            th:text="${customer.customerName() + ' ' + customer.customerINNCode()}">
+                                    </option>
+                                </select>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>006</td>
+                        <td>Дата создания</td>
+                        <td>
+                            <label>
+                                <input id="dateOfCreate" name="dateOfCreate" type="date" th:value="*{dateOfCreate}"
+                                       required>
+                            </label>
+                        </td>
+                        <td class="errors" th:errors="*{dateOfCreate}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <hr>
+                <div class="form-buttons">
+                    <button type="submit" class="yellow-btn">Создать</button>
+                    <a th:href="@{/calculations}">
+                        <button type="button" class="red-btn">Отмена</button>
+                    </a>
+                </div>
+            </form>
+        </fieldset>
+
     </div>
 </div>
 <div class="footer">

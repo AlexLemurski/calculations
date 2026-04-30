@@ -1,13 +1,4 @@
 spring:
-  boot:
-    admin:
-      client:
-        enabled: true
-        instance:
-          name: calculations-app
-          service-host-type: ip
-        url: http://localhost:8095
-
 
   application:
     name: calculations
@@ -40,17 +31,21 @@ server:
   tomcat:
     max-http-form-post-size: 5242880000
 
-myapp:
-  file-storage:
-    directory: C:\Users\user\Desktop\files
-
 management:
-  health:
-    livenessstate:
-      enabled: true
-    readinessstate:
-      enabled: true
   endpoints:
     web:
       exposure:
-        include: '*'
+        include:
+        - health
+        - info
+        - metrics
+        - env
+        - prometheus
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+
+myapp:
+  file-storage:
+    directory: C:\Users\user\Desktop\files

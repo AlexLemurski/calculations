@@ -15,6 +15,9 @@
         <a th:href="@{/calculations/create}">
             <button type="button" class="yellow-btn">Создать новую расценку</button>
         </a>
+        <a th:href="@{/customers}">
+            <button type="button" class="blue-btn">Реестр заказчиков</button>
+        </a>
     </div>
 </div>
 <div class="main-content">
@@ -160,7 +163,9 @@
                 <tr>
                     <td>005</td>
                     <td>Заказчик</td>
-                    <td th:text="${calculation.customerName()}"></td>
+                    <td><a th:href="@{/customers/{id}(id=${calculation.customerId()})}">
+                        <button type="button" class="blue-btn" style="width: 50%; text-align: left">
+                            <span th:text="${calculation.customerName()}"></span></button></a></td>
                 </tr>
                 <tr>
                     <td>006</td>
@@ -171,35 +176,6 @@
             </table>
         </fieldset>
         <hr>
-<!--        <fieldset>-->
-<!--            <legend class="legend-head">Результат расценки лота объемов работ</legend>-->
-<!--            <fieldset>-->
-<!--                <legend>Итоговые показатели</legend>-->
-<!--                <table class="table-right-result important-info">-->
-<!--                    <thead class="right-table-head">-->
-<!--                    <tr>-->
-<!--                        <th class="attribute-result">Атрибут</th>-->
-<!--                        <th class="parameter-result">Параметр</th>-->
-<!--                    </tr>-->
-<!--                    </thead>-->
-<!--                    <tbody>-->
-<!--                    <tr>-->
-<!--                        <td>Сумма итого:</td>-->
-<!--                        <td th:text="${calculation.totalSum()}"></td>-->
-<!--                    </tr>-->
-<!--                    </tbody>-->
-<!--                </table>-->
-<!--            </fieldset>-->
-<!--            <div class="accordion-result-works" data-id="section101">-->
-<!--                <div class="accordion-header-result-works">Детализация расценки</div>-->
-<!--                <div class="accordion-content-result-works">-->
-<!--                    <fieldset>-->
-<!--                        <legend>Детализация по разделам проекта</legend>-->
-<!--                    </fieldset>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </fieldset>-->
-<!--        <hr>-->
         <fieldset>
             <legend class="legend-head">Результат расценки лота оборудования и материалов</legend>
             <fieldset>

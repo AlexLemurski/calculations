@@ -36,6 +36,13 @@ public interface CalculationRepository extends CrudRepository<Calculation, Long>
     List<Calculation> findAllCalculations();
 
     @Query(value = """
+            select cal.c_id, cal.c_lot_name, cal.c_project_name, cal.c_total_sum
+            from data.t_calculations as cal
+            where cal.c_customer_id =:castId
+            """)
+    List<Calculation> findAllCalculationsByCastId(@Param("castId") long castId);
+
+    @Query(value = """
             insert into data.t_calculations
             (c_lot_name, c_project_name, c_project_location, c_date_of_create, c_customer_id, c_resource_folder)
             values (:lotName, :projectName, :projectLocation, :dateOfCreate, :customerId, :resourceFolder)
