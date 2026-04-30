@@ -27,14 +27,17 @@
                     </button>
                 </td>
                 <td class="lotName">
-                    <label><input type="text" class="search-input" id="lotName" placeholder="🔎поиск..."></label>
+                    <label><input type="text" class="search-input"
+                                  id="lotName" placeholder="🔎поиск..."></label>
                 </td>
                 <td class="projectNameMenu">
-                    <label><input type="text" class="search-input" id="projectName" placeholder="🔎поиск..."></label>
+                    <label><input type="text" class="search-input"
+                                  id="projectName" placeholder="🔎поиск..."></label>
                 </td>
                 <td class="customerNameMenu"></td>
                 <td class="locationMenu">
-                    <label><input type="text" class="search-input" id="location" placeholder="🔎поиск..."></label>
+                    <label><input type="text" class="search-input"
+                                  id="location" placeholder="🔎поиск..."></label>
                 </td>
                 <td class="dateOfCreateMenu"></td>
             </tr>
@@ -44,14 +47,19 @@
                     <button data-column="lotName" type="button" class="main-tr-buttons blue-btn">Лот</button>
                 </th>
                 <th data-column="projectNameMenu" class="projectNameMenu">
-                    <button data-column="projectNameMenu" type="button" class="main-tr-buttons blue-btn">Наименование</button>
+                    <button data-column="projectNameMenu" type="button"
+                            class="main-tr-buttons blue-btn">Наименование
+                    </button>
                 </th>
                 <th data-column="customerNameMenu">
                     <div class="header-buttons">
-                        <button data-column="customerNameMenu" type="button" class="main-tr-buttons blue-btn">Заказчик</button>
+                        <button data-column="customerNameMenu" type="button"
+                                class="main-tr-buttons blue-btn">Заказчик
+                        </button>
                         <div class="dropdown-custom-customers" id="customerDropdown">
                             <button type="button" class="main-tr-buttons blue-btn"
-                                    onclick="toggleDropdown()">▼</button>
+                                    onclick="toggleDropdown()">▼
+                            </button>
                             <div class="dropdown-content-customers">
                                 <span th:each="cust : ${customers}">
                                     <label>
@@ -65,15 +73,19 @@
                     </div>
                 </th>
                 <th data-column="locationMenu" class="locationMenu">
-                    <button data-column="locationMenu" type="button" class="main-tr-buttons blue-btn">Локация пр-ва работ
+                    <button data-column="locationMenu" type="button"
+                            class="main-tr-buttons blue-btn">Локация пр-ва работ
                     </button>
                 </th>
                 <th data-column="dateOfCreateMenu" class="dateOfCreateMenu">
                     <div class="header-buttons">
-                        <button data-column="dateOfCreateMenu" type="button" class="main-tr-buttons blue-btn">Дата</button>
+                        <button data-column="dateOfCreateMenu" type="button"
+                                class="main-tr-buttons blue-btn">Дата
+                        </button>
                         <div class="dropdown-custom-dateOfCreate" id="dateOfCreateDropdown">
                             <button type="button" class="main-tr-buttons blue-btn"
-                                    onclick="toggleDropdownDateOfCreate()">▼</button>
+                                    onclick="toggleDropdownDateOfCreate()">▼
+                            </button>
                             <div class="dropdown-content-dateOfCreate">
                                 <label>
                                     <input type="date" id="startDate" placeholder="От">
@@ -176,7 +188,8 @@
                         <td>Дата создания</td>
                         <td>
                             <label>
-                                <input id="dateOfCreate" name="dateOfCreate" type="date" th:value="*{dateOfCreate}" required>
+                                <input id="dateOfCreate" name="dateOfCreate"
+                                       type="date" th:value="*{dateOfCreate}" required>
                             </label>
                         </td>
                         <td class="errors" th:errors="*{dateOfCreate}"></td>
