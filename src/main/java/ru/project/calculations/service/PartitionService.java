@@ -8,6 +8,4 @@ public interface PartitionService {
 
     List<PartitionDto> findAllPartitionByCalcId(long calcId);
 
-    void deleteAllPartitionById(long calcId);
-
 }

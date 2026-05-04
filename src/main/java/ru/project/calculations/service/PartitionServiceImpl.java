@@ -37,9 +37,4 @@ public class PartitionServiceImpl implements PartitionService {
                 .toList();
     }
 
-    @Override
-    @Transactional
-    public void deleteAllPartitionById(long calcId) {
-        partitionRepository.deleteAllPartitionByCalcId(calcId);
-    }
 }
