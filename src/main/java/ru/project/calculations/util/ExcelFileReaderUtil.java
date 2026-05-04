@@ -45,27 +45,18 @@ public class ExcelFileReaderUtil {
             Sheet sheet = workbook.getSheetAt(0);
             FormulaEvaluator evaluator = workbook.getCreationHelper().createFormulaEvaluator();
             DataFormatter formatter = new DataFormatter();
-
-            // Получение всех объединённых диапазонов
             List<CellRangeAddress> mergedRegions = sheet.getMergedRegions();
-
             for (int rowIndex = 6; ; rowIndex++) {
                 Row row = sheet.getRow(rowIndex);
                 if (row == null) break;
-
-                // Проверка наличия объединённой ячейки в строке
                 for (int col : columns) {
                     Cell cell = row.getCell(col);
                     if (cell == null) continue;
-
-                    // Проверка, входит ли ячейка в объединённый диапазон
                     for (CellRangeAddress range : mergedRegions) {
                         if (range.isInRange(rowIndex, col)) {
-                            // Обнаружена объединённая ячейка — отмена загрузки
                             return false;
                         }
                     }
-
                     String cellValue;
                     if (cell.getCellType() == CellType.FORMULA) {
                         cellValue = formatter.formatCellValue(cell, evaluator);

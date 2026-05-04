@@ -2,16 +2,11 @@ package ru.project.calculations.exception;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.apache.poi.ss.formula.CollaboratingWorkbooksEnvironment;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import ru.project.calculations.dto.customer.CustomerPayloadNew;
-import ru.project.calculations.entity.Uncalculated;
 import ru.project.calculations.service.CalculationService;
 import ru.project.calculations.service.CustomerService;
 import ru.project.calculations.service.DocumentResultService;
