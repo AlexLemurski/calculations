@@ -66,6 +66,7 @@ public class CalculationServiceImpl implements CalculationService {
     }
 
     @Override
+    @Transactional
     public List<CalculationDto> findAllCalculationsByCastId(long castId) {
         return calculationRepository.findAllCalculationsByCastId(castId).stream()
                 .map(calculation -> CalculationDto.builder()
@@ -104,7 +105,7 @@ public class CalculationServiceImpl implements CalculationService {
     }
 
     @Override
-    @Transactional(rollbackFor = {Exception.class})
+    @Transactional
     public void deleteeCalculation(long id) {
         calculationRepository.deleteById(id);
     }

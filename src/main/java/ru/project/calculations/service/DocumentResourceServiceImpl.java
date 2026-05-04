@@ -44,7 +44,7 @@ public class DocumentResourceServiceImpl implements DocumentResourceService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional
     public void saveDocumentResource(long id,
                                      DocumentIndex documentIndex,
                                      MultipartFile file) {
@@ -121,7 +121,7 @@ public class DocumentResourceServiceImpl implements DocumentResourceService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional
     public void deleteDocumentResource(long id) {
         var documentResource = documentResourceRepository.findDocumentResourceById(id).orElseThrow(
                 () -> new NoSuchElementException("element.not.found"));
@@ -147,7 +147,7 @@ public class DocumentResourceServiceImpl implements DocumentResourceService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional
     public void deleteAllDocumentResource(long id, DocumentIndex documentIndex) {
         var documentResource = documentResourceRepository.findAllDocResourceByCalcIdAndIndex(id, documentIndex);
         for (var document : documentResource) {

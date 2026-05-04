@@ -35,7 +35,7 @@ public class DocumentResultServiceImpl implements DocumentResultService {
 
     @SneakyThrows
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional
     public void saveDocumentResult(long id, MultipartFile file) {
         try {
             saveAllDataDocumentResult(
@@ -103,7 +103,7 @@ public class DocumentResultServiceImpl implements DocumentResultService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional
     public void deleteDocumentResult(long id) {
         var documentResult = documentResultRepository.findDocumentResultById(id).orElse(null);
         if (documentResult != null) {
@@ -126,7 +126,7 @@ public class DocumentResultServiceImpl implements DocumentResultService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional
     public void deleteDocumentResultCascade(long id) {
         var documentResult = documentResultRepository.findAllDocResultByCalcId(id).orElse(null);
         if (documentResult != null) {
