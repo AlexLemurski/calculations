@@ -1,7 +1,6 @@
 package ru.project.calculations.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.relational.core.conversion.DbActionExecutionException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -9,7 +8,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.project.calculations.dto.customer.CustomerPayloadNew;
 import ru.project.calculations.dto.customer.CustomerPayloadUpdate;
-import ru.project.calculations.exception.DeleteEntityDataBaseException;
 import ru.project.calculations.service.CalculationService;
 import ru.project.calculations.service.CustomerService;
 
