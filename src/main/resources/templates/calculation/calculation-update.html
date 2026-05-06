@@ -116,6 +116,7 @@
     </div>
     <div class="right-content" id="rightContent">
         <hr>
+        <div th:if="${successMessage}" th:text="#{${successMessage}}" class="success"></div>
         <fieldset>
             <legend class="legend-head">Форма обновления основной информации о Расценке</legend>
             <form th:action="@{/calculations/update}" th:object="${calculation}" th:method="post">

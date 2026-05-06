@@ -6,6 +6,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.project.calculations.dto.calculation.CalculationPayloadNew;
 import ru.project.calculations.dto.calculation.CalculationPayloadUpdate;
 import ru.project.calculations.enums.ContentType;
@@ -94,13 +95,15 @@ public class CalculationController {
     @PostMapping("/create")
     public String createCalculation(@Validated @ModelAttribute("calculation") CalculationPayloadNew payload,
                                     BindingResult bindingResult,
-                                    Model model) {
+                                    Model model,
+                                    RedirectAttributes attributes) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("calculations", calculationService.findAllCalculations());
             model.addAttribute("customers", customerService.findAllCustomers());
             return "calculation/calculation-create";
         } else {
             var calculation = calculationService.createCalculation(payload);
+            attributes.addFlashAttribute("successMessage", "success.object.create");
             return "redirect:/calculations/%d".formatted(calculation.getId());
         }
     }
@@ -117,13 +120,15 @@ public class CalculationController {
     @PostMapping("/update")
     public String updateCalculation(@Validated @ModelAttribute("calculation") CalculationPayloadUpdate payload,
                                     BindingResult bindingResult,
-                                    Model model) {
+                                    Model model,
+                                    RedirectAttributes attributes) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("calculations", calculationService.findAllCalculations());
             model.addAttribute("customers", customerService.findAllCustomers());
             return "calculation/calculation-update";
         } else {
             var calculation = calculationService.updateCalculation(payload);
+            attributes.addFlashAttribute("successMessage", "success.object.update");
             return "redirect:/calculations/update/%d".formatted(calculation.getId());
         }
     }
@@ -154,13 +159,15 @@ public class CalculationController {
     }
 
     @GetMapping("/delete/{id:\\d++}")
-    public String deleteCalculation(@PathVariable long id) {
+    public String deleteCalculation(@PathVariable long id,
+                                    RedirectAttributes attributes) {
         var calculation = calculationService.findCalculationById(id);
         documentResultService.deleteDocumentResultCascade(id);
         uncalculatedService.deleteAllUncalculatedById(id);
         documentResourceService.deleteAllDocumentResource(id);
         calculationService.deleteeCalculation(id);
         deleteFolders(calculation.resourceFolder());
+        attributes.addFlashAttribute("successMessage", "success.object.deleted");
         return "redirect:/calculations";
     }
 

@@ -161,10 +161,10 @@
                     <tbody class="right-table-body">
                     <tr th:each="calcByCastId : ${calculationsByCastId}">
                         <td>
-                            <a th:href="@{/calculations/{id}(id=${calcByCastId.id()})}">
+                            <a th:href="@{/calculations/{id}(id=${calcByCastId.id()})}"
+                               th:title="${'Проект: ' + calcByCastId.projectName()}">
                                 <button type="button" class="blue-btn" style="width: 60%; text-align: left">
-                                    <span th:text="${calcByCastId.lotName() + ' - ' + calcByCastId.totalSum()}"
-                                          th:title="${'Проект: ' + calcByCastId.projectName()}"></span>
+                                    <span th:text="${calcByCastId.lotName() + ' - ' + calcByCastId.totalSum()}"></span>
                                 </button>
                             </a>
                         </td>

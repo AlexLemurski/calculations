@@ -208,6 +208,10 @@ th, td, p {
     color: darkred;
 }
 
+.success{
+    color: green;
+}
+
 .left-table-head {
     position: sticky;
     top: 0;

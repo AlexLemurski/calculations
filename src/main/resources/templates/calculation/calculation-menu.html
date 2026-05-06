@@ -112,6 +112,7 @@
         </table>
     </div>
     <div class="right-content" id="rightContent">
+        <div th:if="${successMessage}" th:text="#{${successMessage}}" class="success"></div>
         Для отображения деталей выберите нужный элемент слева
     </div>
 </div>

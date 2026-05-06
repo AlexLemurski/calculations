@@ -2,6 +2,8 @@ package ru.project.calculations.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.data.relational.core.conversion.DbActionExecutionException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.project.calculations.dto.customer.CustomerDto;
@@ -70,8 +72,8 @@ public class CustomerServiceImpl implements CustomerService {
                     payload.legalAddress(),
                     payload.mail(),
                     payload.phone());
-        } catch (RuntimeException e) {
-            throw new UniqueParameterCreateException("unique.parameter.exception", payload);
+        } catch (DuplicateKeyException e) {
+            throw new UniqueParameterCreateException(e.getMessage(), payload);
         }
     }
 
@@ -89,8 +91,8 @@ public class CustomerServiceImpl implements CustomerService {
                     payload.legalAddress(),
                     payload.mail(),
                     payload.phone());
-        } catch (RuntimeException e) {
-            throw new UniqueParameterUpdateException("unique.parameter.exception", payload);
+        } catch (DuplicateKeyException e) {
+            throw new UniqueParameterUpdateException(e.getMessage(), payload);
         }
     }
 
@@ -99,7 +101,7 @@ public class CustomerServiceImpl implements CustomerService {
     public void deleteCustomerById(long id) {
         try {
             customerRepository.deleteById(id);
-        } catch (RuntimeException e) {
+        } catch (DbActionExecutionException e) {
             throw new DeleteEntityDataBaseException(id, e.getMessage());
         }
     }

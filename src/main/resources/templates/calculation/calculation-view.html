@@ -123,6 +123,7 @@
             </a>
         </div>
         <hr>
+        <div th:if="${successMessage}" th:text="#{${successMessage}}" class="success"></div>
         <fieldset>
             <legend class="legend-head">Основные параметры лота</legend>
             <div>
