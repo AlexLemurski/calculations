@@ -11,8 +11,9 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @EqualsAndHashCode
-@NoArgsConstructor
-@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder
 @Table(schema = "data", name = "t_calculations")
 public class Calculation {
 

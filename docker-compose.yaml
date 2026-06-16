@@ -81,7 +81,7 @@ services:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
     ports:
       - "9090:9090"
-    restart: unless-stopped
+#    restart: unless-stopped
     networks:
       - calculations_network
 
@@ -94,7 +94,7 @@ services:
       - GF_SECURITY_ADMIN_PASSWORD=${GF_SECURITY_ADMIN_PASSWORD}
     volumes:
       - grafana_data:/var/lib/grafana
-    restart: unless-stopped
+#    restart: unless-stopped
     networks:
       - calculations_network
 

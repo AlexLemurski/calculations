@@ -1,14 +1,12 @@
 package ru.project.calculations.service;
 
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import ru.project.calculations.dto.document_result.DocumentResultDto;
-import ru.project.calculations.exception.CollaborationExcelException;
 import ru.project.calculations.exception.DocumentsIOException;
 import ru.project.calculations.repository.CalculationRepository;
 import ru.project.calculations.repository.DocumentResultRepository;
@@ -33,7 +31,6 @@ public class DocumentResultServiceImpl implements DocumentResultService {
     private final PartitionRepository partitionRepository;
     private final UncalculatedRepository uncalculatedRepository;
 
-    @SneakyThrows
     @Override
     @Transactional
     public void saveDocumentResult(long id, MultipartFile file) {
@@ -47,8 +44,6 @@ public class DocumentResultServiceImpl implements DocumentResultService {
                     file);
         } catch (IOException | NumberFormatException e) {
             throw new DocumentsIOException("io.exception.message");
-        } catch (Exception e) {
-            throw new CollaborationExcelException(id, "collaborating.exception.warning");
         }
     }
 

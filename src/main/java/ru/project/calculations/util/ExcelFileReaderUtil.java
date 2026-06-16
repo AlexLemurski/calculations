@@ -19,7 +19,10 @@ public class ExcelFileReaderUtil {
     public ExcelFileReaderUtil() {
     }
 
-    public static String getValueOfEquipments(Workbook workbook, Sheet sheet, int rowIndex, int columnIndex) {
+    public static String getValueOfEquipments(Workbook workbook,
+                                              Sheet sheet,
+                                              int rowIndex,
+                                              int columnIndex) {
         String value = null;
         FormulaEvaluator evaluator = workbook.getCreationHelper().createFormulaEvaluator();
         DataFormatter formatter = new DataFormatter();
@@ -38,8 +41,12 @@ public class ExcelFileReaderUtil {
     }
 
     public static boolean validateExcelFile(MultipartFile file) throws IOException {
-        Pattern pattern = Pattern.compile("^[0-9\\s\\u00A0,.%]+$");
+        Pattern patternDocumentType = Pattern.compile("(СО|ВОМ|ВР|ОЛ|ТЗ|АЛ)");
+        Pattern patternMainContent = Pattern.compile("^[0-9\\s\\u00A0,.%]+$");
+
+        int column = 2;
         int[] columns = {4, 5, 6, 7};
+
         try (InputStream is = file.getInputStream();
              var workbook = WorkbookFactory.create(is)) {
             Sheet sheet = workbook.getSheetAt(0);
@@ -48,28 +55,28 @@ public class ExcelFileReaderUtil {
             List<CellRangeAddress> mergedRegions = sheet.getMergedRegions();
             for (int rowIndex = 6; ; rowIndex++) {
                 Row row = sheet.getRow(rowIndex);
-                if (row == null) break;
+                if (row == null) break; // конец строк
+
+                Cell cellDocType = row.getCell(column);
+                if (cellDocType == null) continue;
+                for (CellRangeAddress range : mergedRegions) {
+                    if (range.isInRange(rowIndex, column)) return false;
+                }
+                String cellValueDocType = formatter.formatCellValue(cellDocType);
+                if (cellValueDocType.trim().isEmpty()) break;
+                if (!patternDocumentType.matcher(cellValueDocType).matches()) return false;
+
                 for (int col : columns) {
-                    Cell cell = row.getCell(col);
-                    if (cell == null) continue;
+                    Cell cellMainContent = row.getCell(col);
+                    if (cellMainContent == null) continue;
                     for (CellRangeAddress range : mergedRegions) {
-                        if (range.isInRange(rowIndex, col)) {
-                            return false;
-                        }
+                        if (range.isInRange(rowIndex, col)) return false;
                     }
-                    String cellValue;
-                    if (cell.getCellType() == CellType.FORMULA) {
-                        cellValue = formatter.formatCellValue(cell, evaluator);
-                    } else {
-                        cellValue = formatter.formatCellValue(cell);
-                    }
-                    if (cellValue.trim().isEmpty()) {
-                        return true;
-                    } else {
-                        if (!pattern.matcher(cellValue).matches()) {
-                            return false;
-                        }
-                    }
+                    String cellValueMainContent = cellMainContent.getCellType() == CellType.FORMULA
+                            ? formatter.formatCellValue(cellMainContent, evaluator)
+                            : formatter.formatCellValue(cellMainContent);
+                    if (cellValueMainContent.trim().isEmpty()) continue;
+                    if (!patternMainContent.matcher(cellValueMainContent).matches()) return false;
                 }
             }
             return true;
