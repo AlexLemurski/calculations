@@ -27,8 +27,8 @@ public class Calculation {
     @Column("c_project_name")
     private String projectName;
 
-    @Column("c_project_location")
-    private String projectLocation;
+	@Column("c_project_location")
+	private String projectLocation;
 
     @Column("c_date_of_create")
     private LocalDate dateOfCreate;
