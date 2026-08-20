@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 
 @Getter
 @Setter
-@EqualsAndHashCode
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
@@ -19,6 +19,7 @@ public class Partition {
 
     @Id
     @Column("c_id")
+    @EqualsAndHashCode.Include
     private long id;
 
     @Column("c_content_type")

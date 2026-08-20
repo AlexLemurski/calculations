@@ -7,7 +7,7 @@ import org.springframework.data.relational.core.mapping.Table;
 
 @Getter
 @Setter
-@EqualsAndHashCode
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
@@ -16,6 +16,7 @@ public class DocumentResult {
 
     @Id
     @Column("c_id")
+    @EqualsAndHashCode.Include
     private long id;
 
     @Column("c_doc_name")

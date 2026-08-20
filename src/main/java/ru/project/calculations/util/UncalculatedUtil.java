@@ -9,7 +9,7 @@ import java.util.List;
 
 import static ru.project.calculations.util.ExcelFileReaderUtil.getValueOfEquipments;
 
-public class UncalculatedUtil {
+public final class UncalculatedUtil {
 
     private UncalculatedUtil() {
     }

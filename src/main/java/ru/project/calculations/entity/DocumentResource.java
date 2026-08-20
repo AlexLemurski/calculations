@@ -12,7 +12,7 @@ import java.util.List;
 
 @Getter
 @Setter
-@EqualsAndHashCode
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
@@ -21,6 +21,7 @@ public class DocumentResource {
 
     @Id
     @Column("c_id")
+    @EqualsAndHashCode.Include
     private long id;
 
     @Column("c_doc_name")

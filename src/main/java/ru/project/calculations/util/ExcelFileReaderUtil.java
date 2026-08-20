@@ -14,7 +14,7 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.regex.Pattern;
 
-public class ExcelFileReaderUtil {
+public final class ExcelFileReaderUtil {
 
     public ExcelFileReaderUtil() {
     }

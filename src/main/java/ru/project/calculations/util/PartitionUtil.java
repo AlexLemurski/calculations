@@ -11,7 +11,7 @@ import java.util.List;
 
 import static ru.project.calculations.util.ExcelFileReaderUtil.*;
 
-public class PartitionUtil {
+public final class PartitionUtil {
 
     private PartitionUtil() {
     }

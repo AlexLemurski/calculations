@@ -12,7 +12,7 @@ import java.util.UUID;
 
 import static ru.project.calculations.util.ExcelFileReaderUtil.*;
 
-public class CalculationUtil {
+public final class CalculationUtil {
 
     private CalculationUtil() {
     }
@@ -20,21 +20,22 @@ public class CalculationUtil {
     public static void updateCalculationResultData(Calculation calculation,
                                                    Workbook workbook,
                                                    Sheet sheet) {
+        String regex = "[\\s\\u00A0]+";
         calculation.setTotalSum(new BigDecimal(removeAfterLastDigit(
                 getValueOfEquipments(workbook, sheet, 3, 4)
-                        .replaceAll("[\\s\\u00A0]+", "")
+                        .replaceAll(regex, "")
                         .replace(",", "."))));
         calculation.setCalculatedPositionCount(Integer.parseInt(removeAfterLastDigit(
                 getValueOfEquipments(workbook, sheet, 3, 5)
                         .replaceAll("[,.].*", "")
-                        .replaceAll("[\\s\\u00A0]+", ""))));
+                        .replaceAll(regex, ""))));
         calculation.setTotalPositionCount(Integer.parseInt(removeAfterLastDigit(
                 getValueOfEquipments(workbook, sheet, 3, 6)
                         .replaceAll("[,.].*", "")
-                        .replaceAll("[\\s\\u00A0]+", ""))));
+                        .replaceAll(regex, ""))));
         calculation.setTotalPercent(Double.parseDouble(trimAfterLastDigit(
                 removeAfterLastDigit(getValueOfEquipments(workbook, sheet, 3, 7)
-                        .replaceAll("[\\s\\u00A0]+", "")
+                        .replaceAll(regex, "")
                         .replace(",", ".")))));
     }
 

@@ -3,7 +3,6 @@ package ru.project.calculations.dto.calculation;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Size;
-import lombok.Builder;
 
 import java.time.LocalDate;
 

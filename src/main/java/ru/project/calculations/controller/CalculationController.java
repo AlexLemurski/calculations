@@ -28,7 +28,7 @@ public class CalculationController {
     private final PartitionService partitionService;
     private final UncalculatedService uncalculatedService;
 
-    private void getAllResourceDocuments(@PathVariable long id,
+    private void getAllResourceDocuments(long id,
                                          Model model) {
         var mainDocuments = documentResourceService.findAllDocResourceByCalcIdAndIndex(id, MAIN_DOC);
         model.addAttribute("mainDocuments", mainDocuments);
