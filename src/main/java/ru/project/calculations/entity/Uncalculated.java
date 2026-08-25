@@ -17,7 +17,7 @@ public class Uncalculated {
     @Id
     @Column("c_id")
     @EqualsAndHashCode.Include
-    private long id;
+    private Long id;
 
     @Column("c_position")
     private String position;

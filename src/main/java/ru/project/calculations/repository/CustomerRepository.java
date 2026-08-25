@@ -27,6 +27,13 @@ public interface CustomerRepository extends CrudRepository<Customer, Long> {
     List<Customer> findAllCustomers();
 
     @Query(value = """
+		select cas.c_id, cas.c_customer_name
+		from data.t_customers as cas
+		where cas.c_id in (:ids)
+		""")
+    List<Customer> findAllCustomersByIds(@Param("ids") List<Long> ids);
+
+    @Query(value = """
             insert into data.t_customers
             (c_customer_name, c_inn_code, c_kpp_code, c_ogrn_code, c_main_activity, c_legal_address, c_mail, c_phone)
             values (:customerName, :customerINNCode, :customerKPPCode, :customerOGRNCode, :mainActivity,

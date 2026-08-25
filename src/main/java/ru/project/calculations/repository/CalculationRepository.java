@@ -16,22 +16,18 @@ import java.util.Optional;
 public interface CalculationRepository extends CrudRepository<Calculation, Long> {
 
     @Query(value = """
-            select cal.c_id, cal.c_lot_name, cal.c_project_name, cal.c_project_location, c_total_sum,
-                   c_calculated_pos_count, c_total_pos_count, c_total_pos_percent, c_resource_folder,
-                   cal.c_date_of_create, cal.c_customer_id,
-                   cus.c_customer_name as customer_name
-            from data.t_calculations as cal
-            left join data.t_customers as cus on cal.c_customer_id = cus.c_id
-            where cal.c_id = :id
-            """)
+		select cal.c_id, cal.c_lot_name, cal.c_project_name, cal.c_project_location, c_total_sum,
+		       c_calculated_pos_count, c_total_pos_count, c_total_pos_percent, c_resource_folder,
+		       cal.c_date_of_create, cal.c_customer_id
+		from data.t_calculations as cal
+		where cal.c_id = :id
+		""")
     Optional<Calculation> findCalculationById(@Param("id") long id);
 
     @Query(value = """
             select cal.c_id, cal.c_lot_name, cal.c_project_name, cal.c_project_location,
-                   cal.c_date_of_create, cal.c_customer_id,
-                   cus.c_customer_name as customer_name
+                   cal.c_date_of_create, cal.c_customer_id
             from data.t_calculations as cal
-            left join data.t_customers as cus on cal.c_customer_id = cus.c_id
             """)
     List<Calculation> findAllCalculations();
 

@@ -17,7 +17,7 @@ public class DocumentResult {
     @Id
     @Column("c_id")
     @EqualsAndHashCode.Include
-    private long id;
+    private Long id;
 
     @Column("c_doc_name")
     private String docName;

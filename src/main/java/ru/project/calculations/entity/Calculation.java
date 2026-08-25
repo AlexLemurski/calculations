@@ -20,7 +20,7 @@ public class Calculation {
 	@Id
 	@Column("c_id")
 	@EqualsAndHashCode.Include
-	private long id;
+	private Long id;
 
 	@Column("c_lot_name")
 	private String lotName;
@@ -51,7 +51,5 @@ public class Calculation {
 
 	@Column("c_customer_id")
 	private long customerId;
-
-	private String customerName;
 
 }

@@ -17,7 +17,7 @@ public class Customer {
     @Id
     @Column("c_id")
     @EqualsAndHashCode.Include
-    private long id;
+    private Long id;
 
     @Column("c_customer_name")
     private String customerName;

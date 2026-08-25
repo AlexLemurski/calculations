@@ -20,7 +20,7 @@ public class Partition {
     @Id
     @Column("c_id")
     @EqualsAndHashCode.Include
-    private long id;
+    private Long id;
 
     @Column("c_content_type")
     private ContentType contentType;
