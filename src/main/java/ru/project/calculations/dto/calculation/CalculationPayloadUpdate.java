@@ -8,24 +8,26 @@ import java.time.LocalDate;
 
 public record CalculationPayloadUpdate(
 
-        long id,
+	long id,
 
-        @NotBlank
-        @Size(min = 2, max = 1000)
-        String lotName,
+	String status,
 
-        @NotBlank
-        @Size(min = 2, max = 3000)
-        String projectName,
+	@NotBlank
+	@Size(min = 2, max = 1000)
+	String lotName,
 
-        @NotBlank
-        @Size(min = 2, max = 1000)
-        String projectLocation,
+	@NotBlank
+	@Size(min = 2, max = 3000)
+	String projectName,
 
-        @PastOrPresent
-        LocalDate dateOfCreate,
+	@NotBlank
+	@Size(min = 2, max = 1000)
+	String projectLocation,
 
-        Long customerId
+	@PastOrPresent
+	LocalDate dateOfCreate,
+
+	Long customerId
 
 ) {
 

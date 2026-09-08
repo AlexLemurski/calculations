@@ -6,9 +6,29 @@ body {
 }
 
 .header {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
     align-items: center;
     height: 3vh;
     background-color: lightslategray;
+}
+
+.header .left {
+    display: flex;
+    grid-column: 1;
+    justify-self: start;
+}
+
+.header .center {
+    display: flex;
+    grid-column: 2;
+    justify-self: center;
+}
+
+.header .right {
+    display: flex;
+    grid-column: 3;
+    justify-self: end;
 }
 
 .header-buttons {
@@ -156,6 +176,10 @@ th, td, p {
     width: 40%;
 }
 
+.status-select {
+    width: 50%;
+}
+
 .customer-select {
     width: 100%;
 }
@@ -208,7 +232,7 @@ th, td, p {
     color: darkred;
 }
 
-.success{
+.success {
     color: green;
 }
 
@@ -385,6 +409,10 @@ textarea {
     align-items: center;
 }
 
+.accordion-button {
+    justify-content: flex-end;
+}
+
 .right-block-head {
     display: flex;
     align-items: center;
@@ -487,4 +515,9 @@ textarea {
 
 .fullInputForm {
     width: 100%;
+}
+
+.userInSystem {
+    font-size: 14px;
+    font-weight: bold;
 }

@@ -3,6 +3,7 @@ package ru.project.calculations.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,6 +23,7 @@ public class DocumentResultController {
     private final UncalculatedService uncalculatedService;
 
     @PostMapping("/upload_result_document/{id:\\d+}")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'DOC_RESULT_REDACTOR')")
     public String uploadMultipleFiles(@PathVariable long id,
                                       @RequestParam("resultDocument") MultipartFile file) {
         documentResultService.saveDocumentResult(id, file);
@@ -29,11 +31,13 @@ public class DocumentResultController {
     }
 
     @GetMapping("/download/{id:\\d+}")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'DOC_RESULT_REDACTOR')")
     public ResponseEntity<Resource> downloadFile(@PathVariable long id) {
         return returnDocResultContentType(id, documentResultService);
     }
 
     @GetMapping("/delete/{id:\\d+}")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'DOC_RESULT_REDACTOR')")
     public String deleteDocument(@PathVariable long id) {
         var calcId = documentResultService.findDocumentResultById(id);
         documentResultService.deleteDocumentResult(id);

@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<html lang="ru" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
@@ -11,13 +11,24 @@
 </head>
 <body>
 <div class="header">
-    <div class="header-buttons">
+    <div class="header-buttons left">
+        <a th:href="@{/calculations}">
+            <button type="button" class="blue-btn">Калькуляции</button>
+        </a>
+        <a th:href="@{/customers}">
+            <button type="button" class="blue-btn">Реестр заказчиков</button>
+        </a>
+    </div>
+    <div sec:authorize="hasAnyAuthority('ADMIN', 'CALCULATION_CREATE')" class="header-buttons">
         <a th:href="@{/customers/create}">
             <button type="button" class="yellow-btn">Создать нового Заказчика</button>
         </a>
-        <a th:href="@{/calculations}">
-            <button type="button" class="yellow-btn">Расценки</button>
-        </a>
+    </div>
+    <div class="header-buttons right">
+        <span class="userInSystem" th:text="${userDetails.getUsername()}"></span>
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" id="clearLS" style="margin-left: 12px" class="red-btn">Выйти из системы</button>
+        </form>
     </div>
 </div>
 <div class="main-content">
@@ -75,19 +86,26 @@
             <a th:href="@{/customers}">
                 <button type="button" class="blue-btn">Скрыть детали</button>
             </a>
-            <a th:href="@{/customers/delete/{id}(id=${customer.id()})}"
-               onclick="return confirm('Вы уверены, что хотите удалить этот элемент?');">
-                <button type="button" class="red-btn">Удалить</button>
-            </a>
+            <div sec:authorize="hasAnyAuthority('ADMIN', 'CUSTOMER_DELETE')">
+                <div th:if="${customer.status() == 'Черновик'}">
+                    <a th:href="@{/customers/delete/{id}(id=${customer.id()})}"
+                       onclick="return confirm('Вы уверены, что хотите удалить этот элемент?');">
+                        <button type="button" class="red-btn">Удалить</button>
+                    </a>
+                </div>
+            </div>
         </div>
         <hr>
         <span class="errors" th:text="${oportunity_exception_message}"></span>
+        <div th:if="${successMessage}" th:text="#{${successMessage}}" class="success"></div>
         <fieldset>
             <legend class="legend-head">Основная информация о Заказчике</legend>
-            <div>
-                <a th:href="@{/customers/update/{id}(id=${customer.id()})}">
-                    <button type="button" class="yellow-btn">Редактировать</button>
-                </a>
+            <div sec:authorize="hasAnyAuthority('ADMIN', 'CUSTOMER_UPDATE')">
+                <div th:if="${customer.status() != 'Закрыт'}">
+                    <a th:href="@{/customers/update/{id}(id=${customer.id()})}">
+                        <button type="button" class="yellow-btn">Редактировать</button>
+                    </a>
+                </div>
                 <hr>
             </div>
             <table class="table-right">
@@ -106,41 +124,46 @@
                 </tr>
                 <tr>
                     <td>002</td>
+                    <td>Статус</td>
+                    <td th:text="${customer.status()}"></td>
+                </tr>
+                <tr>
+                    <td>003</td>
                     <td>Наименование</td>
                     <td th:text="${customer.customerName()}"></td>
                 </tr>
                 <tr>
-                    <td>003</td>
+                    <td>004</td>
                     <td>ИНН</td>
                     <td th:text="${customer.customerINNCode()}"></td>
                 </tr>
                 <tr>
-                    <td>004</td>
+                    <td>005</td>
                     <td>КПП</td>
                     <td th:text="${customer.customerKPPCode()}"></td>
                 </tr>
                 <tr>
-                    <td>005</td>
+                    <td>006</td>
                     <td>ОГРН</td>
                     <td th:text="${customer.customerOGRNCode()}"></td>
                 </tr>
                 <tr>
-                    <td>006</td>
+                    <td>007</td>
                     <td>Основной вид деятельности</td>
                     <td th:text="${customer.mainActivity()}"></td>
                 </tr>
                 <tr>
-                    <td>007</td>
+                    <td>008</td>
                     <td>Юридический адрес</td>
                     <td th:text="${customer.legalAddress()}"></td>
                 </tr>
                 <tr>
-                    <td>008</td>
+                    <td>009</td>
                     <td>Электронная почта</td>
                     <td th:text="${customer.mail()}"></td>
                 </tr>
                 <tr>
-                    <td>009</td>
+                    <td>010</td>
                     <td>Телефон</td>
                     <td th:text="${customer.phone()}"></td>
                 </tr>

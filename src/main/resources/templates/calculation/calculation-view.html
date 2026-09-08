@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<html lang="ru" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
@@ -11,13 +11,28 @@
 </head>
 <body>
 <div class="header">
-    <div class="header-buttons">
+    <div class="header-buttons left">
+        <div sec:authorize="hasAnyAuthority('ADMIN', 'CALCULATION_VIEW')">
+            <a th:href="@{/calculations}">
+                <button type="button" class="blue-btn">Калькуляции</button>
+            </a>
+        </div>
+        <div sec:authorize="hasAnyAuthority('ADMIN', 'CUSTOMER_VIEW')">
+            <a th:href="@{/customers}">
+                <button type="button" class="blue-btn">Реестр заказчиков</button>
+            </a>
+        </div>
+    </div>
+    <div class="header-buttons center" sec:authorize="hasAnyAuthority('ADMIN', 'CALCULATION_CREATE')">
         <a th:href="@{/calculations/create}">
-            <button type="button" class="yellow-btn">Создать новую расценку</button>
+            <button type="button" class="yellow-btn">Создать новую Калькуляцию</button>
         </a>
-        <a th:href="@{/customers}">
-            <button type="button" class="blue-btn">Реестр заказчиков</button>
-        </a>
+    </div>
+    <div class="header-buttons right">
+        <span class="userInSystem" th:text="${userDetails.getUsername()}"></span>
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" id="clearLS" style="margin-left: 12px" class="red-btn">Выйти из системы</button>
+        </form>
     </div>
 </div>
 <div class="main-content">
@@ -117,20 +132,26 @@
             <a th:href="@{/calculations}">
                 <button type="button" class="blue-btn">Скрыть детали</button>
             </a>
-            <a th:href="@{/calculations/delete/{id}(id=${calculation.id()})}"
-               onclick="return confirm('Вы уверены, что хотите удалить этот элемент?');">
-                <button type="button" class="red-btn">Удалить</button>
-            </a>
+            <div sec:authorize="hasAnyAuthority('ADMIN', 'CALCULATION_DELETE')">
+                <div th:if="${calculation.status() == 'Черновик'}">
+                    <a th:href="@{/calculations/delete/{id}(id=${calculation.id()})}"
+                       onclick="return confirm('Вы уверены, что хотите удалить этот элемент?');">
+                        <button type="button" class="red-btn">Удалить</button>
+                    </a>
+                </div>
+            </div>
         </div>
         <hr>
         <div th:if="${successMessage}" th:text="#{${successMessage}}" class="success"></div>
         <fieldset>
             <legend class="legend-head">Основные параметры лота</legend>
-            <div>
-                <a th:href="@{/calculations/update/{id}(id=${calculation.id()})}">
-                    <button type="button" class="yellow-btn">Редактировать</button>
-                </a>
-                <hr>
+            <div sec:authorize="hasAnyAuthority('ADMIN', 'DOC_RESOURCE_REDACTOR')">
+                <div th:if="${calculation.status() != 'Закрыт'}">
+                    <a th:href="@{/calculations/update/{id}(id=${calculation.id()})}">
+                        <button type="button" class="yellow-btn">Редактировать</button>
+                    </a>
+                    <hr>
+                </div>
             </div>
             <table class="table-right">
                 <thead class="right-table-head">
@@ -148,28 +169,41 @@
                 </tr>
                 <tr>
                     <td>002</td>
+                    <td>Статус</td>
+                    <td th:text="${calculation.status()}"></td>
+                </tr>
+                <tr>
+                    <td>003</td>
                     <td>Лот</td>
                     <td th:text="${calculation.lotName()}"></td>
                 </tr>
                 <tr>
-                    <td>003</td>
+                    <td>004</td>
                     <td>Наименование</td>
                     <td th:text="${calculation.projectName()}"></td>
                 </tr>
                 <tr>
-                    <td>004</td>
+                    <td>005</td>
                     <td>Локация пр-ва работ</td>
                     <td th:text="${calculation.projectLocation()}"></td>
                 </tr>
                 <tr>
-                    <td>005</td>
+                    <td>006</td>
                     <td>Заказчик</td>
-                    <td><a th:href="@{/customers/{id}(id=${calculation.customerId()})}">
-                        <button type="button" class="blue-btn" style="width: 50%; text-align: left">
-                            <span th:text="${calculation.customerName()}"></span></button></a></td>
+                    <td>
+                        <div th:if="${#authorization.expression('hasAnyAuthority(''ADMIN'', ''CUSTOMER_VIEW'')')}">
+                            <a th:href="@{/customers/{id}(id=${calculation.customerId()})}">
+                                <button type="button" class="blue-btn" style="width: 50%; text-align: left">
+                                    <span th:text="${calculation.customerName()}"></span></button>
+                            </a>
+                        </div>
+                        <div th:unless="${#authorization.expression('hasAnyAuthority(''ADMIN'', ''CUSTOMER_VIEW'')')}">
+                            <span th:text="${calculation.customerName()}"></span>
+                        </div>
+                    </td>
                 </tr>
                 <tr>
-                    <td>006</td>
+                    <td>007</td>
                     <td>Дата создания</td>
                     <td th:text="${#temporals.format(calculation.dateOfCreate(), 'dd-MM-yyyy г.')}"></td>
                 </tr>
@@ -177,7 +211,7 @@
             </table>
         </fieldset>
         <hr>
-        <fieldset>
+        <fieldset sec:authorize="hasAnyAuthority('ADMIN', 'DOC_RESULT_VIEW')">
             <legend class="legend-head">Результат расценки лота оборудования и материалов</legend>
             <fieldset>
                 <legend>Итоговые показатели</legend>
@@ -207,7 +241,7 @@
             </fieldset>
             <fieldset>
                 <legend>Файл с расценкой</legend>
-                <div>
+                <div sec:authorize="hasAnyAuthority('ADMIN', 'DOC_RESULT_REDACTOR')">
                     <a th:href="@{/calculations/doc_result_update/{id}(id=${calculation.id()})}">
                         <button type="button" class="yellow-btn">Редактировать</button>
                     </a>
@@ -273,7 +307,9 @@
                         </table>
                     </fieldset>
                     <fieldset>
-                        <legend>Не расцененные позиции, по причине отсутствия необходимой информации и/или документации</legend>
+                        <legend>Не расцененные позиции, по причине отсутствия необходимой информации и/или
+                            документации
+                        </legend>
                         <span th:text="${'Количество позиций: ' + uncalculated.size()}"></span>
                         <hr>
                         <table class="table-right">
@@ -305,10 +341,10 @@
             </div>
         </fieldset>
         <hr>
-        <fieldset>
+        <fieldset sec:authorize="hasAnyAuthority('ADMIN', 'DOC_RESOURCE_VIEW')">
             <legend class="legend-head">Документация для расценки лота</legend>
             <div class="accordion-buttons">
-                <div>
+                <div sec:authorize="hasAnyAuthority('ADMIN', 'DOC_RESOURCE_REDACTOR')">
                     <a th:href="@{/calculations/doc_resource_update/{id}(id=${calculation.id()})}">
                         <button type="button" class="yellow-btn">Редактировать</button>
                     </a>

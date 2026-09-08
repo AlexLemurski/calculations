@@ -4,6 +4,7 @@ import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
+import ru.project.calculations.enums.Status;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -21,6 +22,9 @@ public class Calculation {
 	@Column("c_id")
 	@EqualsAndHashCode.Include
 	private Long id;
+
+	@Column("c_status")
+	private Status status;
 
 	@Column("c_lot_name")
 	private String lotName;

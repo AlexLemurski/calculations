@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<html lang="ru" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
@@ -11,13 +11,24 @@
 </head>
 <body>
 <div class="header">
-    <div class="header-buttons">
+    <div class="header-buttons left">
+        <a th:href="@{/calculations}">
+            <button type="button" class="blue-btn">Калькуляции</button>
+        </a>
+        <a th:href="@{/customers}">
+            <button type="button" class="blue-btn">Реестр заказчиков</button>
+        </a>
+    </div>
+    <div sec:authorize="hasAnyAuthority('ADMIN', 'CALCULATION_CREATE')" class="header-buttons">
         <a th:href="@{/customers/create}">
             <button type="button" class="yellow-btn">Создать нового Заказчика</button>
         </a>
-        <a th:href="@{/calculations}">
-            <button type="button" class="yellow-btn">Расценки</button>
-        </a>
+    </div>
+    <div class="header-buttons right">
+        <span class="userInSystem" th:text="${userDetails.getUsername()}"></span>
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" id="clearLS" style="margin-left: 12px" class="red-btn">Выйти из системы</button>
+        </form>
     </div>
 </div>
 <div class="main-content">
@@ -65,6 +76,7 @@
         </table>
     </div>
     <div class="right-content" id="rightContent">
+        <div th:if="${successMessage}" th:text="#{${successMessage}}" class="success"></div>
         Для отображения деталей выберите нужный элемент слева
     </div>
 </div>

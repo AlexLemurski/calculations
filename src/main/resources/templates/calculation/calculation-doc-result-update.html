@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<html lang="ru" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
@@ -11,7 +11,29 @@
 </head>
 <body>
 <div class="header">
-
+    <div class="header-buttons left">
+        <div sec:authorize="hasAnyAuthority('ADMIN', 'CALCULATION_VIEW')">
+            <a th:href="@{/calculations}">
+                <button type="button" class="blue-btn">Калькуляции</button>
+            </a>
+        </div>
+        <div sec:authorize="hasAnyAuthority('ADMIN', 'CUSTOMER_VIEW')">
+            <a th:href="@{/customers}">
+                <button type="button" class="blue-btn">Реестр заказчиков</button>
+            </a>
+        </div>
+    </div>
+    <div class="header-buttons center" sec:authorize="hasAnyAuthority('ADMIN', 'CALCULATION_CREATE')">
+        <a th:href="@{/calculations/create}">
+            <button type="button" class="yellow-btn">Создать новую Калькуляцию</button>
+        </a>
+    </div>
+    <div class="header-buttons right">
+        <span class="userInSystem" th:text="${userDetails.getUsername()}"></span>
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" id="clearLS" style="margin-left: 12px" class="red-btn">Выйти из системы</button>
+        </form>
+    </div>
 </div>
 <div class="main-content">
     <div class="left-content" id="leftContent">

@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<html lang="ru" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
@@ -11,7 +11,25 @@
 </head>
 <body>
 <div class="header">
-
+    <div class="header-buttons left">
+        <a th:href="@{/calculations}">
+            <button type="button" class="blue-btn">Калькуляции</button>
+        </a>
+        <a th:href="@{/customers}">
+            <button type="button" class="blue-btn">Реестр заказчиков</button>
+        </a>
+    </div>
+    <div sec:authorize="hasAnyAuthority('ADMIN', 'CALCULATION_CREATE')" class="header-buttons">
+        <a th:href="@{/customers/create}">
+            <button type="button" class="yellow-btn">Создать нового Заказчика</button>
+        </a>
+    </div>
+    <div class="header-buttons right">
+        <span class="userInSystem" th:text="${userDetails.getUsername()}"></span>
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" id="clearLS" style="margin-left: 12px" class="red-btn">Выйти из системы</button>
+        </form>
+    </div>
 </div>
 <div class="main-content">
     <div class="left-content" id="leftContent">
@@ -85,6 +103,20 @@
                     </tr>
                     <tr>
                         <td>002</td>
+                        <td>Статус</td>
+                        <td>
+                            <label>
+                                <select class="status-select" th:field="*{status}" required>
+                                    <option th:each="stat : ${statusListCreate}"
+                                            th:value="${stat}"
+                                            th:text="${stat.getTitle()}">
+                                    </option>
+                                </select>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>003</td>
                         <td>Наименование</td>
                         <td>
                             <label>
@@ -94,7 +126,7 @@
                         <td class="errors" th:errors="*{customerName}"></td>
                     </tr>
                     <tr>
-                        <td>003</td>
+                        <td>004</td>
                         <td>ИНН</td>
                         <td>
                             <label>
@@ -105,7 +137,7 @@
                         <td class="errors" th:errors="*{customerINNCode}"></td>
                     </tr>
                     <tr>
-                        <td>004</td>
+                        <td>005</td>
                         <td>КПП</td>
                         <td>
                             <label>
@@ -116,7 +148,7 @@
                         <td class="errors" th:errors="*{customerKPPCode}"></td>
                     </tr>
                     <tr>
-                        <td>005</td>
+                        <td>006</td>
                         <td>ОГРН</td>
                         <td>
                             <label>
@@ -127,7 +159,7 @@
                         <td class="errors" th:errors="*{customerOGRNCode}"></td>
                     </tr>
                     <tr>
-                        <td>006</td>
+                        <td>007</td>
                         <td>Основной вид деятельности</td>
                         <td>
                             <label>
@@ -137,7 +169,7 @@
                         <td class="errors" th:errors="*{mainActivity}"></td>
                     </tr>
                     <tr>
-                        <td>007</td>
+                        <td>008</td>
                         <td>Юридический адрес</td>
                         <td>
                             <label>
@@ -147,7 +179,7 @@
                         <td class="errors" th:errors="*{legalAddress}"></td>
                     </tr>
                     <tr>
-                        <td>008</td>
+                        <td>009</td>
                         <td>Электронная почта</td>
                         <td>
                             <label>
@@ -158,7 +190,7 @@
                         <td class="errors" th:errors="*{mail}"></td>
                     </tr>
                     <tr>
-                        <td>009</td>
+                        <td>010</td>
                         <td>Телефон</td>
                         <td>
                             <label>

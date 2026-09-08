@@ -4,6 +4,7 @@ import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
+import ru.project.calculations.enums.Status;
 
 @Getter
 @Setter
@@ -18,6 +19,9 @@ public class Customer {
     @Column("c_id")
     @EqualsAndHashCode.Include
     private Long id;
+
+    @Column("c_status")
+    private Status status;
 
     @Column("c_customer_name")
     private String customerName;

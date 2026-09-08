@@ -6,6 +6,8 @@ public record CustomerDto(
 
         long id,
 
+        String status,
+
         String customerName,
 
         String customerINNCode,

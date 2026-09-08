@@ -32,6 +32,7 @@ public class CalculationServiceImpl implements CalculationService {
 			() -> new NoSuchElementException("element.not.found"));
 		return CalculationDto.builder()
 			.id(calculation.getId())
+			.status(calculation.getStatus().getTitle())
 			.lotName(calculation.getLotName())
 			.projectName(calculation.getProjectName())
 			.projectLocation(calculation.getProjectLocation())
@@ -58,6 +59,7 @@ public class CalculationServiceImpl implements CalculationService {
 		return calculations.stream()
 			.map(calculation -> CalculationDto.builder()
 				.id(calculation.getId())
+				.status(calculation.getStatus().getTitle())
 				.lotName(calculation.getLotName())
 				.projectName(calculation.getProjectName())
 				.projectLocation(calculation.getProjectLocation())
@@ -88,6 +90,7 @@ public class CalculationServiceImpl implements CalculationService {
 	@Transactional(rollbackFor = {Exception.class})
 	public Calculation createCalculation(CalculationPayloadNew payload) {
 		return calculationRepository.cerateCalculation(
+			payload.status(),
 			payload.lotName(),
 			payload.projectName(),
 			payload.projectLocation(),
@@ -101,6 +104,7 @@ public class CalculationServiceImpl implements CalculationService {
 	public Calculation updateCalculation(CalculationPayloadUpdate payload) {
 		return calculationRepository.updateCalculation(
 			payload.id(),
+			payload.status(),
 			payload.lotName(),
 			payload.projectName(),
 			payload.projectLocation(),

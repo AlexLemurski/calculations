@@ -6,35 +6,37 @@ import java.time.LocalDate;
 
 public record CalculationDto(
 
-        long id,
+	long id,
 
-        String lotName,
+	String status,
 
-        String projectName,
+	String lotName,
 
-        String projectLocation,
+	String projectName,
 
-        LocalDate dateOfCreate,
+	String projectLocation,
 
-        String totalSum,
+	LocalDate dateOfCreate,
 
-        int calculatedPositionCount,
+	String totalSum,
 
-        int totalPositionCount,
+	int calculatedPositionCount,
 
-        String totalPercent,
+	int totalPositionCount,
 
-        String remainder,
+	String totalPercent,
 
-        String resourceFolder,
+	String remainder,
 
-        long customerId,
+	String resourceFolder,
 
-        String customerName
+	long customerId,
+
+	String customerName
 
 ) {
-    @Builder
-    public CalculationDto {
+	@Builder
+	public CalculationDto {
 
-    }
+	}
 }
