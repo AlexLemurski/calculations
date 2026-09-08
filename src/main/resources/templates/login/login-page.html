@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebInterface</title>
+</head>
+<body>
+<div class="container">
+    <div class="body">
+        <h2>Вход</h2>
+        <div class="form">
+            <form th:action="@{/login}" method="post">
+                <p class="fw-normal">Пожалуйста, авторизуйтесь</p>
+                <div th:if="${param.error}">
+                    Не корректный логин и/или пароль.
+                </div>
+                <div th:if="${param.logout}">
+                    Вы вышли из системы.
+                </div>
+                <div class="form-control">
+                    <input type="text" placeholder="Ваш логин:" name="username">
+                </div>
+                <div class="form-control">
+                    <input type="password" id="myInput" placeholder="Ваш пароль:" name="password"><br>
+                    <label>
+                        <input type="checkbox" onclick="myFunction()"> Показать пароль
+                    </label>
+                </div>
+                <div class="form-control">
+                    <button class="btn btn-outline-success" type="submit">Войти</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    function myFunction() {
+        let x = document.getElementById("myInput");
+        if (x.type === "password") {
+            x.type = "text";
+        } else {
+            x.type = "password";
+        }
+    }
+</script>
+</body>
+</html>
