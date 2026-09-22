@@ -12,6 +12,7 @@ import ru.project.calculations.dto.document_resource.DocumentResourceDto;
 import ru.project.calculations.enums.ContentType;
 import ru.project.calculations.service.DocumentResourceService;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,8 +30,10 @@ public class DocumentResourceController {
 	@PostMapping("/update/{id:\\d+}")
 	@PreAuthorize("hasAnyAuthority('ADMIN', 'DOC_RESOURCE_REDACTOR')")
 	public String updateDocumentResource(@PathVariable long id,
-										 @RequestParam MultiValueMap<String, String> params) {
-		List<DocumentResourceDto> allDocs = documentResourceService.findAllDocResourceByCalcIdAndIndex(id, PARTITION_DOC);
+										 @RequestParam MultiValueMap<String, String> params,
+										 Principal principal) {
+		List<DocumentResourceDto> allDocs =
+			documentResourceService.findAllDocResourceByCalcIdAndIndex(id, PARTITION_DOC, principal);
 		for (var doc : allDocs) {
 			documentResourceService.updateDocumentResource(doc.docId(), new String[0]);
 		}
@@ -52,9 +55,10 @@ public class DocumentResourceController {
 	@PostMapping("/upload_main_documents/{id:\\d+}")
 	@PreAuthorize("hasAnyAuthority('ADMIN', 'DOC_RESOURCE_REDACTOR')")
 	public String uploadMainDocuments(@PathVariable long id,
-									  @RequestParam("mainDocuments") MultipartFile[] files) {
+									  @RequestParam("mainDocuments") MultipartFile[] files,
+									  Principal principal) {
 		for (MultipartFile file : files) {
-			documentResourceService.saveDocumentResource(id, MAIN_DOC, file);
+			documentResourceService.saveDocumentResource(id, MAIN_DOC, principal, file);
 		}
 		return "redirect:/calculations/doc_resource_update/%d".formatted(id);
 	}
@@ -62,9 +66,10 @@ public class DocumentResourceController {
 	@PostMapping("/upload_partition_documents/{id:\\d+}")
 	@PreAuthorize("hasAnyAuthority('ADMIN', 'DOC_RESOURCE_REDACTOR')")
 	public String uploadPartitionDocuments(@PathVariable long id,
-										   @RequestParam("partitionDocuments") MultipartFile[] files) {
+										   @RequestParam("partitionDocuments") MultipartFile[] files,
+										   Principal principal) {
 		for (MultipartFile file : files) {
-			documentResourceService.saveDocumentResource(id, PARTITION_DOC, file);
+			documentResourceService.saveDocumentResource(id, PARTITION_DOC, principal, file);
 		}
 		return "redirect:/calculations/doc_resource_update/%d".formatted(id);
 	}
@@ -72,9 +77,10 @@ public class DocumentResourceController {
 	@PostMapping("/upload_specification_documents/{id:\\d+}")
 	@PreAuthorize("hasAnyAuthority('ADMIN', 'DOC_RESOURCE_REDACTOR')")
 	public String uploadSpecificationDocuments(@PathVariable long id,
-											   @RequestParam("specificationDocuments") MultipartFile[] files) {
+											   @RequestParam("specificationDocuments") MultipartFile[] files,
+											   Principal principal) {
 		for (MultipartFile file : files) {
-			documentResourceService.saveDocumentResource(id, SPECIFICATION_DOC, file);
+			documentResourceService.saveDocumentResource(id, SPECIFICATION_DOC, principal, file);
 		}
 		return "redirect:/calculations/doc_resource_update/%d".formatted(id);
 	}
@@ -82,9 +88,10 @@ public class DocumentResourceController {
 	@PostMapping("/upload_material_documents/{id:\\d+}")
 	@PreAuthorize("hasAnyAuthority('ADMIN', 'DOC_RESOURCE_REDACTOR')")
 	public String uploadMaterialDocuments(@PathVariable long id,
-										  @RequestParam("materialDocuments") MultipartFile[] files) {
+										  @RequestParam("materialDocuments") MultipartFile[] files,
+										  Principal principal) {
 		for (MultipartFile file : files) {
-			documentResourceService.saveDocumentResource(id, MATERIAL_LIST_DOC, file);
+			documentResourceService.saveDocumentResource(id, MATERIAL_LIST_DOC, principal, file);
 		}
 		return "redirect:/calculations/doc_resource_update/%d".formatted(id);
 	}
@@ -92,9 +99,10 @@ public class DocumentResourceController {
 	@PostMapping("/upload_work_documents/{id:\\d+}")
 	@PreAuthorize("hasAnyAuthority('ADMIN', 'DOC_RESOURCE_REDACTOR')")
 	public String uploadWorkDocuments(@PathVariable long id,
-									  @RequestParam("workDocuments") MultipartFile[] files) {
+									  @RequestParam("workDocuments") MultipartFile[] files,
+									  Principal principal) {
 		for (MultipartFile file : files) {
-			documentResourceService.saveDocumentResource(id, WORK_LIST_DOC, file);
+			documentResourceService.saveDocumentResource(id, WORK_LIST_DOC, principal, file);
 		}
 		return "redirect:/calculations/doc_resource_update/%d".formatted(id);
 	}
@@ -102,9 +110,10 @@ public class DocumentResourceController {
 	@PostMapping("/upload_technitial_documents/{id:\\d+}")
 	@PreAuthorize("hasAnyAuthority('ADMIN', 'DOC_RESOURCE_REDACTOR')")
 	public String uploadTechnitialDocuments(@PathVariable long id,
-											@RequestParam("technitialDocuments") MultipartFile[] files) {
+											@RequestParam("technitialDocuments") MultipartFile[] files,
+											Principal principal) {
 		for (MultipartFile file : files) {
-			documentResourceService.saveDocumentResource(id, TECHNITIAL_DOC, file);
+			documentResourceService.saveDocumentResource(id, TECHNITIAL_DOC, principal, file);
 		}
 		return "redirect:/calculations/doc_resource_update/%d".formatted(id);
 	}
@@ -112,9 +121,10 @@ public class DocumentResourceController {
 	@PostMapping("/upload_separation_documents/{id:\\d+}")
 	@PreAuthorize("hasAnyAuthority('ADMIN', 'DOC_RESOURCE_REDACTOR')")
 	public String uploadSeparationDocuments(@PathVariable long id,
-											@RequestParam("separationDocuments") MultipartFile[] files) {
+											@RequestParam("separationDocuments") MultipartFile[] files,
+											Principal principal) {
 		for (MultipartFile file : files) {
-			documentResourceService.saveDocumentResource(id, SEPARATION_DOC, file);
+			documentResourceService.saveDocumentResource(id, SEPARATION_DOC, principal, file);
 		}
 		return "redirect:/calculations/doc_resource_update/%d".formatted(id);
 	}
@@ -122,9 +132,10 @@ public class DocumentResourceController {
 	@PostMapping("/upload_other_documents/{id:\\d+}")
 	@PreAuthorize("hasAnyAuthority('ADMIN', 'DOC_RESOURCE_REDACTOR')")
 	public String uploadOtherDocuments(@PathVariable long id,
-									   @RequestParam("otherDocuments") MultipartFile[] files) {
+									   @RequestParam("otherDocuments") MultipartFile[] files,
+									   Principal principal) {
 		for (MultipartFile file : files) {
-			documentResourceService.saveDocumentResource(id, OTHER_DOC, file);
+			documentResourceService.saveDocumentResource(id, OTHER_DOC, principal, file);
 		}
 		return "redirect:/calculations/doc_resource_update/%d".formatted(id);
 	}

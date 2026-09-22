@@ -5,6 +5,7 @@ import ru.project.calculations.dto.calculation.CalculationPayloadNew;
 import ru.project.calculations.dto.calculation.CalculationPayloadUpdate;
 import ru.project.calculations.entity.Calculation;
 
+import java.security.Principal;
 import java.util.List;
 
 public interface CalculationService {
@@ -15,7 +16,8 @@ public interface CalculationService {
 
     List<CalculationDto> findAllCalculationsByCastId(long castId);
 
-    Calculation createCalculation(CalculationPayloadNew calculationPayloadNew);
+    Calculation createCalculation(CalculationPayloadNew calculationPayloadNew,
+                                  Principal principal);
 
     Calculation updateCalculation(CalculationPayloadUpdate calculationPayloadUpdate);
 

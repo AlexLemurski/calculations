@@ -2,7 +2,7 @@ package ru.project.calculations.dto.calculation;
 
 import lombok.Builder;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public record CalculationDto(
 
@@ -16,7 +16,7 @@ public record CalculationDto(
 
 	String projectLocation,
 
-	LocalDate dateOfCreate,
+	LocalDateTime dateOfCreate,
 
 	String totalSum,
 
@@ -32,7 +32,11 @@ public record CalculationDto(
 
 	long customerId,
 
-	String customerName
+	String customerName,
+
+	long userId,
+
+	String username
 
 ) {
 	@Builder

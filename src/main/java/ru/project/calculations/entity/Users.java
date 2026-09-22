@@ -1,4 +1,4 @@
-package ru.project.calculations.security;
+package ru.project.calculations.entity;
 
 import lombok.*;
 import org.springframework.data.annotation.Id;
@@ -12,21 +12,30 @@ import ru.project.calculations.enums.UserStatus;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
-@Table(schema = "security", name = "users")
+@Table(schema = "security", name = "t_users")
 public class Users {
 
 	@Id
-	@Column("id")
+	@Column("c_id")
 	@EqualsAndHashCode.Include
 	private Long id;
 
-	@Column("username")
+	@Column("c_username")
 	private String userName;
 
-	@Column("password")
+	@Column("c_profession")
+	private String profession;
+
+	@Column("c_department")
+	private String department;
+
+	@Column("c_email")
+	private String email;
+
+	@Column("c_password")
 	private String password;
 
-	@Column("status")
+	@Column("c_status")
 	private UserStatus userStatus;
 
 }

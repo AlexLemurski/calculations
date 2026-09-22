@@ -7,7 +7,7 @@ import org.springframework.data.relational.core.mapping.Table;
 import ru.project.calculations.enums.Status;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -36,7 +36,7 @@ public class Calculation {
 	private String projectLocation;
 
 	@Column("c_date_of_create")
-	private LocalDate dateOfCreate;
+	private LocalDateTime dateOfCreate;
 
 	@Column("c_total_sum")
 	private BigDecimal totalSum;
@@ -55,5 +55,8 @@ public class Calculation {
 
 	@Column("c_customer_id")
 	private long customerId;
+
+	@Column("c_user_id")
+	private long userId;
 
 }

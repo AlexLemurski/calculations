@@ -14,6 +14,7 @@ import ru.project.calculations.service.DocumentResourceService;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.file.*;
+import java.security.Principal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -58,6 +59,9 @@ public final class CalculationUtil {
 
 	public static Map<Long, String> getCustomerNames(List<Calculation> calculations,
 													 CustomerRepository customerRepository) {
+		if (calculations == null || calculations.isEmpty()) {
+			return null;
+		}
 		return customerRepository.findAllCustomersByIds(calculations.stream()
 				.map(Calculation::getCustomerId)
 				.distinct()
@@ -180,36 +184,37 @@ public final class CalculationUtil {
 
 	public static void getAllResourceDocuments(long id,
 											   DocumentResourceService documentResourceService,
+											   Principal principal,
 											   Model model) {
-		var mainDocuments = documentResourceService.findAllDocResourceByCalcIdAndIndex(id, MAIN_DOC);
+		var mainDocuments = documentResourceService.findAllDocResourceByCalcIdAndIndex(id, MAIN_DOC, principal);
 		model.addAttribute("mainDocuments", mainDocuments);
 		model.addAttribute("mainDocumentsResource", getFilesTotalParameters(mainDocuments));
 
-		var partitionDocuments = documentResourceService.findAllDocResourceByCalcIdAndIndex(id, PARTITION_DOC);
+		var partitionDocuments = documentResourceService.findAllDocResourceByCalcIdAndIndex(id, PARTITION_DOC, principal);
 		model.addAttribute("partitionDocuments", partitionDocuments);
 		model.addAttribute("partitionDocumentsResource", getFilesTotalParameters(partitionDocuments));
 
-		var specificationDocuments = documentResourceService.findAllDocResourceByCalcIdAndIndex(id, SPECIFICATION_DOC);
+		var specificationDocuments = documentResourceService.findAllDocResourceByCalcIdAndIndex(id, SPECIFICATION_DOC, principal);
 		model.addAttribute("specificationDocuments", specificationDocuments);
 		model.addAttribute("specificationDocumentsResource", getFilesTotalParameters(specificationDocuments));
 
-		var materialDocuments = documentResourceService.findAllDocResourceByCalcIdAndIndex(id, MATERIAL_LIST_DOC);
+		var materialDocuments = documentResourceService.findAllDocResourceByCalcIdAndIndex(id, MATERIAL_LIST_DOC, principal);
 		model.addAttribute("materialDocuments", materialDocuments);
 		model.addAttribute("materialDocumentsResource", getFilesTotalParameters(materialDocuments));
 
-		var workDocuments = documentResourceService.findAllDocResourceByCalcIdAndIndex(id, WORK_LIST_DOC);
+		var workDocuments = documentResourceService.findAllDocResourceByCalcIdAndIndex(id, WORK_LIST_DOC, principal);
 		model.addAttribute("workDocuments", workDocuments);
 		model.addAttribute("workDocumentsResource", getFilesTotalParameters(workDocuments));
 
-		var technitialDocuments = documentResourceService.findAllDocResourceByCalcIdAndIndex(id, TECHNITIAL_DOC);
+		var technitialDocuments = documentResourceService.findAllDocResourceByCalcIdAndIndex(id, TECHNITIAL_DOC, principal);
 		model.addAttribute("technitialDocuments", technitialDocuments);
 		model.addAttribute("technitialDocumentsResource", getFilesTotalParameters(technitialDocuments));
 
-		var separationDocuments = documentResourceService.findAllDocResourceByCalcIdAndIndex(id, SEPARATION_DOC);
+		var separationDocuments = documentResourceService.findAllDocResourceByCalcIdAndIndex(id, SEPARATION_DOC, principal);
 		model.addAttribute("separationDocuments", separationDocuments);
 		model.addAttribute("separationDocumentsResource", getFilesTotalParameters(separationDocuments));
 
-		var otherDocuments = documentResourceService.findAllDocResourceByCalcIdAndIndex(id, OTHER_DOC);
+		var otherDocuments = documentResourceService.findAllDocResourceByCalcIdAndIndex(id, OTHER_DOC, principal);
 		model.addAttribute("otherDocuments", otherDocuments);
 		model.addAttribute("otherDocumentsResource", getFilesTotalParameters(otherDocuments));
 	}

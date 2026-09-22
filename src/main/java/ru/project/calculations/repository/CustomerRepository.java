@@ -5,6 +5,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import ru.project.calculations.entity.Customer;
+import ru.project.calculations.enums.Status;
 
 import java.util.List;
 import java.util.Optional;
@@ -12,45 +13,52 @@ import java.util.Optional;
 @Repository
 public interface CustomerRepository extends CrudRepository<Customer, Long> {
 
-    @Query(value = """
-            select cas.c_id, cas.c_status, cas.c_customer_name, cas.c_legal_address, cas.c_kpp_code, cas.c_inn_code,
-                   cas.c_ogrn_code, cas.c_main_activity, cas.c_mail, cas.c_phone
-            from data.t_customers as cas
-            where cas.c_id = :id
-            """)
-    Optional<Customer> findCustomerById(@Param("id") long id);
+	@Query(value = """
+		select cas.c_id, cas.c_status, cas.c_customer_name, cas.c_legal_address, cas.c_kpp_code, cas.c_inn_code,
+		       cas.c_ogrn_code, cas.c_main_activity, cas.c_mail, cas.c_phone
+		from data.t_customers as cas
+		where cas.c_id = :id
+		""")
+	Optional<Customer> findCustomerById(@Param("id") long id);
 
-    @Query(value = """
-            select cas.c_id, cas.c_status, cas.c_customer_name, cas.c_inn_code, cas.c_main_activity
-            from data.t_customers as cas
-            """)
-    List<Customer> findAllCustomers();
+	@Query(value = """
+		select cas.c_id, cas.c_status, cas.c_customer_name, cas.c_inn_code, cas.c_main_activity
+		from data.t_customers as cas
+		""")
+	List<Customer> findAllCustomers();
 
-    @Query(value = """
+	@Query(value = """
+		select cas.c_id, cas.c_customer_name, cas.c_inn_code
+		from data.t_customers as cas
+		where cas.c_status = :status
+		""")
+	List<Customer> findAllCustomersByStatus(@Param("status") Status status);
+
+	@Query(value = """
 		select cas.c_id, cas.c_customer_name
 		from data.t_customers as cas
 		where cas.c_id in (:ids)
 		""")
-    List<Customer> findAllCustomersByIds(@Param("ids") List<Long> ids);
+	List<Customer> findAllCustomersByIds(@Param("ids") List<Long> ids);
 
-    @Query(value = """
-            insert into data.t_customers
-            (c_status, c_customer_name, c_inn_code, c_kpp_code, c_ogrn_code, c_main_activity, c_legal_address, c_mail, c_phone)
-            values (:status, :customerName, :customerINNCode, :customerKPPCode, :customerOGRNCode, :mainActivity,
-                    :legalAddress, :mail, :phone)
-            returning *
-            """)
-    Customer createCustomer(@Param("status") String status,
+	@Query(value = """
+		insert into data.t_customers
+		(c_status, c_customer_name, c_inn_code, c_kpp_code, c_ogrn_code, c_main_activity, c_legal_address, c_mail, c_phone)
+		values (:status, :customerName, :customerINNCode, :customerKPPCode, :customerOGRNCode, :mainActivity,
+		        :legalAddress, :mail, :phone)
+		returning *
+		""")
+	Customer createCustomer(@Param("status") String status,
 							@Param("customerName") String customerName,
-                            @Param("customerINNCode") String customerINNCode,
-                            @Param("customerKPPCode") String customerKPPCode,
-                            @Param("customerOGRNCode") String customerOGRNCode,
-                            @Param("mainActivity") String mainActivity,
-                            @Param("legalAddress") String legalAddress,
-                            @Param("mail") String mail,
-                            @Param("phone") String phone);
+							@Param("customerINNCode") String customerINNCode,
+							@Param("customerKPPCode") String customerKPPCode,
+							@Param("customerOGRNCode") String customerOGRNCode,
+							@Param("mainActivity") String mainActivity,
+							@Param("legalAddress") String legalAddress,
+							@Param("mail") String mail,
+							@Param("phone") String phone);
 
-    @Query(value = """
+	@Query(value = """
 		update data.t_customers
 		set c_status = :status, c_customer_name = :customerName, c_inn_code = :customerINNCode, c_kpp_code = :customerKPPCode,
 		    c_ogrn_code = :customerOGRNCode, c_main_activity = :mainActivity, c_legal_address = :legalAddress,
@@ -58,15 +66,15 @@ public interface CustomerRepository extends CrudRepository<Customer, Long> {
 		where c_id = :id
 		returning *
 		""")
-    Customer updateCustomer(@Param("id") long id,
+	Customer updateCustomer(@Param("id") long id,
 							@Param("status") String status,
-                            @Param("customerName") String customerName,
-                            @Param("customerINNCode") String customerINNCode,
-                            @Param("customerKPPCode") String customerKPPCode,
-                            @Param("customerOGRNCode") String customerOGRNCode,
-                            @Param("mainActivity") String mainActivity,
-                            @Param("legalAddress") String legalAddress,
-                            @Param("mail") String mail,
-                            @Param("phone") String phone);
+							@Param("customerName") String customerName,
+							@Param("customerINNCode") String customerINNCode,
+							@Param("customerKPPCode") String customerKPPCode,
+							@Param("customerOGRNCode") String customerOGRNCode,
+							@Param("mainActivity") String mainActivity,
+							@Param("legalAddress") String legalAddress,
+							@Param("mail") String mail,
+							@Param("phone") String phone);
 
 }

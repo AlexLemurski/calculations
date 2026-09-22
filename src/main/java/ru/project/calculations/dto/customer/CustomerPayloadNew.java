@@ -31,12 +31,12 @@ public record CustomerPayloadNew(
 
 	@NotBlank
 	@Size(min = 2, max = 500, message = "{errors.size_min_to_max}")
-	@Pattern(regexp = "^[-а-яА-ЯёЁ\\s'\",.;:№()^\\d+$«»–]+$", message = "{errors.field_only_ru}")
+	@Pattern(regexp = "^[-а-яА-ЯёЁ\\s\\\\,.;:№()^/\\d+$ –\"]+$", message = "{errors.field_only_ru}")
 	String mainActivity,
 
 	@NotBlank
 	@Size(min = 2, max = 3000, message = "{errors.size_min_to_max}")
-	@Pattern(regexp = "^[-а-яА-ЯёЁ\\s'\",.;:№()^\\d+$«»–]+$", message = "{errors.field_only_ru}")
+	@Pattern(regexp = "^[-а-яА-ЯёЁ\\s\\\\,.;:№()^/\\d+$ –\"]+$", message = "{errors.field_only_ru}")
 	String legalAddress,
 
 	@NotBlank

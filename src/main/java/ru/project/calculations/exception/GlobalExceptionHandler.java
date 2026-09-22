@@ -2,8 +2,6 @@ package ru.project.calculations.exception;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -12,6 +10,7 @@ import ru.project.calculations.service.CustomerService;
 import ru.project.calculations.service.DocumentResultService;
 import ru.project.calculations.service.UncalculatedService;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.NoSuchElementException;
@@ -20,127 +19,127 @@ import java.util.NoSuchElementException;
 @RequiredArgsConstructor
 public class GlobalExceptionHandler {
 
-    private final MessageSource messageSource;
-    private final CalculationService calculationService;
-    private final UncalculatedService uncalculatedService;
-    private final CustomerService customerService;
-    private final DocumentResultService documentResultService;
+	private final MessageSource messageSource;
+	private final CalculationService calculationService;
+	private final UncalculatedService uncalculatedService;
+	private final CustomerService customerService;
+	private final DocumentResultService documentResultService;
 
-    @ExceptionHandler
-    public String handleException(NoSuchElementException exception,
-                                  @AuthenticationPrincipal UserDetails userDetails,
-                                  Model model,
-                                  Locale locale) {
-        model.addAttribute("calculations", calculationService.findAllCalculations());
-        model.addAttribute("customers", customerService.findAllCustomers());
-        model.addAttribute("userDetails", userDetails);
-        model.addAttribute("not_found_message", messageSource.getMessage(
-                exception.getMessage(),
-                new Object[0],
-                exception.getMessage(),
-                locale));
-        return "errors/io-error";
-    }
+	@ExceptionHandler
+	public String handleException(NoSuchElementException exception,
+								  Principal userDetails,
+								  Model model,
+								  Locale locale) {
+		model.addAttribute("calculations", calculationService.findAllCalculations());
+		model.addAttribute("customers", customerService.findAllCustomers());
+		model.addAttribute("userDetails", userDetails);
+		model.addAttribute("not_found_message", messageSource.getMessage(
+			exception.getMessage(),
+			new Object[0],
+			exception.getMessage(),
+			locale));
+		return "errors/io-error";
+	}
 
-    @ExceptionHandler
-    public String handleException(DocumentResultValidationUploadException exception,
-                                  @AuthenticationPrincipal UserDetails userDetails,
-                                  Model model,
-                                  Locale locale) {
-        model.addAttribute("calculation", calculationService.findCalculationById(exception.getId()));
-        model.addAttribute("calculations", calculationService.findAllCalculations());
-        model.addAttribute("resultDocument", documentResultService.findDocResultByCalcId(exception.getId()));
-        model.addAttribute("uncalculated", uncalculatedService.findAllUncalculatedByCalcId(exception.getId()));
-        model.addAttribute("userDetails", userDetails);
-        model.addAttribute("doc_validation_exception_message", messageSource.getMessage(
-                exception.getMessage(),
-                new Object[0],
-                exception.getMessage(),
-                locale));
-        return "calculation/calculation-doc-result-update";
-    }
+	@ExceptionHandler
+	public String handleException(DocumentResultValidationUploadException exception,
+								  Principal userDetails,
+								  Model model,
+								  Locale locale) {
+		model.addAttribute("calculation", calculationService.findCalculationById(exception.getId()));
+		model.addAttribute("calculations", calculationService.findAllCalculations());
+		model.addAttribute("resultDocument", documentResultService.findDocResultByCalcId(exception.getId(), userDetails));
+		model.addAttribute("uncalculated", uncalculatedService.findAllUncalculatedByCalcId(exception.getId()));
+		model.addAttribute("userDetails", userDetails);
+		model.addAttribute("doc_validation_exception_message", messageSource.getMessage(
+			exception.getMessage(),
+			new Object[0],
+			exception.getMessage(),
+			locale));
+		return "calculation/calculation-doc-result-update";
+	}
 
-    @ExceptionHandler
-    public String handleException(DocumentsIOException exception,
-                                  @AuthenticationPrincipal UserDetails userDetails,
-                                  Model model,
-                                  Locale locale) {
-        model.addAttribute("calculations", calculationService.findAllCalculations());
-        model.addAttribute("customers", customerService.findAllCustomers());
-        model.addAttribute("userDetails", userDetails);
-        model.addAttribute("io_exception_message", messageSource.getMessage(
-                exception.getMessage(),
-                new Object[0],
-                exception.getMessage(),
-                locale));
-        return "errors/io-error";
-    }
+	@ExceptionHandler
+	public String handleException(DocumentsIOException exception,
+								  Principal userDetails,
+								  Model model,
+								  Locale locale) {
+		model.addAttribute("calculations", calculationService.findAllCalculations());
+		model.addAttribute("customers", customerService.findAllCustomers());
+		model.addAttribute("userDetails", userDetails);
+		model.addAttribute("io_exception_message", messageSource.getMessage(
+			exception.getMessage(),
+			new Object[0],
+			exception.getMessage(),
+			locale));
+		return "errors/io-error";
+	}
 
-    @ExceptionHandler
-    public String handleException(CollaborationExcelException exception,
-                                  @AuthenticationPrincipal UserDetails userDetails,
-                                  Model model,
-                                  Locale locale) {
-        model.addAttribute("calculation", calculationService.findCalculationById(exception.getId()));
-        model.addAttribute("calculations", calculationService.findAllCalculations());
-        model.addAttribute("resultDocument", documentResultService.findDocResultByCalcId(exception.getId()));
-        model.addAttribute("customers", customerService.findAllCustomers());
-        model.addAttribute("uncalculated", new ArrayList<>());
-        model.addAttribute("userDetails", userDetails);
-        model.addAttribute("callaborating_exception_message", messageSource.getMessage(
-                "collaborating.exception.warning",
-                new Object[0],
-                locale));
-        return "calculation/calculation-doc-result-update";
-    }
+	@ExceptionHandler
+	public String handleException(CollaborationExcelException exception,
+								  Principal userDetails,
+								  Model model,
+								  Locale locale) {
+		model.addAttribute("calculation", calculationService.findCalculationById(exception.getId()));
+		model.addAttribute("calculations", calculationService.findAllCalculations());
+		model.addAttribute("resultDocument", documentResultService.findDocResultByCalcId(exception.getId(), userDetails));
+		model.addAttribute("customers", customerService.findAllCustomers());
+		model.addAttribute("uncalculated", new ArrayList<>());
+		model.addAttribute("userDetails", userDetails);
+		model.addAttribute("callaborating_exception_message", messageSource.getMessage(
+			"collaborating.exception.warning",
+			new Object[0],
+			locale));
+		return "calculation/calculation-doc-result-update";
+	}
 
-    @ExceptionHandler
-    public String handleException(DeleteEntityDataBaseException exception,
-                                  @AuthenticationPrincipal UserDetails userDetails,
-                                  Model model,
-                                  Locale locale) {
-        model.addAttribute("customer", customerService.findCustomerById(exception.getId()));
-        model.addAttribute("customers", customerService.findAllCustomers());
-        model.addAttribute("calculationsByCastId", calculationService.findAllCalculationsByCastId(exception.getId()));
-        model.addAttribute("userDetails", userDetails);
-        model.addAttribute("oportunity_exception_message", messageSource.getMessage(
-                "oportunity.exception.message",
-                new Object[0],
-                exception.getMessage(),
-                locale));
-        return "customer/customer-view";
-    }
+	@ExceptionHandler
+	public String handleException(DeleteEntityDataBaseException exception,
+								  Principal userDetails,
+								  Model model,
+								  Locale locale) {
+		model.addAttribute("customer", customerService.findCustomerById(exception.getId()));
+		model.addAttribute("customers", customerService.findAllCustomers());
+		model.addAttribute("calculationsByCastId", calculationService.findAllCalculationsByCastId(exception.getId()));
+		model.addAttribute("userDetails", userDetails);
+		model.addAttribute("oportunity_exception_message", messageSource.getMessage(
+			"oportunity.exception.message",
+			new Object[0],
+			exception.getMessage(),
+			locale));
+		return "customer/customer-view";
+	}
 
-    @ExceptionHandler
-    public String handleException(UniqueParameterCreateException exception,
-                                  @AuthenticationPrincipal UserDetails userDetails,
-                                  Model model,
-                                  Locale locale) {
-        model.addAttribute("customer", exception.getPayload());
-        model.addAttribute("customers", customerService.findAllCustomers());
-        model.addAttribute("userDetails", userDetails);
-        model.addAttribute("unique_parameter_exception", messageSource.getMessage(
-                "unique.parameter.exception",
-                new Object[0],
-                exception.getMessage(),
-                locale));
-        return "customer/customer-create";
-    }
+	@ExceptionHandler
+	public String handleException(UniqueParameterCreateException exception,
+								  Principal userDetails,
+								  Model model,
+								  Locale locale) {
+		model.addAttribute("customer", exception.getPayload());
+		model.addAttribute("customers", customerService.findAllCustomers());
+		model.addAttribute("userDetails", userDetails);
+		model.addAttribute("unique_parameter_exception", messageSource.getMessage(
+			"unique.parameter.exception",
+			new Object[0],
+			exception.getMessage(),
+			locale));
+		return "customer/customer-create";
+	}
 
-    @ExceptionHandler
-    public String handleException(UniqueParameterUpdateException exception,
-                                  @AuthenticationPrincipal UserDetails userDetails,
-                                  Model model,
-                                  Locale locale) {
-        model.addAttribute("customer", exception.getPayload());
-        model.addAttribute("customers", customerService.findAllCustomers());
-        model.addAttribute("userDetails", userDetails);
-        model.addAttribute("unique_parameter_exception", messageSource.getMessage(
-                "unique.parameter.exception",
-                new Object[0],
-                exception.getMessage(),
-                locale));
-        return "customer/customer-update";
-    }
+	@ExceptionHandler
+	public String handleException(UniqueParameterUpdateException exception,
+								  Principal userDetails,
+								  Model model,
+								  Locale locale) {
+		model.addAttribute("customer", exception.getPayload());
+		model.addAttribute("customers", customerService.findAllCustomers());
+		model.addAttribute("userDetails", userDetails);
+		model.addAttribute("unique_parameter_exception", messageSource.getMessage(
+			"unique.parameter.exception",
+			new Object[0],
+			exception.getMessage(),
+			locale));
+		return "customer/customer-update";
+	}
 
 }

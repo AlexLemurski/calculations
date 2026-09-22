@@ -29,10 +29,15 @@
         </a>
     </div>
     <div class="header-buttons right">
-        <span class="userInSystem" th:text="${userDetails.getUsername()}"></span>
+        <span class="userInSystem" th:text="${userDetails.getName()}"></span>
         <form th:action="@{/logout}" method="post">
             <button type="submit" id="clearLS" style="margin-left: 12px" class="red-btn">Выйти из системы</button>
         </form>
+        <div sec:authorize="hasAnyAuthority('ADMIN')" class="header-buttons">
+            <a th:href="@{/users}">
+                <button type="button">Пользователи</button>
+            </a>
+        </div>
     </div>
 </div>
 <div class="main-content">
@@ -75,7 +80,7 @@
                                     onclick="toggleDropdown()">▼
                             </button>
                             <div class="dropdown-content-customers">
-                                <span th:each="cust : ${customers}">
+                                <span th:each="cust : ${customersByStatus}">
                                     <label>
                                         <input type="checkbox" class="customer-filter"
                                                th:value="${cust.customerName()}"
@@ -209,6 +214,7 @@
                             <tr>
                                 <th class="file-name">Наименование документа</th>
                                 <th class="file-size">Размер файла</th>
+                                <th class="file-author">Автор</th>
                                 <th class="file-action">Действие</th>
                             </tr>
                             </thead>
@@ -222,6 +228,10 @@
                                     </a>
                                 </td>
                                 <td th:text="${mainDoc.size()}"></td>
+                                <td>
+                                    <span th:text="${mainDoc.username()}"></span><br>
+                                    <span th:text="${#temporals.format(mainDoc.timeStamp(), 'dd-MM-yyyy - HH:mm:ss')}"></span>
+                                </td>
                                 <td>
                                     <a th:href="@{/document_resource/delete/{id}(id=${mainDoc.docId()})}">
                                         <button type="button" class="red-btn">Удалить</button>
@@ -258,6 +268,7 @@
                                 <th class="file-name-partition-update">Наименование документа</th>
                                 <th class="file-content-partition">Содержание</th>
                                 <th class="file-size-partition">Размер файла</th>
+                                <th class="file-author-partition">Автор</th>
                                 <th class="file-action-partition">Действие</th>
                             </tr>
                             </thead>
@@ -284,6 +295,10 @@
                                     </span>
                                     </th>
                                     <td th:text="${partDoc.size()}"></td>
+                                    <td>
+                                        <span th:text="${partDoc.username()}"></span><br>
+                                        <span th:text="${#temporals.format(partDoc.timeStamp(), 'dd-MM-yyyy - HH:mm:ss')}"></span>
+                                    </td>
                                     <td>
                                         <a th:href="@{/document_resource/delete/{id}(id=${partDoc.docId()})}">
                                             <button type="button" class="red-btn">Удалить</button>
@@ -325,6 +340,7 @@
                             <tr>
                                 <th class="file-name">Наименование документа</th>
                                 <th class="file-size">Размер файла</th>
+                                <th class="file-author">Автор</th>
                                 <th class="file-action">Действие</th>
                             </tr>
                             </thead>
@@ -338,6 +354,10 @@
                                     </a>
                                 </td>
                                 <td th:text="${specDoc.size()}"></td>
+                                <td>
+                                    <span th:text="${specDoc.username()}"></span><br>
+                                    <span th:text="${#temporals.format(specDoc.timeStamp(), 'dd-MM-yyyy - HH:mm:ss')}"></span>
+                                </td>
                                 <td>
                                     <a th:href="@{/document_resource/delete/{id}(id=${specDoc.docId()})}">
                                         <button type="button" class="red-btn">Удалить</button>
@@ -372,6 +392,7 @@
                             <tr>
                                 <th class="file-name">Наименование документа</th>
                                 <th class="file-size">Размер файла</th>
+                                <th class="file-author">Автор</th>
                                 <th class="file-action">Действие</th>
                             </tr>
                             </thead>
@@ -385,6 +406,10 @@
                                     </a>
                                 </td>
                                 <td th:text="${matDoc.size()}"></td>
+                                <td>
+                                    <span th:text="${matDoc.username()}"></span><br>
+                                    <span th:text="${#temporals.format(matDoc.timeStamp(), 'dd-MM-yyyy - HH:mm:ss')}"></span>
+                                </td>
                                 <td>
                                     <a th:href="@{/document_resource/delete/{id}(id=${matDoc.docId()})}">
                                         <button type="button" class="red-btn">Удалить</button>
@@ -420,6 +445,7 @@
                             <tr>
                                 <th class="file-name">Наименование документа</th>
                                 <th class="file-size">Размер файла</th>
+                                <th class="file-author">Автор</th>
                                 <th class="file-action">Действие</th>
                             </tr>
                             </thead>
@@ -433,6 +459,10 @@
                                     </a>
                                 </td>
                                 <td th:text="${workDoc.size()}"></td>
+                                <td>
+                                    <span th:text="${workDoc.username()}"></span><br>
+                                    <span th:text="${#temporals.format(workDoc.timeStamp(), 'dd-MM-yyyy - HH:mm:ss')}"></span>
+                                </td>
                                 <td>
                                     <a th:href="@{/document_resource/delete/{id}(id=${workDoc.docId()})}">
                                         <button type="button" class="red-btn">Удалить</button>
@@ -467,6 +497,7 @@
                             <tr>
                                 <th class="file-name">Наименование документа</th>
                                 <th class="file-size">Размер файла</th>
+                                <th class="file-author">Автор</th>
                                 <th class="file-action">Действие</th>
                             </tr>
                             </thead>
@@ -480,6 +511,10 @@
                                     </a>
                                 </td>
                                 <td th:text="${techDoc.size()}"></td>
+                                <td>
+                                    <span th:text="${techDoc.username()}"></span><br>
+                                    <span th:text="${#temporals.format(techDoc.timeStamp(), 'dd-MM-yyyy - HH:mm:ss')}"></span>
+                                </td>
                                 <td>
                                     <a th:href="@{/document_resource/delete/{id}(id=${techDoc.docId()})}">
                                         <button type="button" class="red-btn">Удалить</button>
@@ -515,6 +550,7 @@
                             <tr>
                                 <th class="file-name">Наименование документа</th>
                                 <th class="file-size">Размер файла</th>
+                                <th class="file-author">Автор</th>
                                 <th class="file-action">Действие</th>
                             </tr>
                             </thead>
@@ -528,6 +564,10 @@
                                     </a>
                                 </td>
                                 <td th:text="${sepDoc.size()}"></td>
+                                <td>
+                                    <span th:text="${sepDoc.username()}"></span><br>
+                                    <span th:text="${#temporals.format(sepDoc.timeStamp(), 'dd-MM-yyyy - HH:mm:ss')}"></span>
+                                </td>
                                 <td>
                                     <a th:href="@{/document_resource/delete/{id}(id=${sepDoc.docId()})}">
                                         <button type="button" class="red-btn">Удалить</button>
@@ -562,6 +602,7 @@
                             <tr>
                                 <th class="file-name">Наименование документа</th>
                                 <th class="file-size">Размер файла</th>
+                                <th class="file-author">Автор</th>
                                 <th class="file-action">Действие</th>
                             </tr>
                             </thead>
@@ -575,6 +616,10 @@
                                     </a>
                                 </td>
                                 <td th:text="${otherDoc.size()}"></td>
+                                <td>
+                                    <span th:text="${otherDoc.username()}"></span><br>
+                                    <span th:text="${#temporals.format(otherDoc.timeStamp(), 'dd-MM-yyyy - HH:mm:ss')}"></span>
+                                </td>
                                 <td>
                                     <a th:href="@{/document_resource/delete/{id}(id=${otherDoc.docId()})}">
                                         <button type="button" class="red-btn">Удалить</button>

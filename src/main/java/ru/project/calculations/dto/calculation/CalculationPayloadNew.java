@@ -1,29 +1,27 @@
 package ru.project.calculations.dto.calculation;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.PastOrPresent;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-
-import java.time.LocalDate;
 
 public record CalculationPayloadNew(
 
 	String status,
 
 	@NotBlank
-	@Size(min = 2, max = 1000)
+	@Size(min = 2, max = 1000, message = "{errors.size_min_to_max}")
+	@Pattern(regexp = "^[-а-яА-ЯёЁa-zA-Z\\s\\\\,.;:№()%#^*/\\d+$ –\"]+$", message = "{errors.field_only_ru}")
 	String lotName,
 
 	@NotBlank
-	@Size(min = 2, max = 3000)
+	@Size(min = 2, max = 3000, message = "{errors.size_min_to_max}")
+	@Pattern(regexp = "^[-а-яА-ЯёЁa-zA-Z\\s\\\\,.;:№()%#^*/\\d+$ –\"]+$", message = "{errors.field_only_ru}")
 	String projectName,
 
 	@NotBlank
-	@Size(min = 2, max = 1000)
+	@Size(min = 2, max = 1000, message = "{errors.size_min_to_max}")
+	@Pattern(regexp = "^[-а-яА-ЯёЁa-zA-Z\\s\\\\,.;:№()%#^*/\\d+$ –\"]+$", message = "{errors.field_only_ru}")
 	String projectLocation,
-
-	@PastOrPresent
-	LocalDate dateOfCreate,
 
 	Long customerId
 

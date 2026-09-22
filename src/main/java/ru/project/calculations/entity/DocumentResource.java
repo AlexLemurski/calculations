@@ -7,6 +7,7 @@ import org.springframework.data.relational.core.mapping.Table;
 import ru.project.calculations.enums.ContentType;
 import ru.project.calculations.enums.DocumentIndex;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,5 +45,11 @@ public class DocumentResource {
 
     @Column("c_content_type")
     private List<ContentType> contentTypes = new ArrayList<>();
+
+    @Column("c_user_id")
+    private long userId;
+
+    @Column("c_time_stamp")
+    private LocalDateTime timeStamp;
 
 }

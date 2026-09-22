@@ -25,10 +25,15 @@
         </a>
     </div>
     <div class="header-buttons right">
-        <span class="userInSystem" th:text="${userDetails.getUsername()}"></span>
+        <span class="userInSystem" th:text="${userDetails.getName()}"></span>
         <form th:action="@{/logout}" method="post">
             <button type="submit" id="clearLS" style="margin-left: 12px" class="red-btn">Выйти из системы</button>
         </form>
+        <div sec:authorize="hasAnyAuthority('ADMIN')" class="header-buttons">
+            <a th:href="@{/users}">
+                <button type="button">Пользователи</button>
+            </a>
+        </div>
     </div>
 </div>
 <div class="main-content">

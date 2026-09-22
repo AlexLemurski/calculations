@@ -14,6 +14,7 @@ import ru.project.calculations.enums.DocumentIndex;
 import ru.project.calculations.exception.DocumentResultValidationUploadException;
 import ru.project.calculations.exception.DocumentsIOException;
 import ru.project.calculations.repository.*;
+import ru.project.calculations.repository.UsersRepository;
 import ru.project.calculations.service.DocumentResourceService;
 import ru.project.calculations.service.DocumentResultService;
 
@@ -21,6 +22,7 @@ import java.io.*;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
+import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -91,7 +93,9 @@ public final class DocumentsUtil {
 	public static void saveAllDataDocumentResource(long id,
 												   String folderName,
 												   DocumentResourceRepository documentResourceRepository,
+												   UsersRepository usersRepository,
 												   DocumentIndex documentIndex,
+												   Principal principal,
 												   MultipartFile file) throws IOException {
 		String key = generateKey(file.getName());
 		fileOutputStream(folderName, file, key);
@@ -102,7 +106,9 @@ public final class DocumentsUtil {
 			key,
 			size,
 			documentIndex,
-			id);
+			id,
+			usersRepository.findUsersByUserName(principal.getName()).orElseThrow().getId(),
+			LocalDateTime.now());
 	}
 
 	public static void saveAllDataDocumentResult(long id,
@@ -110,6 +116,8 @@ public final class DocumentsUtil {
 												 CalculationRepository calculationRepository,
 												 PartitionRepository partitionRepository,
 												 UncalculatedRepository uncalculatedRepository,
+												 UsersRepository usersRepository,
+												 Principal principal,
 												 MultipartFile file) throws IOException {
 		var calculation = calculationRepository.findCalculationById(id).orElseThrow();
 		if (validateExcelFile(file)) {
@@ -121,7 +129,9 @@ public final class DocumentsUtil {
 				file.getContentType(),
 				key,
 				size,
-				id);
+				id,
+				usersRepository.findUsersByUserName(principal.getName()).orElseThrow().getId(),
+				LocalDateTime.now());
 			getCalculationResultParameters(calculation,
 				Paths.get(calculation.getResourceFolder(), key).toString(),
 				partitionRepository,

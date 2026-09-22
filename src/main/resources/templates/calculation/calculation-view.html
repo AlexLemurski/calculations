@@ -29,10 +29,15 @@
         </a>
     </div>
     <div class="header-buttons right">
-        <span class="userInSystem" th:text="${userDetails.getUsername()}"></span>
+        <span class="userInSystem" th:text="${userDetails.getName()}"></span>
         <form th:action="@{/logout}" method="post">
             <button type="submit" id="clearLS" style="margin-left: 12px" class="red-btn">Выйти из системы</button>
         </form>
+        <div sec:authorize="hasAnyAuthority('ADMIN')" class="header-buttons">
+            <a th:href="@{/users}">
+                <button type="button">Пользователи</button>
+            </a>
+        </div>
     </div>
 </div>
 <div class="main-content">
@@ -75,7 +80,7 @@
                                     onclick="toggleDropdown()">▼
                             </button>
                             <div class="dropdown-content-customers">
-                                <span th:each="cust : ${customers}">
+                                <span th:each="cust : ${customersByStatus}">
                                     <label>
                                         <input type="checkbox" class="customer-filter"
                                                th:value="${cust.customerName()}"
@@ -169,26 +174,31 @@
                 </tr>
                 <tr>
                     <td>002</td>
+                    <td>Автор</td>
+                    <td th:text="${calculation.username()}"></td>
+                </tr>
+                <tr>
+                    <td>003</td>
                     <td>Статус</td>
                     <td th:text="${calculation.status()}"></td>
                 </tr>
                 <tr>
-                    <td>003</td>
+                    <td>004</td>
                     <td>Лот</td>
                     <td th:text="${calculation.lotName()}"></td>
                 </tr>
                 <tr>
-                    <td>004</td>
+                    <td>005</td>
                     <td>Наименование</td>
                     <td th:text="${calculation.projectName()}"></td>
                 </tr>
                 <tr>
-                    <td>005</td>
+                    <td>006</td>
                     <td>Локация пр-ва работ</td>
                     <td th:text="${calculation.projectLocation()}"></td>
                 </tr>
                 <tr>
-                    <td>006</td>
+                    <td>007</td>
                     <td>Заказчик</td>
                     <td>
                         <div th:if="${#authorization.expression('hasAnyAuthority(''ADMIN'', ''CUSTOMER_VIEW'')')}">
@@ -203,9 +213,9 @@
                     </td>
                 </tr>
                 <tr>
-                    <td>007</td>
+                    <td>008</td>
                     <td>Дата создания</td>
-                    <td th:text="${#temporals.format(calculation.dateOfCreate(), 'dd-MM-yyyy г.')}"></td>
+                    <td th:text="${#temporals.format(calculation.dateOfCreate(), 'dd-MM-yyyy - HH:mm:ss')}"></td>
                 </tr>
                 </tbody>
             </table>
@@ -252,6 +262,7 @@
                     <tr>
                         <th class="file-name">Наименование документа</th>
                         <th class="file-size">Размер файла</th>
+                        <th class="file-author">Автор</th>
                     </tr>
                     </thead>
                     <tbody class="right-table-body">
@@ -266,6 +277,10 @@
                             </span>
                         </td>
                         <td th:text="${resultDocument.size()}"></td>
+                        <td>
+                            <span th:text="${resultDocument.username()}"></span><br>
+                            <span th:text="${#temporals.format(resultDocument.timeStamp(), 'dd-MM-yyyy - HH:mm:ss')}"></span>
+                        </td>
                     </tr>
                     </tbody>
                 </table>
@@ -366,6 +381,7 @@
                             <tr>
                                 <th class="file-name">Наименование документа</th>
                                 <th class="file-size">Размер файла</th>
+                                <th class="file-author">Автор</th>
                             </tr>
                             </thead>
                             <tbody class="right-table-body">
@@ -378,6 +394,10 @@
                                     </a>
                                 </td>
                                 <td th:text="${mainDoc.size()}"></td>
+                                <td>
+                                    <span th:text="${mainDoc.username()}"></span><br>
+                                    <span th:text="${#temporals.format(mainDoc.timeStamp(), 'dd-MM-yyyy - HH:mm:ss')}"></span>
+                                </td>
                             </tr>
                             </tbody>
                         </table>
@@ -397,6 +417,7 @@
                                 <th class="file-name-partition">Наименование документа</th>
                                 <th class="file-content-partition">Содержание</th>
                                 <th class="file-size-partition">Размер файла</th>
+                                <th class="file-author-partition">Автор</th>
                             </tr>
                             </thead>
                             <tbody class="right-table-body">
@@ -422,6 +443,10 @@
                                     </span>
                                 </th>
                                 <td th:text="${partDoc.size()}"></td>
+                                <td>
+                                    <span th:text="${partDoc.username()}"></span><br>
+                                    <span th:text="${#temporals.format(partDoc.timeStamp(), 'dd-MM-yyyy - HH:mm:ss')}"></span>
+                                </td>
                             </tr>
                             </tbody>
                         </table>
@@ -440,6 +465,7 @@
                             <tr>
                                 <th class="file-name">Наименование документа</th>
                                 <th class="file-size">Размер файла</th>
+                                <th class="file-author">Автор</th>
                             </tr>
                             </thead>
                             <tbody class="right-table-body">
@@ -452,6 +478,10 @@
                                     </a>
                                 </td>
                                 <td th:text="${specDoc.size()}"></td>
+                                <td>
+                                    <span th:text="${specDoc.username()}"></span><br>
+                                    <span th:text="${#temporals.format(specDoc.timeStamp(), 'dd-MM-yyyy - HH:mm:ss')}"></span>
+                                </td>
                             </tr>
                             </tbody>
                         </table>
@@ -469,6 +499,7 @@
                             <tr>
                                 <th class="file-name">Наименование документа</th>
                                 <th class="file-size">Размер файла</th>
+                                <th class="file-author">Автор</th>
                             </tr>
                             </thead>
                             <tbody class="right-table-body">
@@ -481,6 +512,10 @@
                                     </a>
                                 </td>
                                 <td th:text="${matDoc.size()}"></td>
+                                <td>
+                                    <span th:text="${matDoc.username()}"></span><br>
+                                    <span th:text="${#temporals.format(matDoc.timeStamp(), 'dd-MM-yyyy - HH:mm:ss')}"></span>
+                                </td>
                             </tr>
                             </tbody>
                         </table>
@@ -499,6 +534,7 @@
                             <tr>
                                 <th class="file-name">Наименование документа</th>
                                 <th class="file-size">Размер файла</th>
+                                <th class="file-author">Автор</th>
                             </tr>
                             </thead>
                             <tbody class="right-table-body">
@@ -511,6 +547,10 @@
                                     </a>
                                 </td>
                                 <td th:text="${workDoc.size()}"></td>
+                                <td>
+                                    <span th:text="${workDoc.username()}"></span><br>
+                                    <span th:text="${#temporals.format(workDoc.timeStamp(), 'dd-MM-yyyy - HH:mm:ss')}"></span>
+                                </td>
                             </tr>
                             </tbody>
                         </table>
@@ -528,6 +568,7 @@
                             <tr>
                                 <th class="file-name">Наименование документа</th>
                                 <th class="file-size">Размер файла</th>
+                                <th class="file-author">Автор</th>
                             </tr>
                             </thead>
                             <tbody class="right-table-body">
@@ -540,6 +581,10 @@
                                     </a>
                                 </td>
                                 <td th:text="${techDoc.size()}"></td>
+                                <td>
+                                    <span th:text="${techDoc.username()}"></span><br>
+                                    <span th:text="${#temporals.format(techDoc.timeStamp(), 'dd-MM-yyyy - HH:mm:ss')}"></span>
+                                </td>
                             </tr>
                             </tbody>
                         </table>
@@ -558,6 +603,7 @@
                             <tr>
                                 <th class="file-name">Наименование документа</th>
                                 <th class="file-size">Размер файла</th>
+                                <th class="file-author">Автор</th>
                             </tr>
                             </thead>
                             <tbody class="right-table-body">
@@ -570,6 +616,10 @@
                                     </a>
                                 </td>
                                 <td th:text="${sepDoc.size()}"></td>
+                                <td>
+                                    <span th:text="${sepDoc.username()}"></span><br>
+                                    <span th:text="${#temporals.format(sepDoc.timeStamp(), 'dd-MM-yyyy - HH:mm:ss')}"></span>
+                                </td>
                             </tr>
                             </tbody>
                         </table>
@@ -599,6 +649,10 @@
                                     </a>
                                 </td>
                                 <td th:text="${otherDoc.size()}"></td>
+                                <td>
+                                    <span th:text="${otherDoc.username()}"></span><br>
+                                    <span th:text="${#temporals.format(otherDoc.timeStamp(), 'dd-MM-yyyy - HH:mm:ss')}"></span>
+                                </td>
                             </tr>
                             </tbody>
                         </table>

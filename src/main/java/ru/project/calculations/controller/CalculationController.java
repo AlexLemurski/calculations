@@ -2,8 +2,6 @@ package ru.project.calculations.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -15,7 +13,10 @@ import ru.project.calculations.dto.calculation.CalculationPayloadUpdate;
 import ru.project.calculations.enums.ContentType;
 import ru.project.calculations.service.*;
 
+import java.security.Principal;
+
 import static ru.project.calculations.enums.DocumentIndex.*;
+import static ru.project.calculations.enums.Status.ACTUAL;
 import static ru.project.calculations.util.CalculationUtil.*;
 
 @Controller
@@ -32,10 +33,10 @@ public class CalculationController {
 
 	@GetMapping
 	@PreAuthorize("hasAnyAuthority('ADMIN', 'CALCULATION_VIEW')")
-	public String findAllCalculations(@AuthenticationPrincipal UserDetails userDetails,
+	public String findAllCalculations(Principal userDetails,
 									  Model model) {
 		model.addAttribute("calculations", calculationService.findAllCalculations());
-		model.addAttribute("customers", customerService.findAllCustomers());
+		model.addAttribute("customersByStatus", customerService.findAllCustomersByStatus(ACTUAL));
 		model.addAttribute("userDetails", userDetails);
 		return "calculation/calculation-menu";
 	}
@@ -43,14 +44,14 @@ public class CalculationController {
 	@GetMapping("/{id:\\d++}")
 	@PreAuthorize("hasAnyAuthority('ADMIN', 'CALCULATION_VIEW')")
 	public String findCalculationById(@PathVariable long id,
-									  @AuthenticationPrincipal UserDetails userDetails,
+									  Principal userDetails,
 									  Model model) {
-		var resultDocument = documentResultService.findDocResultByCalcId(id);
+		var resultDocument = documentResultService.findDocResultByCalcId(id, userDetails);
 		model.addAttribute("calculations", calculationService.findAllCalculations());
 		model.addAttribute("calculation", calculationService.findCalculationById(id));
-		getAllResourceDocuments(id, documentResourceService, model);
+		getAllResourceDocuments(id, documentResourceService, userDetails, model);
 		model.addAttribute("resultDocument", resultDocument);
-		model.addAttribute("customers", customerService.findAllCustomers());
+		model.addAttribute("customersByStatus", customerService.findAllCustomersByStatus(ACTUAL));
 		model.addAttribute("partition", partitionService.findAllPartitionByCalcId(id));
 		model.addAttribute("uncalculated", uncalculatedService.findAllUncalculatedByCalcId(id));
 		model.addAttribute("userDetails", userDetails);
@@ -60,12 +61,12 @@ public class CalculationController {
 	@GetMapping("/create")
 	@PreAuthorize("hasAnyAuthority('ADMIN', 'CALCULATION_CREATE')")
 	public String createCalculationForm(@ModelAttribute("calculation") CalculationPayloadNew payload,
-										@AuthenticationPrincipal UserDetails userDetails,
+										Principal userDetails,
 										Model model) {
 		model.addAttribute("calculations", calculationService.findAllCalculations());
-		model.addAttribute("customers", customerService.findAllCustomers());
-		model.addAttribute("userDetails", userDetails);
+		model.addAttribute("customersByStatus", customerService.findAllCustomersByStatus(ACTUAL));
 		model.addAttribute("statusListCreate", getStatusListCalculationForCreate());
+		model.addAttribute("userDetails", userDetails);
 		return "calculation/calculation-create";
 	}
 
@@ -73,15 +74,17 @@ public class CalculationController {
 	@PreAuthorize("hasAnyAuthority('ADMIN', 'CALCULATION_CREATE')")
 	public String createCalculation(@Validated @ModelAttribute("calculation") CalculationPayloadNew payload,
 									BindingResult bindingResult,
+									Principal userDetails,
 									Model model,
 									RedirectAttributes attributes) {
 		if (bindingResult.hasErrors()) {
 			model.addAttribute("calculations", calculationService.findAllCalculations());
-			model.addAttribute("customers", customerService.findAllCustomers());
+			model.addAttribute("customersByStatus", customerService.findAllCustomersByStatus(ACTUAL));
 			model.addAttribute("statusListCreate", getStatusListCalculationForCreate());
+			model.addAttribute("userDetails", userDetails);
 			return "calculation/calculation-create";
 		} else {
-			var calculation = calculationService.createCalculation(payload);
+			var calculation = calculationService.createCalculation(payload, userDetails);
 			attributes.addFlashAttribute("successMessage", "success.object.create");
 			return "redirect:/calculations/%d".formatted(calculation.getId());
 		}
@@ -90,12 +93,12 @@ public class CalculationController {
 	@GetMapping("/update/{id:\\d+}")
 	@PreAuthorize("hasAnyAuthority('ADMIN', 'CALCULATION_UPDATE')")
 	public String updateCalculationForm(@PathVariable long id,
-										@AuthenticationPrincipal UserDetails userDetails,
+										Principal userDetails,
 										Model model) {
 		var calculation = calculationService.findCalculationById(id);
 		model.addAttribute("calculation", calculation);
 		model.addAttribute("calculations", calculationService.findAllCalculations());
-		model.addAttribute("customers", customerService.findAllCustomers());
+		model.addAttribute("customersByStatus", customerService.findAllCustomersByStatus(ACTUAL));
 		model.addAttribute("userDetails", userDetails);
 		model.addAttribute("statusListUpdate", getStatusListCalculationForUpdate(calculation));
 		return "calculation/calculation-update";
@@ -105,13 +108,15 @@ public class CalculationController {
 	@PreAuthorize("hasAnyAuthority('ADMIN', 'CALCULATION_UPDATE')")
 	public String updateCalculation(@Validated @ModelAttribute("calculation") CalculationPayloadUpdate payload,
 									BindingResult bindingResult,
+									Principal userDetails,
 									Model model,
 									RedirectAttributes attributes) {
 		if (bindingResult.hasErrors()) {
 			var calculation = calculationService.findCalculationById(payload.id());
 			model.addAttribute("calculations", calculationService.findAllCalculations());
-			model.addAttribute("customers", customerService.findAllCustomers());
+			model.addAttribute("customersByStatus", customerService.findAllCustomersByStatus(ACTUAL));
 			model.addAttribute("statusListUpdate", getStatusListCalculationForUpdate(calculation));
+			model.addAttribute("userDetails", userDetails);
 			return "calculation/calculation-update";
 		} else {
 			var calculation = calculationService.updateCalculation(payload);
@@ -123,15 +128,15 @@ public class CalculationController {
 	@GetMapping("/doc_resource_update/{id:\\d+}")
 	@PreAuthorize("hasAnyAuthority('ADMIN', 'DOC_RESOURCE_REDACTOR')")
 	public String updateDocumentResourceForm(@PathVariable long id,
-											 @AuthenticationPrincipal UserDetails userDetails,
+											 Principal userDetails,
 											 Model model) {
 		model.addAttribute("calculations", calculationService.findAllCalculations());
 		model.addAttribute("calculation", calculationService.findCalculationById(id));
-		model.addAttribute("customers", customerService.findAllCustomers());
+		model.addAttribute("customersByStatus", customerService.findAllCustomersByStatus(ACTUAL));
 		model.addAttribute("partitionDocuments",
-			documentResourceService.findAllDocResourceByCalcIdAndIndex(id, PARTITION_DOC));
+			documentResourceService.findAllDocResourceByCalcIdAndIndex(id, PARTITION_DOC, userDetails));
 		model.addAttribute("contentTypeList", ContentType.values());
-		getAllResourceDocuments(id, documentResourceService, model);
+		getAllResourceDocuments(id, documentResourceService, userDetails, model);
 		model.addAttribute("userDetails", userDetails);
 		return "calculation/calculation-doc-resource-update";
 	}
@@ -139,12 +144,12 @@ public class CalculationController {
 	@GetMapping("/doc_result_update/{id:\\d+}")
 	@PreAuthorize("hasAnyAuthority('ADMIN', 'DOC_RESULT_REDACTOR')")
 	public String updateDocumentResultForm(@PathVariable long id,
-										   @AuthenticationPrincipal UserDetails userDetails,
+										   Principal userDetails,
 										   Model model) {
 		model.addAttribute("calculations", calculationService.findAllCalculations());
 		model.addAttribute("calculation", calculationService.findCalculationById(id));
-		model.addAttribute("resultDocument", documentResultService.findDocResultByCalcId(id));
-		model.addAttribute("customers", customerService.findAllCustomers());
+		model.addAttribute("resultDocument", documentResultService.findDocResultByCalcId(id, userDetails));
+		model.addAttribute("customersByStatus", customerService.findAllCustomersByStatus(ACTUAL));
 		model.addAttribute("partition", partitionService.findAllPartitionByCalcId(id));
 		model.addAttribute("uncalculated", uncalculatedService.findAllUncalculatedByCalcId(id));
 		model.addAttribute("userDetails", userDetails);
@@ -159,6 +164,7 @@ public class CalculationController {
 		documentResultService.deleteDocumentResultCascade(id);
 		uncalculatedService.deleteAllUncalculatedById(id);
 		documentResourceService.deleteAllDocumentResource(id);
+		partitionService.deleteAllPartitionByCalcId(id);
 		calculationService.deleteeCalculation(id);
 		deleteFolders(calculation.resourceFolder());
 		attributes.addFlashAttribute("successMessage", "success.object.deleted");

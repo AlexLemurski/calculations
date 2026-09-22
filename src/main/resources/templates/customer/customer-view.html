@@ -25,10 +25,15 @@
         </a>
     </div>
     <div class="header-buttons right">
-        <span class="userInSystem" th:text="${userDetails.getUsername()}"></span>
+        <span class="userInSystem" th:text="${userDetails.getName()}"></span>
         <form th:action="@{/logout}" method="post">
             <button type="submit" id="clearLS" style="margin-left: 12px" class="red-btn">Выйти из системы</button>
         </form>
+        <div sec:authorize="hasAnyAuthority('ADMIN')" class="header-buttons">
+            <a th:href="@{/users}">
+                <button type="button">Пользователи</button>
+            </a>
+        </div>
     </div>
 </div>
 <div class="main-content">
@@ -178,7 +183,7 @@
                 <table class="table-right">
                     <thead class="right-table-head">
                     <tr>
-                        <th>Лот - Итоговая сумма расценки</th>
+                        <th>Лот - Итоговая сумма расценки - Статус</th>
                     </tr>
                     </thead>
                     <tbody class="right-table-body">
@@ -187,7 +192,9 @@
                             <a th:href="@{/calculations/{id}(id=${calcByCastId.id()})}"
                                th:title="${'Проект: ' + calcByCastId.projectName()}">
                                 <button type="button" class="blue-btn" style="width: 60%; text-align: left">
-                                    <span th:text="${calcByCastId.lotName() + ' - ' + calcByCastId.totalSum()}"></span>
+                                    <span th:text="${calcByCastId.lotName() +
+                                    ' - ' + calcByCastId.totalSum() +
+                                    ' - ' + calcByCastId.status()}"></span>
                                 </button>
                             </a>
                         </td>

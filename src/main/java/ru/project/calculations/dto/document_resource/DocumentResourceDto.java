@@ -4,6 +4,7 @@ import lombok.Builder;
 import ru.project.calculations.enums.ContentType;
 import ru.project.calculations.enums.DocumentIndex;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public record DocumentResourceDto(
@@ -22,7 +23,11 @@ public record DocumentResourceDto(
 
         long calculationId,
 
-        List<ContentType> contentTypes
+        List<ContentType> contentTypes,
+
+        String username,
+
+        LocalDateTime timeStamp
 
 ) {
     @Builder

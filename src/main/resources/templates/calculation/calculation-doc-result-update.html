@@ -29,10 +29,15 @@
         </a>
     </div>
     <div class="header-buttons right">
-        <span class="userInSystem" th:text="${userDetails.getUsername()}"></span>
+        <span class="userInSystem" th:text="${userDetails.getName()}"></span>
         <form th:action="@{/logout}" method="post">
             <button type="submit" id="clearLS" style="margin-left: 12px" class="red-btn">Выйти из системы</button>
         </form>
+        <div sec:authorize="hasAnyAuthority('ADMIN')" class="header-buttons">
+            <a th:href="@{/users}">
+                <button type="button">Пользователи</button>
+            </a>
+        </div>
     </div>
 </div>
 <div class="main-content">
@@ -75,7 +80,7 @@
                                     onclick="toggleDropdown()">▼
                             </button>
                             <div class="dropdown-content-customers">
-                                <span th:each="cust : ${customers}">
+                                <span th:each="cust : ${customersByStatus}">
                                     <label>
                                         <input type="checkbox" class="customer-filter"
                                                th:value="${cust.customerName()}"
@@ -207,6 +212,7 @@
                     <tr>
                         <th class="file-name">Наименование документа</th>
                         <th class="file-size">Размер файла</th>
+                        <th class="file-author">Автор</th>
                         <th class="file-action">Действие</th>
                     </tr>
                     </thead>
@@ -220,6 +226,10 @@
                             </a>
                         </td>
                         <td th:text="${resultDocument.size()}"></td>
+                        <td>
+                            <span th:text="${resultDocument.username()}"></span><br>
+                            <span th:text="${#temporals.format(resultDocument.timeStamp(), 'dd-MM-yyyy - HH:mm:ss')}"></span>
+                        </td>
                         <td>
                             <a th:href="@{/document_result/delete/{id}(id=${resultDocument.docId()})}">
                                 <button type="button" class="red-btn">Удалить</button>
@@ -257,7 +267,8 @@
             </fieldset>
             <fieldset>
                 <legend>Детализация расценки (при условии наличия Разделов рабочей документации
-                    и/или Спецификации оборудования и материалов)</legend>
+                    и/или Спецификации оборудования и материалов)
+                </legend>
                 <table class="table-right">
                     <thead class="right-table-head">
                     <tr>

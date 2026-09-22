@@ -9,6 +9,7 @@ import ru.project.calculations.entity.Calculation;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,7 +19,7 @@ public interface CalculationRepository extends CrudRepository<Calculation, Long>
 	@Query(value = """
 		select cal.c_id, cal.c_status, cal.c_lot_name, cal.c_project_name, cal.c_project_location, c_total_sum,
 		       c_calculated_pos_count, c_total_pos_count, c_total_pos_percent, c_resource_folder,
-		       cal.c_date_of_create, cal.c_customer_id
+		       cal.c_date_of_create, cal.c_customer_id, cal.c_user_id
 		from data.t_calculations as cal
 		where cal.c_id = :id
 		""")
@@ -40,22 +41,23 @@ public interface CalculationRepository extends CrudRepository<Calculation, Long>
 
 	@Query(value = """
 		insert into data.t_calculations
-		(c_status, c_lot_name, c_project_name, c_project_location, c_date_of_create, c_customer_id, c_resource_folder)
-		values (:status, :lotName, :projectName, :projectLocation, :dateOfCreate, :customerId, :resourceFolder)
+		(c_status, c_lot_name, c_project_name, c_project_location, c_date_of_create, c_customer_id, c_user_id, c_resource_folder)
+		values (:status, :lotName, :projectName, :projectLocation, :dateOfCreate, :customerId, :userId, :resourceFolder)
 		returning *
 		""")
 	Calculation cerateCalculation(@Param("status") String status,
 								  @Param("lotName") String lotName,
 								  @Param("projectName") String projectName,
 								  @Param("projectLocation") String projectLocation,
-								  @Param("dateOfCreate") LocalDate dateOfCreate,
+								  @Param("dateOfCreate") LocalDateTime dateOfCreate,
 								  @Param("customerId") long customerId,
+								  @Param("userId") long userId,
 								  @Param("resourceFolder") String resourceFolder);
 
 	@Query(value = """
 		update data.t_calculations
-		set c_status = :status, c_lot_name = :lotName, c_project_name = :projectName, c_project_location = :projectLocation,
-		    c_date_of_create = :dateOfCreate, c_customer_id = :customerId
+		set c_status = :status, c_lot_name = :lotName, c_project_name = :projectName,
+		    c_project_location = :projectLocation, c_customer_id = :customerId
 		where c_id = :id
 		returning *
 		""")
@@ -64,8 +66,8 @@ public interface CalculationRepository extends CrudRepository<Calculation, Long>
 								  @Param("lotName") String lotName,
 								  @Param("projectName") String projectName,
 								  @Param("projectLocation") String projectLocation,
-								  @Param("dateOfCreate") LocalDate dateOfCreate,
-								  @Param("customerId") long customerId);
+								  @Param("customerId") long customerId
+	);
 
 	@Modifying
 	@Query(value = """

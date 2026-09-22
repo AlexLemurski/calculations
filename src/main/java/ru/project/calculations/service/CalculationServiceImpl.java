@@ -9,8 +9,11 @@ import ru.project.calculations.dto.calculation.CalculationPayloadUpdate;
 import ru.project.calculations.entity.Calculation;
 import ru.project.calculations.repository.CalculationRepository;
 import ru.project.calculations.repository.CustomerRepository;
+import ru.project.calculations.repository.UsersRepository;
 import ru.project.calculations.util.FilePathResource;
 
+import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -24,6 +27,7 @@ public class CalculationServiceImpl implements CalculationService {
 	private final CalculationRepository calculationRepository;
 	private final CustomerRepository customerRepository;
 	private final FilePathResource filePathResource;
+	private final UsersRepository usersRepository;
 
 	@Override
 	@Transactional(readOnly = true)
@@ -48,6 +52,9 @@ public class CalculationServiceImpl implements CalculationService {
 			.customerId(calculation.getCustomerId())
 			.customerName(customerRepository.findCustomerById(calculation.getCustomerId())
 				.orElseThrow().getCustomerName())
+			.userId(calculation.getUserId())
+			.username(usersRepository.findUsersByUserId(calculation.getUserId())
+				.orElseThrow().getUserName())
 			.build();
 	}
 
@@ -72,30 +79,33 @@ public class CalculationServiceImpl implements CalculationService {
 	}
 
 	@Override
-	@Transactional
+	@Transactional(readOnly = true)
 	public List<CalculationDto> findAllCalculationsByCastId(long castId) {
 		return calculationRepository.findAllCalculationsByCastId(castId).stream()
 			.map(calculation -> CalculationDto.builder()
 				.id(calculation.getId())
+				.status(calculation.getStatus().getTitle())
 				.lotName(calculation.getLotName())
 				.projectName(calculation.getProjectName())
 				.totalSum(getZeroIfNullOrEmptySumWithSuffix(calculation.getTotalSum()))
 				.build())
-			.toList().stream()
 			.sorted(Comparator.comparingLong(CalculationDto::id))
 			.toList();
 	}
 
 	@Override
 	@Transactional(rollbackFor = {Exception.class})
-	public Calculation createCalculation(CalculationPayloadNew payload) {
+	public Calculation createCalculation(CalculationPayloadNew payload,
+										 Principal principal) {
+		var user = usersRepository.findUsersByUserName(principal.getName()).orElseThrow();
 		return calculationRepository.cerateCalculation(
 			payload.status(),
 			payload.lotName(),
 			payload.projectName(),
 			payload.projectLocation(),
-			payload.dateOfCreate(),
+			LocalDateTime.now(),
 			payload.customerId(),
+			user.getId(),
 			createNewResourceFolder(filePathResource.getFileResource()));
 	}
 
@@ -108,8 +118,8 @@ public class CalculationServiceImpl implements CalculationService {
 			payload.lotName(),
 			payload.projectName(),
 			payload.projectLocation(),
-			payload.dateOfCreate(),
-			payload.customerId());
+			payload.customerId()
+		);
 	}
 
 	@Override

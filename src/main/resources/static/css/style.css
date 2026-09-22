@@ -185,7 +185,7 @@ th, td, p {
 }
 
 .file-name {
-    width: 70%;
+    width: 50%;
 }
 
 .file-name-partition {
@@ -193,7 +193,7 @@ th, td, p {
 }
 
 .file-name-partition-update {
-    width: 55%;
+    width: 50%;
 }
 
 .file-content-partition {
@@ -210,6 +210,14 @@ th, td, p {
 
 .file-action {
     width: 10%;
+}
+
+.file-author {
+    width: 20%;
+}
+
+.file-author-partition {
+    width: 15%;
 }
 
 .file-action-partition {
@@ -312,7 +320,7 @@ textarea {
     position: absolute;
     right: 0;
     background-color: lightgray;
-    width: 400px;
+    width: 500px;
     max-height: 300px;
     overflow-y: scroll;
     border: 1px black;

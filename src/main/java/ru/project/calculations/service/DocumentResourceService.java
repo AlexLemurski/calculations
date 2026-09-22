@@ -6,28 +6,31 @@ import ru.project.calculations.dto.document_resource.DocumentResourceDto;
 import ru.project.calculations.enums.DocumentIndex;
 
 import java.io.IOException;
+import java.security.Principal;
 import java.util.List;
 
 public interface DocumentResourceService {
 
-    void saveDocumentResource(long id,
-                              DocumentIndex documentIndex,
-                              MultipartFile file);
+	void saveDocumentResource(long id,
+							  DocumentIndex documentIndex,
+							  Principal principal,
+							  MultipartFile file);
 
-    DocumentResourceDto findDocumentResourceById(long id);
+	DocumentResourceDto findDocumentResourceById(long id);
 
-    List<DocumentResourceDto> findAllDocResourceByCalcIdAndIndex(long id,
-                                                                 DocumentIndex documentIndex);
+	List<DocumentResourceDto> findAllDocResourceByCalcIdAndIndex(long id,
+																 DocumentIndex documentIndex,
+																 Principal principal);
 
-    Resource downloadDocumentResource(long id, String key) throws IOException;
+	Resource downloadDocumentResource(long id, String key) throws IOException;
 
-    void updateDocumentResource(long id, String[] contentTypes);
+	void updateDocumentResource(long id, String[] contentTypes);
 
-    void deleteDocumentResource(long id);
+	void deleteDocumentResource(long id);
 
-    void deleteAllDocumentResource(long id);
+	void deleteAllDocumentResource(long id);
 
-    void deleteAllDocumentResource(long id,
-                                   DocumentIndex documentIndex);
+	void deleteAllDocumentResource(long id,
+								   DocumentIndex documentIndex);
 
 }

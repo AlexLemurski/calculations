@@ -1,4 +1,4 @@
-package ru.project.calculations.security;
+package ru.project.calculations.entity;
 
 import lombok.*;
 import org.springframework.data.annotation.Id;
@@ -11,24 +11,24 @@ import org.springframework.data.relational.core.mapping.Table;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
-@Table(schema = "security", name = "roles")
+@Table(schema = "security", name = "t_roles")
 public class Roles {
 
 	@Id
-	@Column("id")
+	@Column("c_id")
 	@EqualsAndHashCode.Include
 	private Long id;
 
-	@Column("role_name")
+	@Column("c_role_name")
 	private String roleName;
 
-	@Column("title")
+	@Column("c_title")
 	private String title;
 
-	@Column("partition")
+	@Column("c_partition")
 	private String partition;
 
-	@Column("local_id")
+	@Column("c_local_id")
 	private int localId;
 
 }

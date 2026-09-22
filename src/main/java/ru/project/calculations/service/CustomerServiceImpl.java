@@ -10,6 +10,7 @@ import ru.project.calculations.dto.customer.CustomerDto;
 import ru.project.calculations.dto.customer.CustomerPayloadNew;
 import ru.project.calculations.dto.customer.CustomerPayloadUpdate;
 import ru.project.calculations.entity.Customer;
+import ru.project.calculations.enums.Status;
 import ru.project.calculations.exception.DeleteEntityDataBaseException;
 import ru.project.calculations.exception.UniqueParameterCreateException;
 import ru.project.calculations.exception.UniqueParameterUpdateException;
@@ -19,7 +20,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CustomerServiceImpl implements CustomerService {
@@ -56,7 +56,18 @@ public class CustomerServiceImpl implements CustomerService {
 				.customerINNCode(customer.getCustomerINNCode())
 				.mainActivity(customer.getMainActivity())
 				.build())
-			.toList().stream()
+			.sorted(Comparator.comparingLong(CustomerDto::id))
+			.toList();
+	}
+
+	@Override
+	public List<CustomerDto> findAllCustomersByStatus(Status status) {
+		return customerRepository.findAllCustomersByStatus(status).stream()
+			.map(customer -> CustomerDto.builder()
+				.id(customer.getId())
+				.customerName(customer.getCustomerName())
+				.customerINNCode(customer.getCustomerINNCode())
+				.build())
 			.sorted(Comparator.comparingLong(CustomerDto::id))
 			.toList();
 	}

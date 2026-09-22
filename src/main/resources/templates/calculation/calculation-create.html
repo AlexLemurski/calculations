@@ -32,10 +32,15 @@
         </a>
     </div>
     <div class="header-buttons right">
-        <span class="userInSystem" th:text="${userDetails.getUsername()}"></span>
+        <span class="userInSystem" th:text="${userDetails.getName()}"></span>
         <form th:action="@{/logout}" method="post">
             <button type="submit" id="clearLS" style="margin-left: 12px" class="red-btn">Выйти из системы</button>
         </form>
+        <div sec:authorize="hasAnyAuthority('ADMIN')" class="header-buttons">
+            <a th:href="@{/users}">
+                <button type="button">Пользователи</button>
+            </a>
+        </div>
     </div>
 </div>
 <div class="main-content">
@@ -67,21 +72,25 @@
                 <th data-column="idMenu" class="idMenu" style="text-align: center">#ID</th>
                 <th data-column="lotName" class="lotName">
                     <button data-column="lotName" type="button"
-                            class="main-tr-buttons blue-btn">Лот</button>
+                            class="main-tr-buttons blue-btn">Лот
+                    </button>
                 </th>
                 <th data-column="projectNameMenu" class="projectNameMenu">
                     <button data-column="projectNameMenu" type="button"
-                            class="main-tr-buttons blue-btn">Наименование</button>
+                            class="main-tr-buttons blue-btn">Наименование
+                    </button>
                 </th>
                 <th data-column="customerNameMenu">
                     <div class="header-buttons">
                         <button data-column="customerNameMenu" type="button"
-                                class="main-tr-buttons blue-btn">Заказчик</button>
+                                class="main-tr-buttons blue-btn">Заказчик
+                        </button>
                         <div class="dropdown-custom-customers" id="customerDropdown">
                             <button type="button" class="main-tr-buttons blue-btn"
-                                    onclick="toggleDropdown()">▼</button>
+                                    onclick="toggleDropdown()">▼
+                            </button>
                             <div class="dropdown-content-customers">
-                                <span th:each="cust : ${customers}">
+                                <span th:each="cust : ${customersByStatus}">
                                     <label>
                                         <input type="checkbox" class="customer-filter"
                                                th:value="${cust.customerName()}"
@@ -100,10 +109,12 @@
                 <th data-column="dateOfCreateMenu" class="dateOfCreateMenu">
                     <div class="header-buttons">
                         <button data-column="dateOfCreateMenu" type="button"
-                                class="main-tr-buttons blue-btn">Дата</button>
+                                class="main-tr-buttons blue-btn">Дата
+                        </button>
                         <div class="dropdown-custom-dateOfCreate" id="dateOfCreateDropdown">
                             <button type="button" class="main-tr-buttons blue-btn"
-                                    onclick="toggleDropdownDateOfCreate()">▼</button>
+                                    onclick="toggleDropdownDateOfCreate()">▼
+                            </button>
                             <div class="dropdown-content-dateOfCreate">
                                 <label>
                                     <input type="date" id="startDate" placeholder="От">
@@ -154,6 +165,14 @@
                     </tr>
                     <tr>
                         <td>002</td>
+                        <td>Автор</td>
+                        <td>
+                            <span th:text="${userDetails.getName()}"></span>
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>003</td>
                         <td>Статус</td>
                         <td>
                             <label>
@@ -167,7 +186,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>003</td>
+                        <td>004</td>
                         <td>Лот</td>
                         <td>
                             <label>
@@ -177,7 +196,7 @@
                         <td class="errors" th:errors="*{lotName}"></td>
                     </tr>
                     <tr>
-                        <td>004</td>
+                        <td>005</td>
                         <td>Наименование</td>
                         <td>
                             <label>
@@ -187,7 +206,7 @@
                         <td class="errors" th:errors="*{projectName}"></td>
                     </tr>
                     <tr>
-                        <td>005</td>
+                        <td>006</td>
                         <td>Локация пр-ва работ</td>
                         <td>
                             <label>
@@ -197,29 +216,18 @@
                         <td class="errors" th:errors="*{projectLocation}"></td>
                     </tr>
                     <tr>
-                        <td>006</td>
+                        <td>007</td>
                         <td>Заказчик</td>
                         <td>
                             <label>
                                 <select class="customer-select select2" th:field="*{customerId}" required>
-                                    <option th:each="customer : ${customers}"
+                                    <option th:each="customer : ${customersByStatus}"
                                             th:value="${customer.id()}"
                                             th:text="${customer.customerName() + ' ' + customer.customerINNCode()}">
                                     </option>
                                 </select>
                             </label>
                         </td>
-                    </tr>
-                    <tr>
-                        <td>007</td>
-                        <td>Дата создания</td>
-                        <td>
-                            <label>
-                                <input id="dateOfCreate" name="dateOfCreate" type="date" th:value="*{dateOfCreate}"
-                                       required>
-                            </label>
-                        </td>
-                        <td class="errors" th:errors="*{dateOfCreate}"></td>
                     </tr>
                     </tbody>
                 </table>
