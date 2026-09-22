@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Calculations</title>
+    <link rel="stylesheet" th:href="@{/css/normalize.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="header">
+    <div class="header-buttons left">
+        <a th:href="@{/calculations}">
+            <button type="button" class="blue-btn">Калькуляции</button>
+        </a>
+        <a th:href="@{/customers}">
+            <button type="button" class="blue-btn">Реестр заказчиков</button>
+        </a>
+    </div>
+    <div sec:authorize="hasAnyAuthority('ADMIN')" class="header-buttons">
+        <a th:href="@{/users/create}">
+            <button type="button" class="yellow-btn">Создать нового пользователя</button>
+        </a>
+    </div>
+    <div class="header-buttons right">
+        <span class="userInSystem" th:text="${userDetails.getName()}"></span>
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" id="clearLS" style="margin-left: 12px" class="red-btn">Выйти из системы</button>
+        </form>
+        <div sec:authorize="hasAnyAuthority('ADMIN')" class="header-buttons">
+            <a th:href="@{/users}">
+                <button type="button">Пользователи</button>
+            </a>
+        </div>
+    </div>
+</div>
+<div class="main-content">
+    <div class="left-content" id="leftContent">
+        <table class="table-left" id="table-menu-sort">
+            <thead class="left-table-head">
+            <tr class="searching-tr">
+                <td class="idMenu">
+                    <button class="main-tr-buttons yellow-btn" id="resetFilters"
+                            title="Очистить фильтры и сортировку" style="text-align: center">🧹
+                    </button>
+                </td>
+            </tr>
+            <tr class="main-tr">
+                <th style="text-align: center">#ID</th>
+                <th>Имя пользователя</th>
+                <th>Должность</th>
+                <th>Подразделение</th>
+                <th>Статус учетной записи</th>
+            </tr>
+            </thead>
+            <tbody class="left-table-body">
+            <tr th:each="usr : ${users}"
+                th:attr="data-url=@{/users/view-update/{id}(id=${usr.id()})}" class="clickable-row">
+                <td th:text="${usr.id()}"></td>
+                <td th:text="${usr.userName()}"></td>
+                <td th:text="${usr.profession()}"></td>
+                <td th:text="${usr.department()}"></td>
+                <td th:text="${usr.userStatus().getTitle()}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="right-content" id="rightContent">
+        <div th:if="${successMessage}" th:text="#{${successMessage}}" class="success"></div>
+        Для отображения деталей выберите нужный элемент слева
+    </div>
+</div>
+<div class="footer">
+
+</div>
+<script th:src="@{/script/open_window.js}"></script>
+<script th:src="@{/script/member_scrolls_positions.js}"></script>
+</body>
+</html>
