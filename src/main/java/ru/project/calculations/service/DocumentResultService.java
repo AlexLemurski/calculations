@@ -15,8 +15,7 @@ public interface DocumentResultService {
 
 	DocumentResultDto findDocumentResultById(long id);
 
-	DocumentResultDto findDocResultByCalcId(long id,
-											Principal principal);
+	DocumentResultDto findDocResultByCalcId(long id);
 
 	Resource downloadDocumentResult(long id,
 									String key) throws IOException;

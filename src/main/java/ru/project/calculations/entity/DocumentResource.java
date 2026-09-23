@@ -47,7 +47,7 @@ public class DocumentResource {
     private List<ContentType> contentTypes = new ArrayList<>();
 
     @Column("c_user_id")
-    private long userId;
+    private Long userId;
 
     @Column("c_time_stamp")
     private LocalDateTime timeStamp;

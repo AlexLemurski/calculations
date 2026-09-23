@@ -54,9 +54,9 @@ public class Calculation {
 	private String resourceFolder;
 
 	@Column("c_customer_id")
-	private long customerId;
+	private Long customerId;
 
 	@Column("c_user_id")
-	private long userId;
+	private Long userId;
 
 }

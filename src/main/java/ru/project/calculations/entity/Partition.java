@@ -44,6 +44,6 @@ public class Partition {
     private double percent;
 
     @Column("c_calc_id")
-    private long calculationId;
+    private Long calculationId;
 
 }

@@ -33,7 +33,7 @@ public class DocumentResourceController {
 										 @RequestParam MultiValueMap<String, String> params,
 										 Principal principal) {
 		List<DocumentResourceDto> allDocs =
-			documentResourceService.findAllDocResourceByCalcIdAndIndex(id, PARTITION_DOC, principal);
+			documentResourceService.findAllDocResourceByCalcIdAndIndex(id, PARTITION_DOC);
 		for (var doc : allDocs) {
 			documentResourceService.updateDocumentResource(doc.docId(), new String[0]);
 		}

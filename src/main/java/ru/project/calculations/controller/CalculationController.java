@@ -46,10 +46,10 @@ public class CalculationController {
 	public String findCalculationById(@PathVariable long id,
 									  Principal userDetails,
 									  Model model) {
-		var resultDocument = documentResultService.findDocResultByCalcId(id, userDetails);
+		var resultDocument = documentResultService.findDocResultByCalcId(id);
 		model.addAttribute("calculations", calculationService.findAllCalculations());
 		model.addAttribute("calculation", calculationService.findCalculationById(id));
-		getAllResourceDocuments(id, documentResourceService, userDetails, model);
+		getAllResourceDocuments(id, documentResourceService, model);
 		model.addAttribute("resultDocument", resultDocument);
 		model.addAttribute("customersByStatus", customerService.findAllCustomersByStatus(ACTUAL));
 		model.addAttribute("partition", partitionService.findAllPartitionByCalcId(id));
@@ -134,9 +134,9 @@ public class CalculationController {
 		model.addAttribute("calculation", calculationService.findCalculationById(id));
 		model.addAttribute("customersByStatus", customerService.findAllCustomersByStatus(ACTUAL));
 		model.addAttribute("partitionDocuments",
-			documentResourceService.findAllDocResourceByCalcIdAndIndex(id, PARTITION_DOC, userDetails));
+			documentResourceService.findAllDocResourceByCalcIdAndIndex(id, PARTITION_DOC));
 		model.addAttribute("contentTypeList", ContentType.values());
-		getAllResourceDocuments(id, documentResourceService, userDetails, model);
+		getAllResourceDocuments(id, documentResourceService, model);
 		model.addAttribute("userDetails", userDetails);
 		return "calculation/calculation-doc-resource-update";
 	}
@@ -148,7 +148,7 @@ public class CalculationController {
 										   Model model) {
 		model.addAttribute("calculations", calculationService.findAllCalculations());
 		model.addAttribute("calculation", calculationService.findCalculationById(id));
-		model.addAttribute("resultDocument", documentResultService.findDocResultByCalcId(id, userDetails));
+		model.addAttribute("resultDocument", documentResultService.findDocResultByCalcId(id));
 		model.addAttribute("customersByStatus", customerService.findAllCustomersByStatus(ACTUAL));
 		model.addAttribute("partition", partitionService.findAllPartitionByCalcId(id));
 		model.addAttribute("uncalculated", uncalculatedService.findAllUncalculatedByCalcId(id));

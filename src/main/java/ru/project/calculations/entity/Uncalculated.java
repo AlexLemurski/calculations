@@ -44,6 +44,6 @@ public class Uncalculated {
     private String comment;
 
     @Column("c_calc_id")
-    private long calculationId;
+    private Long calculationId;
 
 }

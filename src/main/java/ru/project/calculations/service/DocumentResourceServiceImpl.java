@@ -20,11 +20,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.Principal;
-import java.util.Comparator;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
+import java.util.stream.Collectors;
 
+import static org.springframework.data.util.Pair.toMap;
 import static ru.project.calculations.util.DocumentsUtil.saveAllDataDocumentResource;
+import static ru.project.calculations.util.UsersUtil.getUserNames;
 
 @Service
 @RequiredArgsConstructor
@@ -86,10 +87,10 @@ public class DocumentResourceServiceImpl implements DocumentResourceService {
 	@Override
 	@Transactional(readOnly = true)
 	public List<DocumentResourceDto> findAllDocResourceByCalcIdAndIndex(long id,
-																		DocumentIndex documentIndex,
-																		Principal principal) {
-		var user = usersRepository.findUsersByUserName(principal.getName()).orElseThrow();
-		return documentResourceRepository.findAllDocResourceByCalcIdAndIndex(id, documentIndex).stream()
+																		DocumentIndex documentIndex) {
+		var documentResources = documentResourceRepository.findAllDocResourceByCalcIdAndIndex(id, documentIndex);
+		var userNames = getUserNames(documentResources, usersRepository);
+		return documentResources.stream()
 			.map(documentResource -> DocumentResourceDto.builder()
 				.docId(documentResource.getId())
 				.docName(documentResource.getDocName())
@@ -99,7 +100,7 @@ public class DocumentResourceServiceImpl implements DocumentResourceService {
 				.size(documentResource.getSize())
 				.calculationId(documentResource.getCalculationId())
 				.contentTypes(documentResource.getContentTypes())
-				.username(user.getUserName())
+				.username(userNames.getOrDefault(documentResource.getUserId(), null))
 				.timeStamp(documentResource.getTimeStamp())
 				.build()
 			).toList().stream()

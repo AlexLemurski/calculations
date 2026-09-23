@@ -68,10 +68,8 @@ public class DocumentResultServiceImpl implements DocumentResultService {
 
 	@Override
 	@Transactional(readOnly = true)
-	public DocumentResultDto findDocResultByCalcId(long id,
-												   Principal principal) {
+	public DocumentResultDto findDocResultByCalcId(long id) {
 		var documentResult = documentResultRepository.findDocResultByCalcId(id).orElse(null);
-		var user = usersRepository.findUsersByUserName(principal.getName()).orElseThrow();
 		if (documentResult != null) {
 			return DocumentResultDto.builder()
 				.docId(documentResult.getId())
@@ -81,7 +79,7 @@ public class DocumentResultServiceImpl implements DocumentResultService {
 				.size(documentResult.getSize())
 				.calculationId(documentResult.getCalculationId())
 				.userId(documentResult.getUserId())
-				.username(user.getUserName())
+				.username(usersRepository.findUsersByUserId(documentResult.getUserId()).orElseThrow().getUserName())
 				.timeStamp(documentResult.getTimeStamp())
 				.build();
 		} else {

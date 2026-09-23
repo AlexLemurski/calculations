@@ -19,8 +19,7 @@ public interface DocumentResourceService {
 	DocumentResourceDto findDocumentResourceById(long id);
 
 	List<DocumentResourceDto> findAllDocResourceByCalcIdAndIndex(long id,
-																 DocumentIndex documentIndex,
-																 Principal principal);
+																 DocumentIndex documentIndex);
 
 	Resource downloadDocumentResource(long id, String key) throws IOException;
 

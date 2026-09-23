@@ -7,7 +7,7 @@ services:
       - "8050:8196"
     volumes:
       - "C:/Users/user/Desktop/prod-files:/app/resource"
-      - "./logs/backend:/var/log/backend" # лог-файлы
+#      - "./logs/backend:/var/log/backend" # лог-файлы
     depends_on:
       - postgres
     environment:
@@ -42,7 +42,7 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./backup:/backups  # место для бэкапов
+#      - ./backup:/backups  # место для бэкапов
     deploy:
       resources:
         limits:

@@ -34,10 +34,10 @@ public class DocumentResult {
 	private String key;
 
 	@Column("c_calc_id")
-	private long calculationId;
+	private Long calculationId;
 
 	@Column("c_user_id")
-	private long userId;
+	private Long userId;
 
 	@Column("c_time_stamp")
 	private LocalDateTime timeStamp;

@@ -27,6 +27,13 @@ public interface UsersRepository extends CrudRepository<Users, Long> {
 	Optional<Users> findUsersByUserId(@Param("id") long id);
 
 	@Query(value = """
+		select us.c_id, us.c_username
+		from security.t_users as us
+		where us.c_id in (:ids)
+		""")
+	List<Users> findAllUsersByIds(@Param("ids") List<Long> ids);
+
+	@Query(value = """
 		select us.c_id, us.c_username, us.c_password, us.c_status, us.c_profession, us.c_department, us.c_email
 		from security.t_users as us
 		""")

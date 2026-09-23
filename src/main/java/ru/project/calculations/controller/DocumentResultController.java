@@ -34,7 +34,7 @@ public class DocumentResultController {
 	}
 
 	@GetMapping("/download/{id:\\d+}")
-	@PreAuthorize("hasAnyAuthority('ADMIN', 'DOC_RESULT_REDACTOR')")
+	@PreAuthorize("hasAnyAuthority('ADMIN', 'DOC_RESULT_VIEW')")
 	public ResponseEntity<Resource> downloadFile(@PathVariable long id) {
 		return returnDocResultContentType(id, documentResultService);
 	}

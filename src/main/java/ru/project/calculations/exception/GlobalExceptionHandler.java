@@ -48,7 +48,7 @@ public class GlobalExceptionHandler {
 								  Locale locale) {
 		model.addAttribute("calculation", calculationService.findCalculationById(exception.getId()));
 		model.addAttribute("calculations", calculationService.findAllCalculations());
-		model.addAttribute("resultDocument", documentResultService.findDocResultByCalcId(exception.getId(), userDetails));
+		model.addAttribute("resultDocument", documentResultService.findDocResultByCalcId(exception.getId()));
 		model.addAttribute("uncalculated", uncalculatedService.findAllUncalculatedByCalcId(exception.getId()));
 		model.addAttribute("userDetails", userDetails);
 		model.addAttribute("doc_validation_exception_message", messageSource.getMessage(
@@ -82,7 +82,7 @@ public class GlobalExceptionHandler {
 								  Locale locale) {
 		model.addAttribute("calculation", calculationService.findCalculationById(exception.getId()));
 		model.addAttribute("calculations", calculationService.findAllCalculations());
-		model.addAttribute("resultDocument", documentResultService.findDocResultByCalcId(exception.getId(), userDetails));
+		model.addAttribute("resultDocument", documentResultService.findDocResultByCalcId(exception.getId()));
 		model.addAttribute("customers", customerService.findAllCustomers());
 		model.addAttribute("uncalculated", new ArrayList<>());
 		model.addAttribute("userDetails", userDetails);
