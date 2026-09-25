@@ -21,9 +21,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.Principal;
 import java.util.*;
-import java.util.stream.Collectors;
 
-import static org.springframework.data.util.Pair.toMap;
 import static ru.project.calculations.util.DocumentsUtil.saveAllDataDocumentResource;
 import static ru.project.calculations.util.UsersUtil.getUserNames;
 
